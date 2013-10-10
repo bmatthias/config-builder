@@ -1,5 +1,7 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.collect.Lists;
+import com.tngtech.configbuilder.annotation.configuration.Collection;
 import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.List;
 
 @Component
 public class FieldValueExtractor {
@@ -30,7 +33,7 @@ public class FieldValueExtractor {
 
 
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
-        String value = extractString(field,builderConfiguration);
+        String value = extractString(field, builderConfiguration);
         return getTransformedFieldValueIfApplicable(field, value);
     }
 
@@ -53,14 +56,24 @@ public class FieldValueExtractor {
 
     private Object getTransformedFieldValueIfApplicable(Field field, String value) {
         Object fieldValue = value;
-        Class<? extends IValueTransformerProcessor<Object>> processor;
+        Class<? extends IValueTransformerProcessor<Object>> processorClass;
 
         for(Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)){
-            log.debug(String.format("transorming string value for field %s with %s annotation", field.getName(), annotation.annotationType()));
-            processor = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
-            fieldValue = beanFactory.getBean(processor).transformString(annotation, value);
+            log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
+            processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
+            IValueTransformerProcessor processor = (IValueTransformerProcessor)beanFactory.getBean(processorClass);
+            if(field.isAnnotationPresent(Collection.class)) {
+                String[] values = value.split(field.getAnnotation(Collection.class).value());
+                List<Object> fieldValues = Lists.newArrayList();
+                for(String string : values) {
+                    fieldValues.add(processor.transformString(annotation,string));
+                }
+                fieldValue = fieldValues;
+            }
+            else {
+                fieldValue = processor.transformString(annotation,value);
+            }
         }
-
         return fieldValue;
     }
 }

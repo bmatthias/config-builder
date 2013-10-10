@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="property-loader-rewrite" />
+        <module name="config-builder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="property-loader-rewrite" target="1.7" />
+      <module name="config-builder" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

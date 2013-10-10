@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.tngtech.internal</groupId>
-    <artifactId>property-loader-rewrite</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <artifactId>config-builder</artifactId>
+    <version>1.0</version>
     <contributors>
         <contributor>
             <name>Matthias Bollwein</name>
