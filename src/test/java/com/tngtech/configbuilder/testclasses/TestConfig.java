@@ -18,7 +18,7 @@ import java.util.*;
 @PropertySuffixes(extraSuffixes = {"test"})
 @PropertyLocations(resourcesForClasses = {PropertyLoader.class})
 @PropertiesFiles("demoapp-configuration")
-@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, EnvironmentVariable.class, SystemProperty.class, DefaultValue.class})
+@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, DefaultValue.class})
 public class TestConfig {
 
     public TestConfig(){
@@ -45,19 +45,19 @@ public class TestConfig {
     private boolean aBoolean;
 
     @LoadingOrder(value = {CommandLineValue.class})
-    @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "message")
+    @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "command line option description")
     @ValueTransformer(PidFixFactory.class)
     private Collection<String> stringCollection;
 
     @CollectionType
     @DefaultValue("one,two")
     @ValueTransformer(PidFixFactory.class)
-    private ArrayList list;
+    private ArrayList<Integer> list;
 
-    @EnvironmentVariable("PATH")
+    @EnvironmentVariableValue("PATH")
     private String environmentVariable;
 
-    @SystemProperty("user.language")
+    @SystemPropertyValue("user.language")
     private String systemProperty;
 
     public void setSomeNumber(Integer someNumber) {

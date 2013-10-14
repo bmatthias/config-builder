@@ -52,7 +52,7 @@ public class FieldSetter<T> {
                 }
             }
         } catch(IllegalAccessException e) {
-           throw new ConfigBuilderException("illegal access", e);
+           throw new ConfigBuilderException("THIS CAN NOT HAPPEN", e);
         }
     }
 

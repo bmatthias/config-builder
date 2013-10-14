@@ -81,6 +81,7 @@ public class ConfigBuilderIntegrationTest {
 
     @Test
     public void testPrintCommandLine() {
-
+        ConfigBuilder configBuilder = new ConfigBuilder(configClass);
+        configBuilder.printCommandLineHelp();
     }
 }

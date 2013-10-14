@@ -86,7 +86,6 @@ public class FieldValueExtractor {
             processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
             IValueTransformerProcessor processor = (IValueTransformerProcessor)beanFactory.getBean(processorClass);
             fieldValue = processor.transformString(annotation,value);
-
         }
         return fieldValue;
     }

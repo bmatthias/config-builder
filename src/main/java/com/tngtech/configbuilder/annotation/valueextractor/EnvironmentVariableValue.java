@@ -5,9 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@ValueExtractorAnnotation(SystemPropertyProcessor.class)
+@ValueExtractorAnnotation(EnvironmentVariableProcessor.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SystemProperty {
+public @interface EnvironmentVariableValue {
     String value();
 }

@@ -8,6 +8,6 @@ import java.lang.annotation.Annotation;
 @Component
 public class EnvironmentVariableProcessor implements IValueExtractorProcessor {
     public String getValue(Annotation annotation, BuilderConfiguration builderConfiguration) {
-        return System.getenv(((EnvironmentVariable)annotation).value());
+        return System.getenv(((EnvironmentVariableValue)annotation).value());
     }
 }
