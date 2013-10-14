@@ -1,5 +1,6 @@
 package com.tngtech.configbuilder.util;
 
+import com.tngtech.configbuilder.annotation.configuration.Collection;
 import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
@@ -7,6 +8,7 @@ import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotat
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
+import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 @Component
 public class FieldValueExtractor {
@@ -34,11 +39,33 @@ public class FieldValueExtractor {
 
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
         String value = extractString(field, builderConfiguration);
-        if(field.isAnnotationPresent(ValueTransformer.class)) {
-            return transformStringWithTransformer(field, value);
+        if(field.isAnnotationPresent(Collection.class)) {
+            String[] values = value.split(field.getAnnotation(Collection.class).value());
+            return buildCollection(field, values);
         }
         else {
-            return transformStringToPrimitiveIfApplicable(field.getType(), value);
+
+            if(field.isAnnotationPresent(ValueTransformer.class)) {
+                return transformStringWithTransformer(field, value);
+            }
+            else {
+                return transformStringToPrimitiveIfApplicable(field.getType(), value);
+            }
+        }
+
+    }
+
+    private Object buildCollection(Field field, String[] values) {
+
+        try {
+            Object collection = field.getType().newInstance();
+            Method add = collection.getClass().getDeclaredMethod("add", Object.class);
+            for(String value : values) {
+                add.invoke(collection, transformStringWithTransformer(field, value));
+            }
+            return collection;
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            throw new ConfigBuilderException("collection exception", e);
         }
     }
 

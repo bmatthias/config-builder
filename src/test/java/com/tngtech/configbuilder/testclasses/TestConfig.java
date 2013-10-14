@@ -13,7 +13,7 @@ import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.propertyloader.PropertyLoader;
 
-import java.util.Collection;
+import java.util.*;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -48,6 +48,11 @@ public class TestConfig {
     @CommandLineValue(shortOpt = "p", longOpt = "pidFixFactory", hasArg = true)
     @ValueTransformer(PidFixFactory.class)
     private Collection<String> pidFixes;
+
+    @com.tngtech.configbuilder.annotation.configuration.Collection
+    @DefaultValue("one,two")
+    @ValueTransformer(PidFixFactory.class)
+    private HashSet list;
 
     public void setUserName(Integer userName) {
         this.userName = userName;
