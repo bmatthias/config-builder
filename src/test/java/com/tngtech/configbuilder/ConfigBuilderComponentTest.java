@@ -81,7 +81,7 @@ public class ConfigBuilderComponentTest {
             DefaultValue defaultValue = TestConfig.class.getDeclaredField("userName").getAnnotation(DefaultValue.class);
             DefaultValueProcessor defaultValueProcessor = new DefaultValueProcessor();
             String result =  defaultValueProcessor.getValue(defaultValue, builderConfiguration);
-            assertEquals("user",result);
+            assertEquals("3",result);
         }
         catch (NoSuchFieldException e){}
     }

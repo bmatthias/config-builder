@@ -65,7 +65,7 @@ public class FieldValueExtractor {
 
     private Object transformStringWithTransformer(Field field, String value) {
         Class<? extends IValueTransformerProcessor<Object>> processorClass;
-        Object fieldValue = null;
+        Object fieldValue = value;
         for(Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)){
             log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
 
