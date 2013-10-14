@@ -52,7 +52,7 @@ public class ConfigBuilderComponentTest {
                 CommandLineValueProcessor commandLineValueProcessor = new CommandLineValueProcessor();
                 when(builderConfiguration.getCommandLine()).thenReturn(commandLineArgs);
                 String result =  commandLineValueProcessor.getValue(commandLineValue, builderConfiguration);
-                assertEquals("Mueller", result);
+                assertEquals("true", result);
 
             } catch (ParseException e) {}
 

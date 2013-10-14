@@ -49,6 +49,7 @@ public class CommandLineHelper {
                 .hasArg()
                 .isRequired(commandLineValue.required())
                 .withDescription(commandLineValue.description())
+                .hasArg(commandLineValue.hasArg())
                 .create(commandLineValue.shortOpt());
     }
 

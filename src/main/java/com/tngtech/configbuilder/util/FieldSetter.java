@@ -4,7 +4,6 @@ import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotat
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import com.tngtech.configbuilder.exception.TargetTypeException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,17 +40,10 @@ public class FieldSetter<T> {
 
     private void verifyAndSet(T instanceOfConfigClass, Field field, Object value) {
         try{
-            verifyCorrectTargetType(field, value);
             setFieldValue(instanceOfConfigClass, field, value);
             log.info(String.format("set field %s of type %s to a value of type %s", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName()));
         } catch(Exception e){
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e, field.getName(), field.getType().getName(), value == null ? "null" : value.toString()), e);
-        }
-    }
-
-    private void verifyCorrectTargetType(Field field, Object value) throws TargetTypeException {
-        if (value != null && !field.getType().isAssignableFrom(value.getClass())) {
-            throw new TargetTypeException();
         }
     }
 

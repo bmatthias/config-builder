@@ -36,16 +36,16 @@ public class TestConfig {
     }
 
     @DefaultValue("3")
-    private Integer userName;
+    private int userName;
 
     @PropertyValue("a")
     private String helloWorld;
 
     @CommandLineValue(shortOpt = "u", longOpt = "user")
-    private String surName;
+    private boolean surName;
 
     @LoadingOrder(value = {CommandLineValue.class})
-    @CommandLineValue(shortOpt = "p", longOpt = "pidFixFactory")
+    @CommandLineValue(shortOpt = "p", longOpt = "pidFixFactory", hasArg = true)
     @ValueTransformer(PidFixFactory.class)
     private Collection<String> pidFixes;
 
@@ -57,7 +57,7 @@ public class TestConfig {
         this.helloWorld = helloWorld;
     }
 
-    public void setSurName(String surName) {
+    public void setSurName(boolean surName) {
         this.surName = surName;
     }
 

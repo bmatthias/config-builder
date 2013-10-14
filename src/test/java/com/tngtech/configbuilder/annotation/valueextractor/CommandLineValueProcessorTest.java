@@ -33,6 +33,15 @@ public class CommandLineValueProcessorTest {
 
         when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
         when(commandLineValue.shortOpt()).thenReturn("value");
+        assertEquals("false", commandLineValueProcessor.getValue(commandLineValue, builderConfiguration));
+    }
+
+    @Test
+    public void testCommandLineValueProcessorWithArg(){
+
+        when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
+        when(commandLineValue.shortOpt()).thenReturn("value");
+        when(commandLineValue.hasArg()).thenReturn(true);
         when(commandLine.getOptionValue("value")).thenReturn("passed");
         assertEquals("passed", commandLineValueProcessor.getValue(commandLineValue, builderConfiguration));
     }

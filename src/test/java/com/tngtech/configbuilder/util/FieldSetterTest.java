@@ -4,7 +4,6 @@ import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import com.tngtech.configbuilder.exception.TargetTypeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,8 +17,6 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -59,33 +56,6 @@ public class FieldSetterTest {
     @Before
     public void setUp() throws Exception {
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(true);
-    }
-
-    @Test
-    public void testSetFields() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class),Matchers.any(BuilderConfiguration.class))).thenReturn("value");
-        when(errorMessageSetup.getErrorMessage(Matchers.any(TargetTypeException.class),Matchers.any(String.class),Matchers.any(String.class),Matchers.any(String.class))).thenReturn("TargetTypeException");
-
-        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueExtractor,errorMessageSetup, annotationHelper);
-        TestConfig testConfig = new TestConfig();
-
-        fieldSetter.setFields(testConfig, builderConfiguration);
-
-        assertEquals("value", testConfig.testString);
-    }
-
-    @Test
-    public void testSetFieldsThrowsTargetTypeException() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class),Matchers.any(BuilderConfiguration.class))).thenReturn("value");
-        when(errorMessageSetup.getErrorMessage(Matchers.any(TargetTypeException.class),Matchers.any(String.class),Matchers.any(String.class),Matchers.any(String.class))).thenReturn("TargetTypeException");
-
-        FieldSetter<TestConfigForTargetTypeException> fieldSetter = new FieldSetter<>(fieldValueExtractor,errorMessageSetup, annotationHelper);
-        TestConfigForTargetTypeException testConfigForTargetTypeException = new TestConfigForTargetTypeException();
-
-        expectedException.expect(ConfigBuilderException.class);
-        expectedException.expectMessage("TargetTypeException");
-
-        fieldSetter.setFields(testConfigForTargetTypeException, builderConfiguration);
     }
 
     @Test
