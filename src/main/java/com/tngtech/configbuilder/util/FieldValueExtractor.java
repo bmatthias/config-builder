@@ -1,6 +1,6 @@
 package com.tngtech.configbuilder.util;
 
-import com.tngtech.configbuilder.annotation.configuration.Collection;
+import com.tngtech.configbuilder.annotation.configuration.CollectionType;
 import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 @Component
 public class FieldValueExtractor {
@@ -39,27 +38,20 @@ public class FieldValueExtractor {
 
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
         String value = extractString(field, builderConfiguration);
-        if(field.isAnnotationPresent(Collection.class)) {
-            String[] values = value.split(field.getAnnotation(Collection.class).value());
+        if(field.isAnnotationPresent(CollectionType.class)) {
+            String[] values = value.split(field.getAnnotation(CollectionType.class).value());
             return buildCollection(field, values);
         }
         else {
-
-            if(field.isAnnotationPresent(ValueTransformer.class)) {
-                return transformStringWithTransformer(field, value);
-            }
-            else {
-                return transformStringToPrimitiveIfApplicable(field.getType(), value);
-            }
+            return field.isAnnotationPresent(ValueTransformer.class) ? transformStringWithTransformer(field, value) : transformStringToPrimitiveIfApplicable(field.getType(), value);
         }
 
     }
 
     private Object buildCollection(Field field, String[] values) {
-
         try {
             Object collection = field.getType().newInstance();
-            Method add = collection.getClass().getDeclaredMethod("add", Object.class);
+            Method add = field.getType().getDeclaredMethod("add", Object.class);
             for(String value : values) {
                 add.invoke(collection, transformStringWithTransformer(field, value));
             }

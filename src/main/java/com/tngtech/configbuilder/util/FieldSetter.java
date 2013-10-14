@@ -34,21 +34,17 @@ public class FieldSetter<T> {
                 continue;
             }
             Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
-            verifyAndSet(instanceOfConfigClass, field, value);
+            setField(instanceOfConfigClass, field, value);
         }
     }
 
-    private void verifyAndSet(T instanceOfConfigClass, Field field, Object value) {
+    private void setField(T instanceOfConfigClass, Field field, Object value) {
         try{
-            setFieldValue(instanceOfConfigClass, field, value);
+            field.setAccessible(true);
+            field.set(instanceOfConfigClass, value);
             log.info(String.format("set field %s of type %s to a value of type %s", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName()));
         } catch(Exception e){
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e, field.getName(), field.getType().getName(), value == null ? "null" : value.toString()), e);
         }
-    }
-
-    private void setFieldValue(T instanceOfConfigClass, Field field, Object value) throws IllegalAccessException,IllegalArgumentException {
-        field.setAccessible(true);
-        field.set(instanceOfConfigClass, value);
     }
 }

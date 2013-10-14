@@ -27,8 +27,8 @@ How To Build Your Config
 ####1. Create your class:
 ```java
 public class Config {
-    private String userName;
-    private Collection<PidFix> pidFixes
+    private String someNumber;
+    private Collection<PidFix> stringCollection
     ...
 }
 ```
@@ -136,11 +136,11 @@ public class Config {
     @PropertyValue("user.name")   // Maps to the field "user.name" in the properties file
     @CommandLineValue(shortOpt="u", longOpt="user", required=true)  // Command line arguments (required option "-u/--user"
     @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
-    private String userName;
+    private String someNumber;
  
     @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="p", longOpt="pidFixes")
-    private Collection<PidFix> pidFixes
+    @CommandLineValue(shortOpt="p", longOpt="stringCollection")
+    private Collection<PidFix> stringCollection
  
     ...
 }

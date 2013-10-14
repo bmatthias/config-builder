@@ -2,6 +2,7 @@ package com.tngtech.configbuilder.testclasses;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.FieldValueProvider;
+import com.tngtech.configbuilder.annotation.configuration.CollectionType;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
@@ -27,7 +28,6 @@ public class TestConfig {
     }
 
     public static class PidFixFactory implements FieldValueProvider<Collection<String>> {
-
         public Collection<String> getValue(String optionValue) {
             Collection<String> coll = Lists.newArrayList();
             coll.add(optionValue + " success");
@@ -36,37 +36,41 @@ public class TestConfig {
     }
 
     @DefaultValue("3")
-    private int userName;
+    private int someNumber;
 
     @PropertyValue("a")
     private String helloWorld;
 
     @CommandLineValue(shortOpt = "u", longOpt = "user")
-    private boolean surName;
+    private boolean aBoolean;
 
     @LoadingOrder(value = {CommandLineValue.class})
-    @CommandLineValue(shortOpt = "p", longOpt = "pidFixFactory", hasArg = true)
+    @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true)
     @ValueTransformer(PidFixFactory.class)
-    private Collection<String> pidFixes;
+    private Collection<String> stringCollection;
 
-    @com.tngtech.configbuilder.annotation.configuration.Collection
+    @CollectionType
     @DefaultValue("one,two")
     @ValueTransformer(PidFixFactory.class)
-    private HashSet list;
+    private ArrayList list;
 
-    public void setUserName(Integer userName) {
-        this.userName = userName;
+    public void setSomeNumber(Integer someNumber) {
+        this.someNumber = someNumber;
     }
 
     public void setHelloWorld(String helloWorld) {
         this.helloWorld = helloWorld;
     }
 
-    public void setSurName(boolean surName) {
-        this.surName = surName;
+    public void setBoolean(boolean aBoolean) {
+        this.aBoolean = aBoolean;
     }
 
-    public void setPidFixes(Collection<String> pidFixes) {
-        this.pidFixes = pidFixes;
+    public void setStringCollection(Collection<String> stringCollection) {
+        this.stringCollection = stringCollection;
+    }
+
+    public void setList(ArrayList list) {
+        this.list = list;
     }
 }

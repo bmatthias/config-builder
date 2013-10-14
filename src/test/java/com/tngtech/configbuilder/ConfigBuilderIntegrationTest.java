@@ -27,9 +27,10 @@ public class ConfigBuilderIntegrationTest {
     public static Collection configs() {
         TestConfig testConfig = new TestConfig();
         testConfig.setHelloWorld("Hello, World!");
-        testConfig.setUserName(3);
-        testConfig.setSurName(true);
-        testConfig.setPidFixes(Lists.newArrayList("PIDs fixed with success"));
+        testConfig.setSomeNumber(3);
+        testConfig.setBoolean(true);
+        testConfig.setStringCollection(Lists.newArrayList("PIDs fixed with success"));
+        testConfig.setList(Lists.newArrayList(new String[]{"one success"}, (new String[]{"two success"})));
 
         return Arrays.asList(new Object[][]{{TestConfig.class, testConfig}});
     }
@@ -42,7 +43,7 @@ public class ConfigBuilderIntegrationTest {
     @Test
     public void TestConfigBuilderWithParameters(){
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        String[] args = new String[]{"-u", "Mueller", "--pidFixFactory", "PIDs fixed with"};
+        String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
         Object result = configBuilder.withCommandLineArgs(args).build();
         assertReflectionEquals(configInstance, result);
     }
