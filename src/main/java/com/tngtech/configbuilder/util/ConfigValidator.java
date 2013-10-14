@@ -53,7 +53,11 @@ public class ConfigValidator<T> {
         javax.validation.Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
         if(!constraintViolations.isEmpty()){
-            throw new ValidatorException(errorMessageSetup.getErrorMessage(ValidatorException.class),constraintViolations);
+            StringBuilder stringBuilder = new StringBuilder(errorMessageSetup.getErrorMessage(ValidatorException.class) + "\n");
+            for(ConstraintViolation constraintViolation : constraintViolations) {
+                stringBuilder.append(constraintViolation.getMessage());
+            }
+            throw new ValidatorException(stringBuilder.toString(),constraintViolations);
         }
     }
 }

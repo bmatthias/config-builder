@@ -33,7 +33,7 @@ public class ConfigBuilderExceptionTest {
                 {TestConfigThrowsIllegalArgumentException.class, ConfigBuilderException.class,"integer"},
                 {TestConfigWithoutDefaultConstructor.class,NoConstructorFoundException.class,"build()"},
                 {TestConfigThrowsInvocationTargetExceptionException.class,ConfigBuilderException.class,"InvocationTargetException"},
-                {TestConfigNotNullViolation.class,ValidatorException.class,""}});
+                {TestConfigNotNullViolation.class,ValidatorException.class,"null"}});
     }
 
     public ConfigBuilderExceptionTest(Class configClass, Class<? extends Throwable> exceptionClass, String message) {

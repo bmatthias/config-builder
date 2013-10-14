@@ -107,8 +107,6 @@ public class ConfigBuilder<T> {
         return instanceOfConfigClass;
     }
 
-
-
     private void setupBuilderConfiguration(PropertyLoader propertyLoader) {
         if (configClass.isAnnotationPresent(LoadingOrder.class)){
             builderConfiguration.setAnnotationOrder(configClass.getAnnotation(LoadingOrder.class).value());
