@@ -29,12 +29,29 @@ public class FieldSetter<T> {
     public void setFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration) {
 
         for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
-            if(!annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class)) {
-                log.debug(String.format("field %s is not annotated with any ValueExtractorAnnotation", field.getName()));
-                continue;
+            if(annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class)) {
+                Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
+                setField(instanceOfConfigClass, field, value);
             }
-            Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
-            setField(instanceOfConfigClass, field, value);
+            else {
+                log.debug(String.format("field %s is not annotated with any ValueExtractorAnnotation: skipping field", field.getName()));
+            }
+        }
+    }
+
+    public void setEmptyFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration){
+        try {
+            for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
+                if(annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class) && (field.getType().isPrimitive() || field.get(instanceOfConfigClass) == null)) {
+                    Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
+                    setField(instanceOfConfigClass, field, value);
+                }
+                else {
+                    log.debug(String.format("skipping field %s", field.getName()));
+                }
+            }
+        } catch(IllegalAccessException e) {
+           throw new ConfigBuilderException("illegal access", e);
         }
     }
 

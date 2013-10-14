@@ -9,6 +9,8 @@ import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.apache.log4j.Logger;
 
+import javax.annotation.PostConstruct;
+
 /**
  * Builds a config object.
  * ConfigBuilder instantiates a class and sets fields of the instance by parsing annotations and
@@ -98,13 +100,24 @@ public class ConfigBuilder<T> {
      * @return An instance of the config class.
      */
     public T build(Object... objects) {
-        PropertyLoader propertyLoader = propertyLoaderConfigurator.configurePropertyLoader(configClass);
-        setupBuilderConfiguration(propertyLoader);
-        initializeErrorMessageSetup(propertyLoader);
+        setUp();
         T instanceOfConfigClass = constructionHelper.getInstance(configClass, objects);
         fieldSetter.setFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
         return instanceOfConfigClass;
+    }
+
+    public T merge(T instanceOfConfigClass) {
+        setUp();
+        fieldSetter.setEmptyFields(instanceOfConfigClass, builderConfiguration);
+        configValidator.validate(instanceOfConfigClass);
+        return instanceOfConfigClass;
+    }
+
+    private void setUp() {
+        PropertyLoader propertyLoader = propertyLoaderConfigurator.configurePropertyLoader(configClass);
+        setupBuilderConfiguration(propertyLoader);
+        initializeErrorMessageSetup(propertyLoader);
     }
 
     private void setupBuilderConfiguration(PropertyLoader propertyLoader) {
