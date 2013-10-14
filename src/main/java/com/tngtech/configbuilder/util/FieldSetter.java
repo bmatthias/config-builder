@@ -42,6 +42,7 @@ public class FieldSetter<T> {
     public void setEmptyFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration){
         try {
             for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
                 if(annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class) && (field.getType().isPrimitive() || field.get(instanceOfConfigClass) == null)) {
                     Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
                     setField(instanceOfConfigClass, field, value);

@@ -43,7 +43,7 @@ public class ConfigBuilderExceptionTest {
     }
 
     @Test
-    public void TestConfigBuilderExceptions(){
+    public void testConfigBuilderExceptions(){
         expectedException.expect(exceptionClass);
         expectedException.expectMessage(message);
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);

@@ -31,6 +31,8 @@ public class ConfigBuilderIntegrationTest {
         testConfig.setBoolean(true);
         testConfig.setStringCollection(Lists.newArrayList("PIDs fixed with success"));
         testConfig.setList(Lists.newArrayList(new String[]{"one success"}, (new String[]{"two success"})));
+        testConfig.setEnvironmentVariable(System.getenv("PATH"));
+        testConfig.setSystemProperty(System.getProperty("user.language"));
 
         return Arrays.asList(new Object[][]{{TestConfig.class, testConfig}});
     }
@@ -41,18 +43,44 @@ public class ConfigBuilderIntegrationTest {
     }
 
     @Test
-    public void TestConfigBuilderWithParameters(){
+    public void testConfigBuilderWithParameters(){
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
         String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
         Object result = configBuilder.withCommandLineArgs(args).build();
-        configBuilder.printCommandLineHelp();
         assertReflectionEquals(configInstance, result);
     }
 
     @Test
-    public void TestConfigBuilderWithConstructorArgument(){
+    public void testConfigBuilderWithConstructorArgument(){
         ConfigBuilder<TestConfigWithoutDefaultConstructor> configBuilder = new ConfigBuilder<>(TestConfigWithoutDefaultConstructor.class);
         TestConfigWithoutDefaultConstructor c = configBuilder.build(3);
         assertEquals(3,c.getNumber());
+    }
+
+    @Test
+    public void testMerge() {
+        TestConfig testConfig = new TestConfig();
+        testConfig.setHelloWorld("HelloWorld!");
+        testConfig.setSomeNumber(3);
+        testConfig.setBoolean(true);
+        testConfig.setStringCollection(Lists.newArrayList("collection"));
+        testConfig.setList(Lists.newArrayList(new String[]{"one success"}, (new String[]{"two success"})));
+        testConfig.setEnvironmentVariable(System.getenv("PATH"));
+        testConfig.setSystemProperty(System.getProperty("user.language"));
+
+        TestConfig testConfig2 = new TestConfig();
+        testConfig2.setHelloWorld("HelloWorld!");
+        testConfig2.setBoolean(false);
+        testConfig2.setStringCollection(Lists.newArrayList("collection"));
+
+        ConfigBuilder configBuilder = new ConfigBuilder(configClass);
+        String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
+        Object result = configBuilder.withCommandLineArgs(args).merge(testConfig2);
+        assertReflectionEquals(testConfig, result);
+    }
+
+    @Test
+    public void testPrintCommandLine() {
+
     }
 }

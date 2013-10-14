@@ -8,9 +8,7 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Properti
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
-import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
-import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
-import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
+import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.propertyloader.PropertyLoader;
 
@@ -20,12 +18,14 @@ import java.util.*;
 @PropertySuffixes(extraSuffixes = {"test"})
 @PropertyLocations(resourcesForClasses = {PropertyLoader.class})
 @PropertiesFiles("demoapp-configuration")
-@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, DefaultValue.class})
+@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, EnvironmentVariable.class, SystemProperty.class, DefaultValue.class})
 public class TestConfig {
 
     public TestConfig(){
 
     }
+
+
 
     public static class PidFixFactory implements FieldValueProvider<Collection<String>> {
         public Collection<String> getValue(String optionValue) {
@@ -54,6 +54,12 @@ public class TestConfig {
     @ValueTransformer(PidFixFactory.class)
     private ArrayList list;
 
+    @EnvironmentVariable("PATH")
+    private String environmentVariable;
+
+    @SystemProperty("user.language")
+    private String systemProperty;
+
     public void setSomeNumber(Integer someNumber) {
         this.someNumber = someNumber;
     }
@@ -72,5 +78,13 @@ public class TestConfig {
 
     public void setList(ArrayList list) {
         this.list = list;
+    }
+
+    public void setEnvironmentVariable(String environmentVariable) {
+        this.environmentVariable = environmentVariable;
+    }
+
+    public void setSystemProperty(String systemProperty) {
+        this.systemProperty = systemProperty;
     }
 }

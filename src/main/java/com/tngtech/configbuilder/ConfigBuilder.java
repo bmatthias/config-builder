@@ -95,14 +95,15 @@ public class ConfigBuilder<T> {
         return this;
     }
 
-    public ConfigBuilder<T> withPropertiesFiles(List<String> baseNames) {
+    public ConfigBuilder<T> overridePropertiesFiles(List<String> baseNames) {
         propertyLoader.withBaseNames(baseNames);
         return this;
     }
 
     public void printCommandLineHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("Command Line Options:", commandLineOptions);
+        formatter.setSyntaxPrefix("Command Line Options for class " + configClass.getSimpleName() + ":");
+        formatter.printHelp(" ", commandLineOptions);
     }
 
     /**
@@ -116,7 +117,6 @@ public class ConfigBuilder<T> {
     public T build(Object... objects) {
         setupBuilderConfiguration(propertyLoader);
         initializeErrorMessageSetup(propertyLoader);
-
         T instanceOfConfigClass = constructionHelper.getInstance(configClass, objects);
         fieldSetter.setFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
@@ -126,7 +126,6 @@ public class ConfigBuilder<T> {
     public T merge(T instanceOfConfigClass) {
         setupBuilderConfiguration(propertyLoader);
         initializeErrorMessageSetup(propertyLoader);
-
         fieldSetter.setEmptyFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
         return instanceOfConfigClass;
