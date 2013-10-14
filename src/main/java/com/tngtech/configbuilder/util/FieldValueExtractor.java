@@ -1,11 +1,10 @@
 package com.tngtech.configbuilder.util;
 
-import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.configuration.Collection;
 import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.apache.log4j.Logger;
@@ -13,9 +12,10 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.List;
 
 @Component
 public class FieldValueExtractor {
@@ -55,25 +55,32 @@ public class FieldValueExtractor {
     }
 
     private Object getTransformedFieldValueIfApplicable(Field field, String value) {
-        Object fieldValue = value;
-        Class<? extends IValueTransformerProcessor<Object>> processorClass;
+        if(field.isAnnotationPresent(ValueTransformer.class)) {
+            return transformStringWithTransformer(field, value);
+        }
+        else {
+            return transformStringToPrimitiveIfApplicable(field.getType(), value);
+        }
+    }
 
+    private Object transformStringWithTransformer(Field field, String value) {
+        Class<? extends IValueTransformerProcessor<Object>> processorClass;
+        Object fieldValue = null;
         for(Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)){
             log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
+
             processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
             IValueTransformerProcessor processor = (IValueTransformerProcessor)beanFactory.getBean(processorClass);
-            if(field.isAnnotationPresent(Collection.class)) {
-                String[] values = value.split(field.getAnnotation(Collection.class).value());
-                List<Object> fieldValues = Lists.newArrayList();
-                for(String string : values) {
-                    fieldValues.add(processor.transformString(annotation,string));
-                }
-                fieldValue = fieldValues;
-            }
-            else {
-                fieldValue = processor.transformString(annotation,value);
-            }
+
+            fieldValue = processor.transformString(annotation,value);
+
         }
         return fieldValue;
+    }
+
+    private Object transformStringToPrimitiveIfApplicable(Class<?> targetType, String text) {
+        PropertyEditor editor = PropertyEditorManager.findEditor(targetType);
+        editor.setAsText(text);
+        return editor.getValue();
     }
 }

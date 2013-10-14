@@ -27,7 +27,7 @@ public class ConfigBuilderIntegrationTest {
     public static Collection configs() {
         TestConfig testConfig = new TestConfig();
         testConfig.setHelloWorld("Hello, World!");
-        testConfig.setUserName("user");
+        testConfig.setUserName(3);
         testConfig.setSurName("Mueller");
         testConfig.setPidFixes(Lists.newArrayList("PIDs fixed with success"));
 
