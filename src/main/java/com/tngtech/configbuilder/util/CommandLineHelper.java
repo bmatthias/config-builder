@@ -33,7 +33,7 @@ public class CommandLineHelper {
         return parseCommandLine(args, options);
     }
 
-    private Options getOptions(Class configClass) {
+    public Options getOptions(Class configClass) {
         Options options = beanFactory.getBean(Options.class);
         for (Field field : annotationHelper.getFieldsAnnotatedWith(configClass, CommandLineValue.class)) {
             options.addOption(getOption(field));

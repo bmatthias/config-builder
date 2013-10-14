@@ -45,6 +45,7 @@ public class ConfigBuilderIntegrationTest {
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
         String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
         Object result = configBuilder.withCommandLineArgs(args).build();
+        configBuilder.printCommandLineHelp();
         assertReflectionEquals(configInstance, result);
     }
 

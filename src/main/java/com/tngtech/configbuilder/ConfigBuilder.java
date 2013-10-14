@@ -7,9 +7,11 @@ import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.context.Context;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 
-import javax.annotation.PostConstruct;
+import java.util.List;
 
 /**
  * Builds a config object.
@@ -44,7 +46,6 @@ public class ConfigBuilder<T> {
     private final static Logger log = Logger.getLogger(ConfigBuilder.class);
 
     private final BuilderConfiguration builderConfiguration;
-    private final PropertyLoaderConfigurator propertyLoaderConfigurator;
     private final CommandLineHelper commandLineHelper;
     private final FieldSetter<T> fieldSetter;
     private final ConfigValidator<T> configValidator;
@@ -52,17 +53,20 @@ public class ConfigBuilder<T> {
     private final ConstructionHelper<T> constructionHelper;
 
     private Class<T> configClass;
-    private String[] commandLineArgs = {};
+    private Options commandLineOptions;
+    private PropertyLoader propertyLoader;
 
     private ConfigBuilder(Class<T> configClass, BuilderConfiguration builderConfiguration, PropertyLoaderConfigurator propertyLoaderConfigurator, CommandLineHelper commandLineHelper, ConfigValidator<T> configValidator, FieldSetter<T> fieldSetter, ErrorMessageSetup errorMessageSetup, ConstructionHelper<T> constructionHelper) {
         this.configClass = configClass;
         this.builderConfiguration = builderConfiguration;
-        this.propertyLoaderConfigurator = propertyLoaderConfigurator;
         this.commandLineHelper = commandLineHelper;
         this.configValidator = configValidator;
         this.fieldSetter = fieldSetter;
         this.errorMessageSetup = errorMessageSetup;
         this.constructionHelper = constructionHelper;
+
+        propertyLoader = propertyLoaderConfigurator.configurePropertyLoader(configClass);
+        commandLineOptions = commandLineHelper.getOptions(configClass);
     }
 
     /**
@@ -87,8 +91,18 @@ public class ConfigBuilder<T> {
      * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> withCommandLineArgs(String[] args) {
-        this.commandLineArgs = args;
+        builderConfiguration.setCommandLine(commandLineHelper.getCommandLine(configClass, args));
         return this;
+    }
+
+    public ConfigBuilder<T> withPropertiesFiles(List<String> baseNames) {
+        propertyLoader.withBaseNames(baseNames);
+        return this;
+    }
+
+    public void printCommandLineHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("Command Line Options:", commandLineOptions);
     }
 
     /**
@@ -100,7 +114,9 @@ public class ConfigBuilder<T> {
      * @return An instance of the config class.
      */
     public T build(Object... objects) {
-        setUp();
+        setupBuilderConfiguration(propertyLoader);
+        initializeErrorMessageSetup(propertyLoader);
+
         T instanceOfConfigClass = constructionHelper.getInstance(configClass, objects);
         fieldSetter.setFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
@@ -108,25 +124,19 @@ public class ConfigBuilder<T> {
     }
 
     public T merge(T instanceOfConfigClass) {
-        setUp();
+        setupBuilderConfiguration(propertyLoader);
+        initializeErrorMessageSetup(propertyLoader);
+
         fieldSetter.setEmptyFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
         return instanceOfConfigClass;
-    }
-
-    private void setUp() {
-        PropertyLoader propertyLoader = propertyLoaderConfigurator.configurePropertyLoader(configClass);
-        setupBuilderConfiguration(propertyLoader);
-        initializeErrorMessageSetup(propertyLoader);
     }
 
     private void setupBuilderConfiguration(PropertyLoader propertyLoader) {
         if (configClass.isAnnotationPresent(LoadingOrder.class)){
             builderConfiguration.setAnnotationOrder(configClass.getAnnotation(LoadingOrder.class).value());
         }
-        builderConfiguration.setCommandLine(commandLineHelper.getCommandLine(configClass, commandLineArgs));
         builderConfiguration.setProperties(propertyLoader.load());
-        initializeErrorMessageSetup(propertyLoader);
     }
 
     private void initializeErrorMessageSetup(PropertyLoader propertyLoader) {

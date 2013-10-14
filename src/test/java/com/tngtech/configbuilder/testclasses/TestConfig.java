@@ -45,7 +45,7 @@ public class TestConfig {
     private boolean aBoolean;
 
     @LoadingOrder(value = {CommandLineValue.class})
-    @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true)
+    @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "message")
     @ValueTransformer(PidFixFactory.class)
     private Collection<String> stringCollection;
 
