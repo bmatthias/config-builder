@@ -62,11 +62,11 @@ public class ConfigBuilder<T> {
         configBuilderFactory.<T>initialize();
 
         this.configClass = configClass;
-        this.builderConfiguration = configBuilderFactory.createInstance(BuilderConfiguration.class);
+        this.builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);
         this.commandLineHelper = configBuilderFactory.getInstance(CommandLineHelper.class);
         this.configValidator = configBuilderFactory.getInstance(ConfigValidator.class);
         this.fieldSetter = configBuilderFactory.getInstance(FieldSetter.class);
-        this.errorMessageSetup = configBuilderFactory.createInstance(ErrorMessageSetup.class);
+        this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.constructionHelper = configBuilderFactory.getInstance(ConstructionHelper.class);
 
         propertyLoader = configBuilderFactory.getInstance(PropertyLoaderConfigurator.class).configurePropertyLoader(configClass);

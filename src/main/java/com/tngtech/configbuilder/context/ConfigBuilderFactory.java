@@ -7,6 +7,7 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Property
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixProcessor;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerProcessor;
+import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.*;
 
@@ -14,7 +15,7 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.util.Map;
 
-public class ConfigBuilderFactory {
+public class  ConfigBuilderFactory {
 
     private Map<Class,Object> singletonMap = Maps.newHashMap();
 
@@ -24,8 +25,8 @@ public class ConfigBuilderFactory {
         FieldValueExtractor fieldValueExtractor = new FieldValueExtractor(annotationHelper, this);
 
         //configuration
-        //singletonMap.put(BuilderConfiguration.class, new BuilderConfiguration());
-        //singletonMap.put(ErrorMessageSetup.class, errorMessageSetup);
+        singletonMap.put(BuilderConfiguration.class, new BuilderConfiguration());
+        singletonMap.put(ErrorMessageSetup.class, errorMessageSetup);
 
         //util
         singletonMap.put(AnnotationHelper.class, annotationHelper);
