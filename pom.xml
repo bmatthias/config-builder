@@ -44,6 +44,12 @@
     </build>
 
     <dependencies>
+        
+        <dependency>
+            <groupId>com.tngtech.java</groupId>
+            <artifactId>property-loader</artifactId>
+            <version>0.9</version>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -103,7 +109,12 @@
             <version>3.3</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>mozquitobytes</id>
+            <url>http://www.mozquitobytes.com:8081/nexus/content/repositories/thirdparty</url>
+        </repository>
+    </repositories>
 </project>
