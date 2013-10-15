@@ -19,6 +19,9 @@ public class ValidatorException extends RuntimeException {
                 return constraintViolation;
             }
         }));
+    }
 
+    public ValidatorException(String message, Throwable e) {
+        super(message, e);
     }
 }

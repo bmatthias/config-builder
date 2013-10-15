@@ -8,6 +8,7 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Properti
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
+import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.propertyloader.PropertyLoader;
@@ -24,8 +25,6 @@ public class TestConfig {
     public TestConfig(){
 
     }
-
-
 
     public static class PidFixFactory implements FieldValueProvider<Collection<String>> {
         public Collection<String> getValue(String optionValue) {
@@ -86,5 +85,10 @@ public class TestConfig {
 
     public void setSystemProperty(String systemProperty) {
         this.systemProperty = systemProperty;
+    }
+
+    @Validation
+    private void validate(){
+
     }
 }

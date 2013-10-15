@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.BeanFactory;
@@ -38,12 +37,13 @@ public class ConfigValidator<T> {
     }
 
     private void callValidationMethods(T instanceOfConfigClass) {
-        for(Method method : annotationHelper.getFMethodsAnnotatedWith(instanceOfConfigClass.getClass(), Validation.class)) {
+        for(Method method : annotationHelper.getMethodsAnnotatedWith(instanceOfConfigClass.getClass(), Validation.class)) {
             try{
+                method.setAccessible(true);
                 method.invoke(instanceOfConfigClass);
             }
             catch (Exception e) {
-                throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e),e);
+                throw new ValidatorException(errorMessageSetup.getErrorMessage(e),e);
             }
         }
     }

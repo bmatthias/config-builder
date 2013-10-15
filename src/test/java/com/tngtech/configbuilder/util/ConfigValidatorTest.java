@@ -1,8 +1,9 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Sets;
+import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.testclasses.TestConfig;
+import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,12 +17,21 @@ import org.springframework.beans.factory.BeanFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
-
 import java.util.Set;
+
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigValidatorTest {
+
+    private static class TestConfig {
+
+        @Validation
+        private void validate() {
+           throw new RuntimeException();
+        }
+    }
 
     private ConfigValidator<TestConfig> configValidator;
 
@@ -63,6 +73,17 @@ public class ConfigValidatorTest {
         expectedException.expectMessage("Validation found the following constraint violations:");
 
         configValidator.validate(testConfig);
+    }
+
+    @Test
+    public void testCallValidadionMethods() throws Exception {
+
+        when(errorMessageSetup.getErrorMessage(Matchers.any(Throwable.class))).thenReturn("InvocationTargetException");
+        expectedException.expect(ValidatorException.class);
+        expectedException.expectMessage("InvocationTargetException");
+        when(annotationHelper.getMethodsAnnotatedWith(TestConfig.class, Validation.class)).thenReturn(Sets.newHashSet(TestConfig.class.getDeclaredMethod("validate")));
+        configValidator.validate(new TestConfig());
+        verify(annotationHelper).getMethodsAnnotatedWith(TestConfig.class, Validation.class);
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
-import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.*;
@@ -10,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.BeanFactory;
@@ -28,7 +26,9 @@ public class CommandLineHelperTest {
 
     private static class TestConfig {
         @CommandLineValue(shortOpt = "u", longOpt = "user", required = true)
-        public String testString;
+        public String aString;
+        @CommandLineValue(shortOpt = "v", longOpt = "vir", required = false)
+        public String anotherString;
     }
 
     private CommandLineHelper commandLineHelper;
@@ -52,7 +52,7 @@ public class CommandLineHelperTest {
     public void setUp() throws Exception {
         commandLineHelper = new CommandLineHelper(beanFactory, annotationHelper, errorMessageSetup);
 
-        Set<Field> fields = Sets.newHashSet(TestConfig.class.getDeclaredField("testString"));
+        Set<Field> fields = Sets.newHashSet(TestConfig.class.getDeclaredFields());
         when(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, CommandLineValue.class)).thenReturn(fields);
         when(parser.parse(options, args)).thenReturn(commandLine);
     }
@@ -63,7 +63,7 @@ public class CommandLineHelperTest {
         when(beanFactory.getBean(Options.class)).thenReturn(options);
         ArgumentCaptor<Option> captor = ArgumentCaptor.forClass(Option.class);
         assertEquals(commandLine,commandLineHelper.getCommandLine(TestConfig.class, args));
-        verify(options, times(1)).addOption(captor.capture());
+        verify(options, times(2)).addOption(captor.capture());
         verify(parser).parse(options,args);
         Option option = captor.getValue();
         assertEquals("user",option.getLongOpt());
@@ -77,5 +77,14 @@ public class CommandLineHelperTest {
         when(beanFactory.getBean(Options.class)).thenReturn(new Options());
         args = new String[]{"nd","notDefined"};
         commandLineHelper.getCommandLine(TestConfig.class, args);
+    }
+
+    @Test
+    public void testGetOptions() throws Exception {
+        Options options1 = new Options();
+        when(beanFactory.getBean(Options.class)).thenReturn(options1);
+        assertEquals(options1,commandLineHelper.getOptions(TestConfig.class));
+        assertEquals("user",options1.getOption("user").getLongOpt());
+        assertEquals("v",options1.getOption("vir").getOpt());
     }
 }

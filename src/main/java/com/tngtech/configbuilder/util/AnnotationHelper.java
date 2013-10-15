@@ -41,7 +41,7 @@ public class AnnotationHelper {
         return getAllFields(clazz, withAnnotation(annotationClass));
     }
 
-    public Set<Method> getFMethodsAnnotatedWith(Class clazz, Class<? extends Annotation> annotationClass){
+    public Set<Method> getMethodsAnnotatedWith(Class clazz, Class<? extends Annotation> annotationClass){
         return getAllMethods(clazz, withAnnotation(annotationClass));
     }
 

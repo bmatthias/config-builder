@@ -1,5 +1,6 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.configuration.CollectionType;
 import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
@@ -20,6 +21,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 @Component
 public class FieldValueExtractor {
@@ -38,7 +40,7 @@ public class FieldValueExtractor {
 
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
         String value = extractString(field, builderConfiguration);
-        if(field.isAnnotationPresent(CollectionType.class)) {
+        if(field.isAnnotationPresent(CollectionType.class) && value != null) {
             String[] values = value.split(field.getAnnotation(CollectionType.class).value());
             return buildCollection(field, values);
         }
@@ -49,16 +51,11 @@ public class FieldValueExtractor {
     }
 
     private Object buildCollection(Field field, String[] values) {
-        try {
-            Object collection = field.getType().newInstance();
-            Method add = field.getType().getDeclaredMethod("add", Object.class);
-            for(String value : values) {
-                add.invoke(collection, transformStringWithTransformer(field, value));
-            }
-            return collection;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            throw new ConfigBuilderException("collection exception", e);
+        List<Object> collection = Lists.newArrayList();
+        for(String value : values) {
+            collection.add(transformStringWithTransformer(field, value));
         }
+        return collection;
     }
 
     private String extractString(Field field, BuilderConfiguration builderConfiguration){
@@ -92,7 +89,11 @@ public class FieldValueExtractor {
 
     private Object transformStringToPrimitiveIfApplicable(Class<?> targetType, String text) {
         PropertyEditor editor = PropertyEditorManager.findEditor(targetType);
-        editor.setAsText(text);
-        return editor.getValue();
+        if(editor != null) {
+            editor.setAsText(text);
+            return editor.getValue();
+        } else {
+            return text;
+        }
     }
 }

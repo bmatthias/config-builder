@@ -56,7 +56,7 @@ public class ConfigBuilder<T> {
     private Options commandLineOptions;
     private PropertyLoader propertyLoader;
 
-    private ConfigBuilder(Class<T> configClass, BuilderConfiguration builderConfiguration, PropertyLoaderConfigurator propertyLoaderConfigurator, CommandLineHelper commandLineHelper, ConfigValidator<T> configValidator, FieldSetter<T> fieldSetter, ErrorMessageSetup errorMessageSetup, ConstructionHelper<T> constructionHelper) {
+    public ConfigBuilder(Class<T> configClass, BuilderConfiguration builderConfiguration, PropertyLoaderConfigurator propertyLoaderConfigurator, CommandLineHelper commandLineHelper, ConfigValidator<T> configValidator, FieldSetter<T> fieldSetter, ErrorMessageSetup errorMessageSetup, ConstructionHelper<T> constructionHelper) {
         this.configClass = configClass;
         this.builderConfiguration = builderConfiguration;
         this.commandLineHelper = commandLineHelper;
