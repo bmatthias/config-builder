@@ -1,4 +1,4 @@
-Java ConfigBuilder
+Java ConfigBuilder[![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
 ==================
 
 #### Table of Contents
