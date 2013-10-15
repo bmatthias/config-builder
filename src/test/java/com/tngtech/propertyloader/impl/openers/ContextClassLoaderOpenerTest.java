@@ -10,7 +10,6 @@ import java.io.Reader;
 import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 
 public class ContextClassLoaderOpenerTest {
     @Before
@@ -26,9 +25,9 @@ public class ContextClassLoaderOpenerTest {
     @Test
     public void testContextClassLoaderOpener() throws IOException {
         ContextClassLoaderOpener contextClassLoaderOpener = new ContextClassLoaderOpener();
-        Properties loadedProperties =  new Properties();
+        Properties loadedProperties = new Properties();
         InputStream stream = contextClassLoaderOpener.open("abc.def.properties");
-        if(stream != null){
+        if (stream != null) {
             Reader reader = new InputStreamReader(stream, "ISO-8859-1");
             loadedProperties.load(reader);
 

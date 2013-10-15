@@ -21,10 +21,7 @@ import java.util.Properties;
 import java.util.Stack;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyLoaderTest {
@@ -52,7 +49,7 @@ public class PropertyLoaderTest {
     private PropertyLoaderOpener propertyLoaderOpener2;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         propertyLoader = new PropertyLoader(propertyFileNameHelper, propertyFileReader, propertyLoaderFactory, propertySuffix, propertyLocation, propertyFilter);
     }
 
@@ -78,7 +75,7 @@ public class PropertyLoaderTest {
 
     @Test
     public void testGetExtension() throws Exception {
-        assertEquals("properties",propertyLoader.getExtension());
+        assertEquals("properties", propertyLoader.getExtension());
     }
 
     @Test
@@ -258,9 +255,8 @@ public class PropertyLoaderTest {
         verify(propertyFilter).getFilters();
     }
 
-    @org.junit.Test(expected=PropertyLoaderException.class)
-    public void testLoadPropertiesFromBaseNameList_Calls_PropertyFileReader_And_Prevents_StackOverflow()
-    {
+    @org.junit.Test(expected = PropertyLoaderException.class)
+    public void testLoadPropertiesFromBaseNameList_Calls_PropertyFileReader_And_Prevents_StackOverflow() {
         Stack<String> fileNameStack = new Stack<>();
         when(propertyLoaderFactory.getEmptyProperties()).thenReturn(properties);
         when(propertyLoaderFactory.getEmptyFileNameStack()).thenReturn(fileNameStack);
@@ -268,16 +264,16 @@ public class PropertyLoaderTest {
         List<String> fileNames = Lists.newArrayList("file1.properties", "file2.properties");
         ArrayList<String> suffixes = Lists.newArrayList();
         when(propertySuffix.getSuffixes()).thenReturn(suffixes);
-        when(propertyFileNameHelper.getFileNames(Matchers.anyCollection(),Matchers.anyCollection(),Matchers.anyString())).thenReturn(fileNames);
-        when(propertyLocation.getOpeners()).thenReturn(Lists.<PropertyLoaderOpener>newArrayList(propertyLoaderOpener1,propertyLoaderOpener2));
-        when(propertyFileReader.tryToReadPropertiesFromFile(Matchers.anyString(),Matchers.anyString(),Matchers.any(PropertyLoaderOpener.class))).thenReturn(properties);
+        when(propertyFileNameHelper.getFileNames(Matchers.anyCollection(), Matchers.anyCollection(), Matchers.anyString())).thenReturn(fileNames);
+        when(propertyLocation.getOpeners()).thenReturn(Lists.<PropertyLoaderOpener>newArrayList(propertyLoaderOpener1, propertyLoaderOpener2));
+        when(propertyFileReader.tryToReadPropertiesFromFile(Matchers.anyString(), Matchers.anyString(), Matchers.any(PropertyLoaderOpener.class))).thenReturn(properties);
 
         propertyLoader.load();
 
-        verify(propertyFileReader).tryToReadPropertiesFromFile("file1.properties","ISO-8859-1",propertyLoaderOpener1);
-        verify(propertyFileReader).tryToReadPropertiesFromFile("file2.properties","ISO-8859-1",propertyLoaderOpener1);
-        verify(propertyFileReader).tryToReadPropertiesFromFile("file1.properties","ISO-8859-1",propertyLoaderOpener2);
-        verify(propertyFileReader).tryToReadPropertiesFromFile("file2.properties","ISO-8859-1",propertyLoaderOpener2);
+        verify(propertyFileReader).tryToReadPropertiesFromFile("file1.properties", "ISO-8859-1", propertyLoaderOpener1);
+        verify(propertyFileReader).tryToReadPropertiesFromFile("file2.properties", "ISO-8859-1", propertyLoaderOpener1);
+        verify(propertyFileReader).tryToReadPropertiesFromFile("file1.properties", "ISO-8859-1", propertyLoaderOpener2);
+        verify(propertyFileReader).tryToReadPropertiesFromFile("file2.properties", "ISO-8859-1", propertyLoaderOpener2);
         verify(properties, times(4)).putAll(properties);
 
     }

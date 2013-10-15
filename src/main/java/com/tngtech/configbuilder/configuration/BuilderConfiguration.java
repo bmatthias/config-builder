@@ -2,8 +2,6 @@ package com.tngtech.configbuilder.configuration;
 
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import org.apache.commons.cli.CommandLine;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.Properties;
@@ -11,8 +9,6 @@ import java.util.Properties;
 /**
  * Stores the configuration for the ConfigBuilder, i.e. the CommandLine, the Properties and the global annotation processing order.
  */
-@Component
-@Scope("prototype")
 public class BuilderConfiguration {
 
     private Properties properties;
@@ -45,7 +41,7 @@ public class BuilderConfiguration {
         this.annotationOrder = annotationOrder;
     }
 
-    public Class<? extends Annotation>[] getAnnotationOrder(){
+    public Class<? extends Annotation>[] getAnnotationOrder() {
         return annotationOrder;
     }
 }

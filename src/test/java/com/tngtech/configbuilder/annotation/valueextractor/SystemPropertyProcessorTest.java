@@ -29,6 +29,6 @@ public class SystemPropertyProcessorTest {
 
     @Test
     public void testGetValue() throws Exception {
-        assertEquals(System.getProperty("user.language"),systemPropertyProcessor.getValue(systemPropertyValue,builderConfiguration));
+        assertEquals(System.getProperty("user.language"), systemPropertyProcessor.getValue(systemPropertyValue, builderConfiguration));
     }
 }

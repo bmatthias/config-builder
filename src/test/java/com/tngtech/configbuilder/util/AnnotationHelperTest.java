@@ -1,12 +1,12 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
+import com.tngtech.configbuilder.FieldValueProvider;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
-import com.tngtech.configbuilder.FieldValueProvider;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +17,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnotationHelperTest {
@@ -38,12 +36,11 @@ public class AnnotationHelperTest {
     }
 
 
-
     private AnnotationHelper annotationHelper;
     private Field field;
-    private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class,PropertyValue.class};
+    private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class};
 
-     @Before
+    @Before
     public void setUp() throws Exception {
         field = TestConfig.class.getDeclaredField("testField");
         annotationHelper = new AnnotationHelper();
@@ -51,7 +48,7 @@ public class AnnotationHelperTest {
 
     @Test
     public void testGetAnnotationsAnnotatedWith() throws Exception {
-        List<Annotation> result = annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(),ValueExtractorAnnotation.class);
+        List<Annotation> result = annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueExtractorAnnotation.class);
         assertTrue(result.contains(field.getAnnotation(CommandLineValue.class)));
         assertTrue(result.contains(field.getAnnotation(PropertyValue.class)));
 
@@ -61,9 +58,9 @@ public class AnnotationHelperTest {
 
     @Test
     public void testGetAnnotationsInOrder() throws Exception {
-        List<Annotation> orderList = Lists.newArrayList(field.getAnnotation(CommandLineValue.class),field.getAnnotation(PropertyValue.class));
+        List<Annotation> orderList = Lists.newArrayList(field.getAnnotation(CommandLineValue.class), field.getAnnotation(PropertyValue.class));
         List<Annotation> result = annotationHelper.getAnnotationsInOrder(field, annotationOrder);
-        assertEquals(orderList,result);
+        assertEquals(orderList, result);
     }
 
     @Test

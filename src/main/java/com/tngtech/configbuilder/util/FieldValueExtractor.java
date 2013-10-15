@@ -2,28 +2,22 @@ package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.configuration.CollectionType;
-import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
-import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
+import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
+import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerProcessor;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import com.tngtech.configbuilder.exception.ConfigBuilderException;
+import com.tngtech.configbuilder.context.BeanFactory;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 
-@Component
 public class FieldValueExtractor {
 
     private final static Logger log = Logger.getLogger(FieldValueExtractor.class);
@@ -31,7 +25,6 @@ public class FieldValueExtractor {
     private final AnnotationHelper annotationHelper;
     private final BeanFactory beanFactory;
 
-    @Autowired
     public FieldValueExtractor(AnnotationHelper annotationHelper, BeanFactory beanFactory) {
         this.annotationHelper = annotationHelper;
         this.beanFactory = beanFactory;
@@ -40,11 +33,10 @@ public class FieldValueExtractor {
 
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
         String value = extractString(field, builderConfiguration);
-        if(field.isAnnotationPresent(CollectionType.class) && value != null) {
+        if (field.isAnnotationPresent(CollectionType.class) && value != null) {
             String[] values = value.split(field.getAnnotation(CollectionType.class).value());
             return buildCollection(field, values);
-        }
-        else {
+        } else {
             return field.isAnnotationPresent(ValueTransformer.class) ? transformStringWithTransformer(field, value) : transformStringToPrimitiveIfApplicable(field.getType(), value);
         }
 
@@ -52,13 +44,13 @@ public class FieldValueExtractor {
 
     private Object buildCollection(Field field, String[] values) {
         List<Object> collection = Lists.newArrayList();
-        for(String value : values) {
+        for (String value : values) {
             collection.add(transformStringWithTransformer(field, value));
         }
         return collection;
     }
 
-    private String extractString(Field field, BuilderConfiguration builderConfiguration){
+    private String extractString(Field field, BuilderConfiguration builderConfiguration) {
         String value = null;
         Class<? extends Annotation>[] annotationOrderOfField = field.isAnnotationPresent(LoadingOrder.class) ? field.getAnnotation(LoadingOrder.class).value() : builderConfiguration.getAnnotationOrder();
         Class<? extends IValueExtractorProcessor> processor;
@@ -78,18 +70,18 @@ public class FieldValueExtractor {
     private Object transformStringWithTransformer(Field field, String value) {
         Class<? extends IValueTransformerProcessor<Object>> processorClass;
         Object fieldValue = value;
-        for(Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)){
+        for (Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)) {
             log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
             processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
-            IValueTransformerProcessor processor = (IValueTransformerProcessor)beanFactory.getBean(processorClass);
-            fieldValue = processor.transformString(annotation,value);
+            IValueTransformerProcessor processor = (IValueTransformerProcessor) beanFactory.getBean(processorClass);
+            fieldValue = processor.transformString(annotation, value);
         }
         return fieldValue;
     }
 
     private Object transformStringToPrimitiveIfApplicable(Class<?> targetType, String text) {
         PropertyEditor editor = PropertyEditorManager.findEditor(targetType);
-        if(editor != null) {
+        if (editor != null) {
             editor.setAsText(text);
             return editor.getValue();
         } else {

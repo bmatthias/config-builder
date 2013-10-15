@@ -4,7 +4,6 @@ import com.tngtech.propertyloader.PropertyLoader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.io.Reader;
 import java.util.Properties;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RelativeToClassOpenerTest {
@@ -33,9 +31,9 @@ public class RelativeToClassOpenerTest {
     @Test
     public void testThatRelativeToClassOpener_Opens_From_Root() throws IOException {
         RelativeToClassOpener relativeToClassOpener = new RelativeToClassOpener(PropertyLoader.class);
-        Properties loadedProperties =  new Properties();
+        Properties loadedProperties = new Properties();
         InputStream stream = relativeToClassOpener.open("/abc.def.properties");
-        if(stream != null){
+        if (stream != null) {
             Reader reader = new InputStreamReader(stream, "ISO-8859-1");
             loadedProperties.load(reader);
 
@@ -45,11 +43,11 @@ public class RelativeToClassOpenerTest {
     }
 
     @Test
-    public void testRelativeToClassOpener_Opens_From_Path_Relative_To_Class() throws IOException{
+    public void testRelativeToClassOpener_Opens_From_Path_Relative_To_Class() throws IOException {
         RelativeToClassOpener relativeToClassOpener = new RelativeToClassOpener(PropertyLoader.class);
-        Properties loadedProperties =  new Properties();
+        Properties loadedProperties = new Properties();
         InputStream stream = relativeToClassOpener.open("xyz.def.properties");
-        if(stream != null){
+        if (stream != null) {
             Reader reader = new InputStreamReader(stream, "ISO-8859-1");
             loadedProperties.load(reader);
 

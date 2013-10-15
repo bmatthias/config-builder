@@ -40,14 +40,14 @@ public class ErrorMessageSetupTest {
     public void testInitializeEN() throws Exception {
         Locale.setDefault(Locale.ENGLISH);
         errorMessageSetup.initialize("errors", propertyLoader);
-        assertEquals("unable to parse command line arguments",errorMessageSetup.getErrorMessage(ParseException.class));
+        assertEquals("unable to parse command line arguments", errorMessageSetup.getErrorMessage(ParseException.class));
     }
 
     @Test
     public void testInitializeOther() throws Exception {
         Locale.setDefault(Locale.ITALIAN);
         errorMessageSetup.initialize("errors", propertyLoader);
-        assertEquals("unable to parse command line arguments",errorMessageSetup.getErrorMessage(ParseException.class));
+        assertEquals("unable to parse command line arguments", errorMessageSetup.getErrorMessage(ParseException.class));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ErrorMessageSetupTest {
         Locale.setDefault(Locale.ENGLISH);
         errorMessageSetup.initialize(null, propertyLoader);
         ParseException parseException = new ParseException("message");
-        assertEquals("unable to parse command line arguments",errorMessageSetup.getErrorMessage(parseException));
+        assertEquals("unable to parse command line arguments", errorMessageSetup.getErrorMessage(parseException));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ErrorMessageSetupTest {
         Locale.setDefault(Locale.ENGLISH);
         errorMessageSetup.initialize(null, propertyLoader);
         RuntimeException runtimeException = new RuntimeException();
-        assertEquals("java.lang.RuntimeException was thrown",errorMessageSetup.getErrorMessage(runtimeException));
-        assertEquals("java.lang.RuntimeException was thrown",errorMessageSetup.getErrorMessage(RuntimeException.class));
+        assertEquals("java.lang.RuntimeException was thrown", errorMessageSetup.getErrorMessage(runtimeException));
+        assertEquals("java.lang.RuntimeException was thrown", errorMessageSetup.getErrorMessage(RuntimeException.class));
     }
 }

@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
-@PropertyLocations(resourcesForClasses = {PropertyLoader.class},fromClassLoader = true)
+@PropertyLocations(resourcesForClasses = {PropertyLoader.class}, fromClassLoader = true)
 @PropertiesFiles("demoapp-configuration")
 @LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, DefaultValue.class})
 public class TestConfigNotNullViolation {

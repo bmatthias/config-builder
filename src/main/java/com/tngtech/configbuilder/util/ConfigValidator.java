@@ -3,18 +3,15 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.context.BeanFactory;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.Method;
 import java.util.Set;
 
-@Component
 public class ConfigValidator<T> {
 
     private final static Logger log = Logger.getLogger(ConfigValidator.class);
@@ -23,7 +20,6 @@ public class ConfigValidator<T> {
     private final ErrorMessageSetup errorMessageSetup;
     private final AnnotationHelper annotationHelper;
 
-    @Autowired
     public ConfigValidator(BeanFactory miscFactory, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
         this.beanFactory = miscFactory;
         this.errorMessageSetup = errorMessageSetup;
@@ -37,27 +33,26 @@ public class ConfigValidator<T> {
     }
 
     private void callValidationMethods(T instanceOfConfigClass) {
-        for(Method method : annotationHelper.getMethodsAnnotatedWith(instanceOfConfigClass.getClass(), Validation.class)) {
-            try{
+        for (Method method : annotationHelper.getMethodsAnnotatedWith(instanceOfConfigClass.getClass(), Validation.class)) {
+            try {
                 method.setAccessible(true);
                 method.invoke(instanceOfConfigClass);
-            }
-            catch (Exception e) {
-                throw new ValidatorException(errorMessageSetup.getErrorMessage(e),e);
+            } catch (Exception e) {
+                throw new ValidatorException(errorMessageSetup.getErrorMessage(e), e);
             }
         }
     }
 
     private void callJSRValidation(T instanceOfConfigClass) {
-        ValidatorFactory factory = beanFactory.getBean(ValidatorFactory.class);
+        ValidatorFactory factory = beanFactory.getValidatorFactory();
         javax.validation.Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
-        if(!constraintViolations.isEmpty()){
+        if (!constraintViolations.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder(errorMessageSetup.getErrorMessage(ValidatorException.class) + "\n");
-            for(ConstraintViolation constraintViolation : constraintViolations) {
+            for (ConstraintViolation constraintViolation : constraintViolations) {
                 stringBuilder.append(constraintViolation.getMessage());
             }
-            throw new ValidatorException(stringBuilder.toString(),constraintViolations);
+            throw new ValidatorException(stringBuilder.toString(), constraintViolations);
         }
     }
 }

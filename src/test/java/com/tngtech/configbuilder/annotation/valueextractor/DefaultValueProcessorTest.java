@@ -1,8 +1,5 @@
 package com.tngtech.configbuilder.annotation.valueextractor;
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFilesProcessor;
-import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
-import com.tngtech.configbuilder.annotation.valueextractor.DefaultValueProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +26,7 @@ public class DefaultValueProcessorTest {
     }
 
     @Test
-    public void testDefaultValueProcessor(){
+    public void testDefaultValueProcessor() {
 
         when(defaultValue.value()).thenReturn("value");
         assertEquals("value", defaultValueProcessor.getValue(defaultValue, builderConfiguration));

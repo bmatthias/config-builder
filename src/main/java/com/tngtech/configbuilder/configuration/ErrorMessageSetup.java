@@ -1,27 +1,28 @@
 package com.tngtech.configbuilder.configuration;
 
 import com.tngtech.propertyloader.PropertyLoader;
-import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 /**
  * Stores error messages for the ConfigBuilder in a Properties object.
  */
-@Component
 public class ErrorMessageSetup {
 
     private Properties errorMessages;
 
     /**
      * loads the default error messages for the system locale, then merges them with additional error messages loaded with the PropertyLoader
-     * @param baseName the filename for additional error messages
+     *
+     * @param baseName       the filename for additional error messages
      * @param propertyLoader the PropertyLoader used to load additional error messages
      */
-    public void initialize(String baseName, PropertyLoader propertyLoader){
+    public void initialize(String baseName, PropertyLoader propertyLoader) {
         ResourceBundle resourceBundle = ResourceBundle.getBundle("errors");
         errorMessages = convertResourceBundleToProperties(resourceBundle);
-        if(baseName != null){
+        if (baseName != null) {
             errorMessages.putAll(propertyLoader.load(baseName));
         }
     }
@@ -39,11 +40,11 @@ public class ErrorMessageSetup {
 
     public String getErrorMessage(Throwable e, String... variables) {
         String message = errorMessages.getProperty(e.getClass().getName());
-        return message == null ? String.format(errorMessages.getProperty("standardMessage"),e.getClass().getName()) : String.format(message, variables);
+        return message == null ? String.format(errorMessages.getProperty("standardMessage"), e.getClass().getName()) : String.format(message, variables);
     }
 
     public String getErrorMessage(Class exceptionClass, String... variables) {
         String message = errorMessages.getProperty(exceptionClass.getName());
-        return  message == null ? String.format(errorMessages.getProperty("standardMessage"), exceptionClass.getName()) : String.format(message, variables);
+        return message == null ? String.format(errorMessages.getProperty("standardMessage"), exceptionClass.getName()) : String.format(message, variables);
     }
 }

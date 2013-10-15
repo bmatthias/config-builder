@@ -1,17 +1,14 @@
 package com.tngtech.configbuilder.util;
 
-import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
+import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 
-@Component
 public class CommandLineHelper {
 
     private final static Logger log = Logger.getLogger(CommandLineHelper.class);
@@ -20,7 +17,6 @@ public class CommandLineHelper {
     private final AnnotationHelper annotationHelper;
     private final ErrorMessageSetup errorMessageSetup;
 
-    @Autowired
     public CommandLineHelper(BeanFactory beanFactory, AnnotationHelper annotationHelper, ErrorMessageSetup errorMessageSetup) {
         this.beanFactory = beanFactory;
         this.annotationHelper = annotationHelper;
@@ -56,7 +52,7 @@ public class CommandLineHelper {
     private CommandLine parseCommandLine(String[] args, Options options) {
         CommandLine commandLine;
         try {
-            commandLine = beanFactory.getBean(CommandLineParser.class).parse(options, args);
+            commandLine = beanFactory.getBean(GnuParser.class).parse(options, args);
         } catch (ParseException e) {
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e.getClass().getSuperclass()), e);
         }

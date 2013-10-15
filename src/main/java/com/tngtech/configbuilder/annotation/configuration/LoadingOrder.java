@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  * The order may only contain ValueExtractorAnnotations, i.e. CommandLineValue.class, PropertyValue.class and DefaultValue.class.<br>
  * <b>Usage:</b> <code>@LoadingOrder(value = {PropertyValue.class, CommandLineValue.class, DefaultValue.class})</code>
  */
-@Target({ElementType.TYPE,ElementType.FIELD})
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LoadingOrder {
     public Class<? extends Annotation>[] value() default {CommandLineValue.class, PropertyValue.class, DefaultValue.class};

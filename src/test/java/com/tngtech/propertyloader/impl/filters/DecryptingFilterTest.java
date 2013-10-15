@@ -14,7 +14,7 @@ public class DecryptingFilterTest {
     private Properties properties;
 
     @Before
-    public void SetUp(){
+    public void SetUp() {
         decryptingFilter = new DecryptingFilter();
         properties = new Properties();
 
@@ -22,15 +22,15 @@ public class DecryptingFilterTest {
 
     @Test
     public void testFilterValue() throws Exception {
-        properties.put("toDecrypt","DECRYPT:kqUL7kDnwITX6+xNagUBsA==");
-        properties.put("decryptingFilterPassword","password");
+        properties.put("toDecrypt", "DECRYPT:kqUL7kDnwITX6+xNagUBsA==");
+        properties.put("decryptingFilterPassword", "password");
         decryptingFilter.filter(properties);
-        assertEquals("Hello, World!",properties.getProperty("toDecrypt"));
+        assertEquals("Hello, World!", properties.getProperty("toDecrypt"));
     }
 
     @Test(expected = DecryptingFilterException.class)
     public void testThatExceptionIsThrownWhenPasswordNotFound() throws Exception {
-        properties.put("toDecrypt","DECRYPT:kqUL7kDnwITX6+xNagUBsA==");
+        properties.put("toDecrypt", "DECRYPT:kqUL7kDnwITX6+xNagUBsA==");
         decryptingFilter.filter(properties);
     }
 }

@@ -29,7 +29,7 @@ public class CommandLineValueProcessorTest {
     }
 
     @Test
-    public void testCommandLineValueProcessor(){
+    public void testCommandLineValueProcessor() {
 
         when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
         when(commandLineValue.shortOpt()).thenReturn("value");
@@ -37,7 +37,7 @@ public class CommandLineValueProcessorTest {
     }
 
     @Test
-    public void testCommandLineValueProcessorWithArg(){
+    public void testCommandLineValueProcessorWithArg() {
 
         when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
         when(commandLineValue.shortOpt()).thenReturn("value");

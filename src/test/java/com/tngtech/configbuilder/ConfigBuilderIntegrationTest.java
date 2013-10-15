@@ -2,7 +2,8 @@ package com.tngtech.configbuilder;
 
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.testclasses.*;
+import com.tngtech.configbuilder.testclasses.TestConfig;
+import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +22,8 @@ public class ConfigBuilderIntegrationTest {
     private Object configInstance;
 
     @Before
-    public void setUp(){}
+    public void setUp() {
+    }
 
     @Parameterized.Parameters
     public static Collection configs() {
@@ -43,7 +45,7 @@ public class ConfigBuilderIntegrationTest {
     }
 
     @Test
-    public void testConfigBuilderWithParameters(){
+    public void testConfigBuilderWithParameters() {
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
         String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
         Object result = configBuilder.withCommandLineArgs(args).build();
@@ -51,10 +53,10 @@ public class ConfigBuilderIntegrationTest {
     }
 
     @Test
-    public void testConfigBuilderWithConstructorArgument(){
+    public void testConfigBuilderWithConstructorArgument() {
         ConfigBuilder<TestConfigWithoutDefaultConstructor> configBuilder = new ConfigBuilder<>(TestConfigWithoutDefaultConstructor.class);
         TestConfigWithoutDefaultConstructor c = configBuilder.build(3);
-        assertEquals(3,c.getNumber());
+        assertEquals(3, c.getNumber());
     }
 
     @Test

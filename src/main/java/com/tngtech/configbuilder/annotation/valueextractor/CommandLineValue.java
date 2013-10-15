@@ -14,9 +14,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CommandLineValue {
     String shortOpt();
+
     String longOpt();
+
     String description() default "";
+
     boolean hasArg() default false;
+
     boolean required() default false;
 
 }

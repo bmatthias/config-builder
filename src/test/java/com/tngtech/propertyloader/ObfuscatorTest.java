@@ -1,6 +1,5 @@
 package com.tngtech.propertyloader;
 
-import com.tngtech.propertyloader.Obfuscator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class ObfuscatorTest {
 
     @Test
     public void testEncrypt() throws Exception {
-        assertEquals("kqUL7kDnwITX6+xNagUBsA==\n",obfuscator.encrypt("Hello, World!"));
+        assertEquals("kqUL7kDnwITX6+xNagUBsA==\n", obfuscator.encrypt("Hello, World!"));
     }
 
     @Test

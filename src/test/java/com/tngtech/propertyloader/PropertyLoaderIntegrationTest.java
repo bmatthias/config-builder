@@ -5,18 +5,15 @@ import com.tngtech.propertyloader.exception.PropertyLoaderException;
 import java.net.URL;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class PropertyLoaderIntegrationTest {
 
     @org.junit.Test
-    public void testLoadingFromDefaultLocationsOrFullPath()
-    {
+    public void testLoadingFromDefaultLocationsOrFullPath() {
         URL urls = this.getClass().getResource("/abc.def.properties");
-        String abcdefWithFullPath = urls.getPath().replace(".properties","");
+        String abcdefWithFullPath = urls.getPath().replace(".properties", "");
 
         String[] args = {"toBeIncluded",
                 "src/test/resources/testUmlauts",
@@ -31,8 +28,7 @@ public class PropertyLoaderIntegrationTest {
     }
 
     @org.junit.Test
-    public void testLoadingFromContextClassLoaderOnly()
-    {
+    public void testLoadingFromContextClassLoaderOnly() {
         String[] args = {"toBeIncluded",
                 "/abc.def",
         };
@@ -47,8 +43,7 @@ public class PropertyLoaderIntegrationTest {
     }
 
     @org.junit.Test
-    public void testLoadingFromCurrentDirectoryOnly()
-    {
+    public void testLoadingFromCurrentDirectoryOnly() {
         String[] args = {"toBeIncluded",
                 "src/test/resources/testUmlauts",
                 "/src/test/resources/abc.def",
@@ -65,8 +60,7 @@ public class PropertyLoaderIntegrationTest {
     }
 
     @org.junit.Test
-    public void testLoadingWithDefaultConfig_Loads_Includes_And_Resolves_Variables()
-    {
+    public void testLoadingWithDefaultConfig_Loads_Includes_And_Resolves_Variables() {
         String[] args = {"testForIncludesAndVariableResolving"};
 
         PropertyLoader propertyLoader = new PropertyLoader().withDefaultConfig();
@@ -77,9 +71,8 @@ public class PropertyLoaderIntegrationTest {
         assertEquals("prod-blub", properties.getProperty("testInclude.prod")); //has to be defined, otherwise filter warns
     }
 
-    @org.junit.Test(expected=PropertyLoaderException.class)
-    public void testLoadingWithDefaultConfig_Throws_Exception_On_Recursive_Includes()
-    {
+    @org.junit.Test(expected = PropertyLoaderException.class)
+    public void testLoadingWithDefaultConfig_Throws_Exception_On_Recursive_Includes() {
         String[] args = {"testForRecursiveIncludes1"};
 
         PropertyLoader propertyLoader = new PropertyLoader().withDefaultConfig();
@@ -87,8 +80,7 @@ public class PropertyLoaderIntegrationTest {
     }
 
     @org.junit.Test
-    public void testLoadingWithDefaultConfig_Does_Pop_FileNameStack()
-    {
+    public void testLoadingWithDefaultConfig_Does_Pop_FileNameStack() {
         String[] args = {"testForDoubleIncludes1"};
 
         PropertyLoader propertyLoader = new PropertyLoader().withDefaultConfig();

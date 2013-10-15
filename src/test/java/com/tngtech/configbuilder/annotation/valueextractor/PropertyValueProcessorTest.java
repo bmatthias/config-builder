@@ -1,8 +1,5 @@
 package com.tngtech.configbuilder.annotation.valueextractor;
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFilesProcessor;
-import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
-import com.tngtech.configbuilder.annotation.valueextractor.PropertyValueProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +30,7 @@ public class PropertyValueProcessorTest {
     }
 
     @Test
-    public void testPropertyValueProcessor(){
+    public void testPropertyValueProcessor() {
 
         when(builderConfiguration.getProperties()).thenReturn(properties);
         when(propertyValue.value()).thenReturn("test");

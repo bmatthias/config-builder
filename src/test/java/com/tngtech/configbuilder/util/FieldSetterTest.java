@@ -29,17 +29,20 @@ public class FieldSetterTest {
         @DefaultValue("user")
         public String testString;
     }
+
     private static class TestConfigForTargetTypeException {
         @DefaultValue("user")
         public Collection<String> testField;
     }
+
     private static class TestConfigForIllegalArgumentException {
         @DefaultValue("user")
         public int testInt;
     }
+
     private static class TestConfigWithoutAnnotations {
 
-        public String testString ="testString";
+        public String testString = "testString";
     }
 
 
@@ -60,10 +63,10 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsThrowsIllegalArgumentException() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class),Matchers.any(BuilderConfiguration.class))).thenReturn(null);
-        when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class),Matchers.any(String.class),Matchers.any(String.class),Matchers.any(String.class))).thenReturn("IllegalArgumentException");
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class), Matchers.any(String.class), Matchers.any(String.class), Matchers.any(String.class))).thenReturn("IllegalArgumentException");
 
-        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(fieldValueExtractor,errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
 
         expectedException.expect(ConfigBuilderException.class);
@@ -74,10 +77,10 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class),Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(false);
 
-        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(fieldValueExtractor,errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
         TestConfigWithoutAnnotations testConfigWithoutAnnotations = new TestConfigWithoutAnnotations();
 
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);

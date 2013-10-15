@@ -3,7 +3,10 @@ package com.tngtech.configbuilder;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
 import com.tngtech.configbuilder.exception.ValidatorException;
-import com.tngtech.configbuilder.testclasses.*;
+import com.tngtech.configbuilder.testclasses.TestConfigNotNullViolation;
+import com.tngtech.configbuilder.testclasses.TestConfigThrowsIllegalArgumentException;
+import com.tngtech.configbuilder.testclasses.TestConfigThrowsInvocationTargetExceptionException;
+import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,15 +28,16 @@ public class ConfigBuilderExceptionTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Before
-    public void setUp(){}
+    public void setUp() {
+    }
 
     @Parameterized.Parameters
     public static Collection configs() {
         return Arrays.asList(new Object[][]{
-                {TestConfigThrowsIllegalArgumentException.class, ConfigBuilderException.class,"integer"},
-                {TestConfigWithoutDefaultConstructor.class,NoConstructorFoundException.class,"build()"},
-                {TestConfigThrowsInvocationTargetExceptionException.class,ConfigBuilderException.class,"InvocationTargetException"},
-                {TestConfigNotNullViolation.class,ValidatorException.class,"null"}});
+                {TestConfigThrowsIllegalArgumentException.class, ConfigBuilderException.class, "integer"},
+                {TestConfigWithoutDefaultConstructor.class, NoConstructorFoundException.class, "build()"},
+                {TestConfigThrowsInvocationTargetExceptionException.class, ConfigBuilderException.class, "InvocationTargetException"},
+                {TestConfigNotNullViolation.class, ValidatorException.class, "null"}});
     }
 
     public ConfigBuilderExceptionTest(Class configClass, Class<? extends Throwable> exceptionClass, String message) {
@@ -43,7 +47,7 @@ public class ConfigBuilderExceptionTest {
     }
 
     @Test
-    public void testConfigBuilderExceptions(){
+    public void testConfigBuilderExceptions() {
         expectedException.expect(exceptionClass);
         expectedException.expectMessage(message);
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);

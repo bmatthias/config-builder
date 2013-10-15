@@ -1,8 +1,5 @@
 package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFilesProcessor;
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocationsProcessor;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
 import org.junit.Before;
@@ -10,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,9 +29,9 @@ public class PropertyLocationsProcessorTest {
     }
 
     @Test
-    public void testPropertyLocationsProcessor(){
+    public void testPropertyLocationsProcessor() {
 
-        String[] dirs = new String[]{"dir1","dir2"};
+        String[] dirs = new String[]{"dir1", "dir2"};
         Class[] classes = new Class[]{this.getClass(), Object.class};
 
         when(propertyLoader.getLocations()).thenReturn(propertyLocation);
@@ -53,7 +49,7 @@ public class PropertyLocationsProcessorTest {
     }
 
     @Test
-    public void testPropertyLocationsProcessorWithClassLoader(){
+    public void testPropertyLocationsProcessorWithClassLoader() {
 
         when(propertyLoader.getLocations()).thenReturn(propertyLocation);
         when(propertyLocations.directories()).thenReturn(new String[]{});

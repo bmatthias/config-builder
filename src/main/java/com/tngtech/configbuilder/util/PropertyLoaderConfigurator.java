@@ -3,19 +3,15 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.IPropertyLoaderConfigurationProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
+import com.tngtech.configbuilder.context.BeanFactory;
 import com.tngtech.propertyloader.PropertyLoader;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 
-@Component
 public class PropertyLoaderConfigurator {
     private AnnotationHelper annotationHelper;
     private BeanFactory beanFactory;
 
-    @Autowired
     public PropertyLoaderConfigurator(AnnotationHelper annotationHelper, BeanFactory beanFactory) {
         this.annotationHelper = annotationHelper;
         this.beanFactory = beanFactory;

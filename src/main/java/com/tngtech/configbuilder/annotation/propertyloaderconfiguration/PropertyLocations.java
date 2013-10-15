@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyLocations {
     public String[] directories() default {};
+
     public Class[] resourcesForClasses() default {};
+
     public boolean fromClassLoader() default false;
 }

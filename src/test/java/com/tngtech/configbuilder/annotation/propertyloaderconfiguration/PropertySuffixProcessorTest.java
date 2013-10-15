@@ -1,8 +1,5 @@
 package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFilesProcessor;
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixProcessor;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertySuffixContainer;
 import org.junit.Before;
@@ -10,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -33,9 +29,9 @@ public class PropertySuffixProcessorTest {
     }
 
     @Test
-    public void testPropertySuffixProcessor(){
+    public void testPropertySuffixProcessor() {
 
-        String[] suffixes = new String[]{"suffix1","suffix2"};
+        String[] suffixes = new String[]{"suffix1", "suffix2"};
 
         when(propertyLoader.getSuffixes()).thenReturn(propertySuffix);
         when(propertySuffixes.extraSuffixes()).thenReturn(suffixes);
@@ -49,7 +45,7 @@ public class PropertySuffixProcessorTest {
     }
 
     @Test
-    public void testPropertySuffixProcessorWithHostNames(){
+    public void testPropertySuffixProcessorWithHostNames() {
 
         when(propertyLoader.getSuffixes()).thenReturn(propertySuffix);
         when(propertySuffixes.extraSuffixes()).thenReturn(new String[]{});

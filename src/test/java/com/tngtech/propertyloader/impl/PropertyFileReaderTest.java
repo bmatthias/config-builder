@@ -7,15 +7,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyFileReaderTest {
@@ -42,7 +39,7 @@ public class PropertyFileReaderTest {
 
         when(propertyLoaderOpener.open("test.properties")).thenReturn(stream);
         when(propertyLoaderFactory.getEmptyProperties()).thenReturn(properties);
-        when(propertyLoaderFactory.getInputStreamReader(stream,"ISO-8859-1")).thenReturn(inputStreamReader);
+        when(propertyLoaderFactory.getInputStreamReader(stream, "ISO-8859-1")).thenReturn(inputStreamReader);
         doNothing().when(properties).load(inputStreamReader);
 
         assertEquals(properties, reader.tryToReadPropertiesFromFile("test.properties", "ISO-8859-1", propertyLoaderOpener));

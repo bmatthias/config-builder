@@ -3,7 +3,7 @@ package com.tngtech.configbuilder.util;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.exception.ConfigBuilderException;
+import com.tngtech.configbuilder.context.BeanFactory;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.BeanFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
@@ -29,7 +28,7 @@ public class ConfigValidatorTest {
 
         @Validation
         private void validate() {
-           throw new RuntimeException();
+            throw new RuntimeException();
         }
     }
 
@@ -57,7 +56,7 @@ public class ConfigValidatorTest {
     public void setUp() throws Exception {
 
         configValidator = new ConfigValidator<>(beanFactory, errorMessageSetup, annotationHelper);
-        when(beanFactory.getBean(ValidatorFactory.class)).thenReturn(validatorFactory);
+        when(beanFactory.getValidatorFactory()).thenReturn(validatorFactory);
         when(validatorFactory.getValidator()).thenReturn(validator);
     }
 

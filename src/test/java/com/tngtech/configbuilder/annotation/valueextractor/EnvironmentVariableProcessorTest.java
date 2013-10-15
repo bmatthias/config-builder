@@ -29,6 +29,6 @@ public class EnvironmentVariableProcessorTest {
 
     @Test
     public void testGetValue() throws Exception {
-        assertEquals(System.getenv("PATH"),environmentVariableProcessor.getValue(environmentVariableValue,builderConfiguration));
+        assertEquals(System.getenv("PATH"), environmentVariableProcessor.getValue(environmentVariableValue, builderConfiguration));
     }
 }

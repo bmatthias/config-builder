@@ -13,7 +13,8 @@ import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.propertyloader.PropertyLoader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -22,7 +23,7 @@ import java.util.*;
 @LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, DefaultValue.class})
 public class TestConfig {
 
-    public TestConfig(){
+    public TestConfig() {
 
     }
 
@@ -88,7 +89,7 @@ public class TestConfig {
     }
 
     @Validation
-    private void validate(){
+    private void validate() {
 
     }
 }

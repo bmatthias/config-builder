@@ -19,19 +19,23 @@ public class ConstructionHelperTest {
     private static class TestConfig {
         private String string;
         private Integer integer;
-        public TestConfig(String string, Integer integer){
+
+        public TestConfig(String string, Integer integer) {
             this.string = string;
             this.integer = integer;
         }
+
         private Integer getInteger() {
             return integer;
         }
+
         private String getString() {
             return string;
         }
     }
+
     private static class TestConfigForException {
-        public TestConfigForException(String string, int i){
+        public TestConfigForException(String string, int i) {
         }
     }
 
@@ -51,7 +55,7 @@ public class ConstructionHelperTest {
         ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<>(errorMessageSetup);
         TestConfig testConfig = constructionHelper.getInstance(TestConfig.class, "string", 3);
         assertEquals("string", testConfig.getString());
-        assertEquals(3,(long) testConfig.getInteger());
+        assertEquals(3, (long) testConfig.getInteger());
     }
 
     @Test
