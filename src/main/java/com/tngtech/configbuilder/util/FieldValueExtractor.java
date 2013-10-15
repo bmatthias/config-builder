@@ -9,7 +9,7 @@ import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerPr
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import org.apache.log4j.Logger;
 
 import java.beans.PropertyEditor;
@@ -23,11 +23,11 @@ public class FieldValueExtractor {
     private final static Logger log = Logger.getLogger(FieldValueExtractor.class);
 
     private final AnnotationHelper annotationHelper;
-    private final BeanFactory beanFactory;
+    private final ConfigBuilderFactory configBuilderFactory;
 
-    public FieldValueExtractor(AnnotationHelper annotationHelper, BeanFactory beanFactory) {
+    public FieldValueExtractor(AnnotationHelper annotationHelper, ConfigBuilderFactory configBuilderFactory) {
         this.annotationHelper = annotationHelper;
-        this.beanFactory = beanFactory;
+        this.configBuilderFactory = configBuilderFactory;
     }
 
 
@@ -43,6 +43,7 @@ public class FieldValueExtractor {
     }
 
     private Object buildCollection(Field field, String[] values) {
+        field.getGenericType();
         List<Object> collection = Lists.newArrayList();
         for (String value : values) {
             collection.add(transformStringWithTransformer(field, value));
@@ -58,7 +59,7 @@ public class FieldValueExtractor {
         for (Annotation annotation : annotationHelper.getAnnotationsInOrder(field, annotationOrderOfField)) {
             log.debug(String.format("trying to find string value for field %s with %s annotation", field.getName(), annotation.annotationType()));
             processor = annotation.annotationType().getAnnotation(ValueExtractorAnnotation.class).value();
-            value = beanFactory.getBean(processor).getValue(annotation, builderConfiguration);
+            value = configBuilderFactory.getInstance(processor).getValue(annotation, builderConfiguration);
             if (value != null) {
                 log.debug(String.format("found string value \"%s\" for field %s from %s annotation", value, field.getName(), annotation.annotationType()));
                 break;
@@ -73,7 +74,7 @@ public class FieldValueExtractor {
         for (Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)) {
             log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
             processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
-            IValueTransformerProcessor processor = (IValueTransformerProcessor) beanFactory.getBean(processorClass);
+            IValueTransformerProcessor processor = (IValueTransformerProcessor) configBuilderFactory.getInstance(processorClass);
             fieldValue = processor.transformString(annotation, value);
         }
         return fieldValue;

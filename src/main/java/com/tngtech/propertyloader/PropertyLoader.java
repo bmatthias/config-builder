@@ -37,7 +37,7 @@ public class PropertyLoader implements PropertyLocationsContainer<PropertyLoader
     private DefaultPropertyFilterContainer propertyLoaderFilters;
     private Stack<String> fileNameStack;
 
-    public PropertyLoader(PropertyFileNameHelper propertyFileNameHelper, PropertyFileReader propertyFileReader, PropertyLoaderFactory propertyLoaderFactory, DefaultPropertySuffixContainer propertySuffix, DefaultPropertyLocationContainer propertyLocation, DefaultPropertyFilterContainer propertyLoaderFilters) {
+    protected PropertyLoader(PropertyFileNameHelper propertyFileNameHelper, PropertyFileReader propertyFileReader, PropertyLoaderFactory propertyLoaderFactory, DefaultPropertySuffixContainer propertySuffix, DefaultPropertyLocationContainer propertyLocation, DefaultPropertyFilterContainer propertyLoaderFilters) {
         this.propertyFileNameHelper = propertyFileNameHelper;
         this.propertyFileReader = propertyFileReader;
         this.propertyLoaderFactory = propertyLoaderFactory;

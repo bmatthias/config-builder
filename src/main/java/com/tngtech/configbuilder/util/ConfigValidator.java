@@ -3,7 +3,7 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.apache.log4j.Logger;
 
@@ -16,12 +16,12 @@ public class ConfigValidator<T> {
 
     private final static Logger log = Logger.getLogger(ConfigValidator.class);
 
-    private final BeanFactory beanFactory;
+    private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;
     private final AnnotationHelper annotationHelper;
 
-    public ConfigValidator(BeanFactory miscFactory, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
-        this.beanFactory = miscFactory;
+    public ConfigValidator(ConfigBuilderFactory miscFactory, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
+        this.configBuilderFactory = miscFactory;
         this.errorMessageSetup = errorMessageSetup;
         this.annotationHelper = annotationHelper;
     }
@@ -44,7 +44,7 @@ public class ConfigValidator<T> {
     }
 
     private void callJSRValidation(T instanceOfConfigClass) {
-        ValidatorFactory factory = beanFactory.getValidatorFactory();
+        ValidatorFactory factory = configBuilderFactory.getValidatorFactory();
         javax.validation.Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
         if (!constraintViolations.isEmpty()) {

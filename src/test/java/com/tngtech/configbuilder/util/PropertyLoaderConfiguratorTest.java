@@ -2,7 +2,7 @@ package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.*;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 public class PropertyLoaderConfiguratorTest {
 
     @Mock
-    private BeanFactory beanFactory;
+    private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private AnnotationHelper annotationHelper;
     @Mock
@@ -39,24 +39,24 @@ public class PropertyLoaderConfiguratorTest {
 
     @Before
     public void setUp() throws Exception {
-        propertyLoaderConfigurator = new PropertyLoaderConfigurator(annotationHelper, beanFactory);
+        propertyLoaderConfigurator = new PropertyLoaderConfigurator(annotationHelper, configBuilderFactory);
 
         List<Annotation> annotationList = Lists.newArrayList(propertySuffixes, propertyLocations);
         when(annotationHelper.getAnnotationsAnnotatedWith(TestConfig.class.getDeclaredAnnotations(), PropertyLoaderConfigurationAnnotation.class)).thenReturn(annotationList);
-        when(beanFactory.getBean(PropertyLocationsProcessor.class)).thenReturn(propertyLocationsProcessor);
-        when(beanFactory.getBean(PropertySuffixProcessor.class)).thenReturn(propertySuffixProcessor);
-        when(beanFactory.getBean(PropertyLoader.class)).thenReturn(propertyLoader);
+        when(configBuilderFactory.getInstance(PropertyLocationsProcessor.class)).thenReturn(propertyLocationsProcessor);
+        when(configBuilderFactory.getInstance(PropertySuffixProcessor.class)).thenReturn(propertySuffixProcessor);
+        when(configBuilderFactory.createInstance(PropertyLoader.class)).thenReturn(propertyLoader);
         when(propertyLoader.withDefaultConfig()).thenReturn(propertyLoader);
     }
 
     @Test
     public void testConfigurePropertyLoader() throws Exception {
         assertEquals(propertyLoader, propertyLoaderConfigurator.configurePropertyLoader(TestConfig.class));
-        verify(beanFactory).getBean(PropertyLoader.class);
+        verify(configBuilderFactory).createInstance(PropertyLoader.class);
         verify(propertyLoader).withDefaultConfig();
         verify(annotationHelper).getAnnotationsAnnotatedWith(TestConfig.class.getDeclaredAnnotations(), PropertyLoaderConfigurationAnnotation.class);
-        verify(beanFactory).getBean(PropertyLocationsProcessor.class);
-        verify(beanFactory).getBean(PropertySuffixProcessor.class);
+        verify(configBuilderFactory).getInstance(PropertyLocationsProcessor.class);
+        verify(configBuilderFactory).getInstance(PropertySuffixProcessor.class);
         verify(propertyLocationsProcessor).configurePropertyLoader(propertyLocations, propertyLoader);
         verify(propertySuffixProcessor).configurePropertyLoader(propertySuffixes, propertyLoader);
     }

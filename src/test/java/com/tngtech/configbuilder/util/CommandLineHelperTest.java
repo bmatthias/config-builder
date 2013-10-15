@@ -3,7 +3,7 @@ package com.tngtech.configbuilder.util;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -42,7 +42,7 @@ public class CommandLineHelperTest {
     @Mock
     private CommandLine commandLine;
     @Mock
-    private BeanFactory beanFactory;
+    private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private AnnotationHelper annotationHelper;
     @Mock
@@ -51,7 +51,7 @@ public class CommandLineHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        commandLineHelper = new CommandLineHelper(beanFactory, annotationHelper, errorMessageSetup);
+        commandLineHelper = new CommandLineHelper(configBuilderFactory, annotationHelper, errorMessageSetup);
 
         Set<Field> fields = Sets.newHashSet(TestConfig.class.getDeclaredFields());
         when(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, CommandLineValue.class)).thenReturn(fields);
@@ -60,8 +60,8 @@ public class CommandLineHelperTest {
 
     @Test
     public void testGetCommandLine() throws Exception {
-        when(beanFactory.getBean(GnuParser.class)).thenReturn(parser);
-        when(beanFactory.getBean(Options.class)).thenReturn(options);
+        when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(parser);
+        when(configBuilderFactory.createInstance(Options.class)).thenReturn(options);
         ArgumentCaptor<Option> captor = ArgumentCaptor.forClass(Option.class);
         assertEquals(commandLine, commandLineHelper.getCommandLine(TestConfig.class, args));
         verify(options, times(2)).addOption(captor.capture());
@@ -74,8 +74,8 @@ public class CommandLineHelperTest {
 
     @Test(expected = ConfigBuilderException.class)
     public void testGetCommandLineThrowsException() throws Exception {
-        when(beanFactory.getBean(GnuParser.class)).thenReturn(new GnuParser());
-        when(beanFactory.getBean(Options.class)).thenReturn(new Options());
+        when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(new GnuParser());
+        when(configBuilderFactory.createInstance(Options.class)).thenReturn(new Options());
         args = new String[]{"nd", "notDefined"};
         commandLineHelper.getCommandLine(TestConfig.class, args);
     }
@@ -83,7 +83,7 @@ public class CommandLineHelperTest {
     @Test
     public void testGetOptions() throws Exception {
         Options options1 = new Options();
-        when(beanFactory.getBean(Options.class)).thenReturn(options1);
+        when(configBuilderFactory.createInstance(Options.class)).thenReturn(options1);
         assertEquals(options1, commandLineHelper.getOptions(TestConfig.class));
         assertEquals("user", options1.getOption("user").getLongOpt());
         assertEquals("v", options1.getOption("vir").getOpt());

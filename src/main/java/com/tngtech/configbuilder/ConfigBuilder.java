@@ -4,12 +4,11 @@ import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.ErrorMessageFile;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -43,8 +42,6 @@ import java.util.List;
  */
 public class ConfigBuilder<T> {
 
-    private final static Logger log = Logger.getLogger(ConfigBuilder.class);
-
     private final BuilderConfiguration builderConfiguration;
     private final CommandLineHelper commandLineHelper;
     private final FieldSetter<T> fieldSetter;
@@ -61,29 +58,18 @@ public class ConfigBuilder<T> {
      */
     public ConfigBuilder(Class<T> configClass) {
 
-        BeanFactory beanFactory = new BeanFactory();
-
-        BuilderConfiguration builderConfiguration = beanFactory.getBean(BuilderConfiguration.class);
-        ErrorMessageSetup errorMessageSetup = beanFactory.getBean(ErrorMessageSetup.class);
-        AnnotationHelper annotationHelper = beanFactory.getBean(AnnotationHelper.class);
-
-        CommandLineHelper commandLineHelper = new CommandLineHelper(beanFactory, annotationHelper, errorMessageSetup);
-        ConfigValidator<T> configValidator = new ConfigValidator<>(beanFactory, errorMessageSetup, annotationHelper);
-        FieldValueExtractor fieldValueExtractor = new FieldValueExtractor(annotationHelper, beanFactory);
-        FieldSetter<T> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
-        ConstructionHelper<T> constructionHelper = new ConstructionHelper<>(errorMessageSetup);
-
-        PropertyLoaderConfigurator propertyLoaderConfigurator = new PropertyLoaderConfigurator(annotationHelper, beanFactory);
+        ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
+        configBuilderFactory.<T>initialize();
 
         this.configClass = configClass;
-        this.builderConfiguration = builderConfiguration;
-        this.commandLineHelper = commandLineHelper;
-        this.configValidator = configValidator;
-        this.fieldSetter = fieldSetter;
-        this.errorMessageSetup = errorMessageSetup;
-        this.constructionHelper = constructionHelper;
+        this.builderConfiguration = configBuilderFactory.createInstance(BuilderConfiguration.class);
+        this.commandLineHelper = configBuilderFactory.getInstance(CommandLineHelper.class);
+        this.configValidator = configBuilderFactory.getInstance(ConfigValidator.class);
+        this.fieldSetter = configBuilderFactory.getInstance(FieldSetter.class);
+        this.errorMessageSetup = configBuilderFactory.createInstance(ErrorMessageSetup.class);
+        this.constructionHelper = configBuilderFactory.getInstance(ConstructionHelper.class);
 
-        propertyLoader = propertyLoaderConfigurator.configurePropertyLoader(configClass);
+        propertyLoader = configBuilderFactory.getInstance(PropertyLoaderConfigurator.class).configurePropertyLoader(configClass);
         commandLineOptions = commandLineHelper.getOptions(configClass);
     }
 

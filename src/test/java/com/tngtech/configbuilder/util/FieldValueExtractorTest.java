@@ -8,7 +8,7 @@ import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -63,7 +63,7 @@ public class FieldValueExtractorTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
-    private BeanFactory beanFactory;
+    private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private BuilderConfiguration builderConfiguration;
     @Mock
@@ -86,14 +86,14 @@ public class FieldValueExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        fieldValueExtractor = new FieldValueExtractor(annotationHelper, beanFactory);
+        fieldValueExtractor = new FieldValueExtractor(annotationHelper, configBuilderFactory);
 
         when(builderConfiguration.getAnnotationOrder()).thenReturn(order);
 
-        when(beanFactory.getBean(PropertyValueProcessor.class)).thenReturn(propertyValueProcessor);
-        when(beanFactory.getBean(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
-        when(beanFactory.getBean(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
-        when(beanFactory.getBean(ValueTransformerProcessor.class)).thenReturn(valueTransformerProcessor);
+        when(configBuilderFactory.getInstance(PropertyValueProcessor.class)).thenReturn(propertyValueProcessor);
+        when(configBuilderFactory.getInstance(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
+        when(configBuilderFactory.getInstance(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
+        when(configBuilderFactory.getInstance(ValueTransformerProcessor.class)).thenReturn(valueTransformerProcessor);
 
         when(annotationHelper.getAnnotationsAnnotatedWith(Matchers.any(Annotation[].class), Matchers.any(Class.class))).thenReturn(Lists.newArrayList((Annotation) valueTransformer));
         when(valueTransformer.annotationType()).thenReturn((Class) ValueTransformer.class);

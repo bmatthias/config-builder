@@ -3,26 +3,26 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.IPropertyLoaderConfigurationProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;
 
 public class PropertyLoaderConfigurator {
     private AnnotationHelper annotationHelper;
-    private BeanFactory beanFactory;
+    private ConfigBuilderFactory configBuilderFactory;
 
-    public PropertyLoaderConfigurator(AnnotationHelper annotationHelper, BeanFactory beanFactory) {
+    public PropertyLoaderConfigurator(AnnotationHelper annotationHelper, ConfigBuilderFactory configBuilderFactory) {
         this.annotationHelper = annotationHelper;
-        this.beanFactory = beanFactory;
+        this.configBuilderFactory = configBuilderFactory;
     }
 
     public PropertyLoader configurePropertyLoader(Class<?> configClass) {
 
-        PropertyLoader propertyLoader = beanFactory.getBean(PropertyLoader.class).withDefaultConfig();
+        PropertyLoader propertyLoader = configBuilderFactory.createInstance(PropertyLoader.class).withDefaultConfig();
         for (Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(configClass.getDeclaredAnnotations(), PropertyLoaderConfigurationAnnotation.class)) {
             Class<? extends IPropertyLoaderConfigurationProcessor> processorClass = annotation.annotationType().getAnnotation(PropertyLoaderConfigurationAnnotation.class).value();
-            beanFactory.getBean(processorClass).configurePropertyLoader(annotation, propertyLoader);
+            configBuilderFactory.getInstance(processorClass).configurePropertyLoader(annotation, propertyLoader);
         }
         return propertyLoader;
     }

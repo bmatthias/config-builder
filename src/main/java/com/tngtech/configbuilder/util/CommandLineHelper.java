@@ -2,7 +2,7 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.BeanFactory;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
@@ -13,12 +13,12 @@ public class CommandLineHelper {
 
     private final static Logger log = Logger.getLogger(CommandLineHelper.class);
 
-    private final BeanFactory beanFactory;
+    private final ConfigBuilderFactory configBuilderFactory;
     private final AnnotationHelper annotationHelper;
     private final ErrorMessageSetup errorMessageSetup;
 
-    public CommandLineHelper(BeanFactory beanFactory, AnnotationHelper annotationHelper, ErrorMessageSetup errorMessageSetup) {
-        this.beanFactory = beanFactory;
+    public CommandLineHelper(ConfigBuilderFactory configBuilderFactory, AnnotationHelper annotationHelper, ErrorMessageSetup errorMessageSetup) {
+        this.configBuilderFactory = configBuilderFactory;
         this.annotationHelper = annotationHelper;
         this.errorMessageSetup = errorMessageSetup;
     }
@@ -30,7 +30,7 @@ public class CommandLineHelper {
     }
 
     public Options getOptions(Class configClass) {
-        Options options = beanFactory.getBean(Options.class);
+        Options options = configBuilderFactory.createInstance(Options.class);
         for (Field field : annotationHelper.getFieldsAnnotatedWith(configClass, CommandLineValue.class)) {
             options.addOption(getOption(field));
         }
@@ -52,7 +52,7 @@ public class CommandLineHelper {
     private CommandLine parseCommandLine(String[] args, Options options) {
         CommandLine commandLine;
         try {
-            commandLine = beanFactory.getBean(GnuParser.class).parse(options, args);
+            commandLine = configBuilderFactory.createInstance(GnuParser.class).parse(options, args);
         } catch (ParseException e) {
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e.getClass().getSuperclass()), e);
         }
