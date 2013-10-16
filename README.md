@@ -211,3 +211,5 @@ Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(ar
 
 Java Doc
 --------
+
+Full javadoc of the code can be found here http://tng.github.io/config-builder/
