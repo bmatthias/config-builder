@@ -26,13 +26,11 @@ public class FieldSetterTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     private static class TestConfig {
-        @DefaultValue("user")
-        public String testString;
-    }
+        @DefaultValue("stringValue")
+        public String emptyTestString;
 
-    private static class TestConfigForTargetTypeException {
-        @DefaultValue("user")
-        public Collection<String> testField;
+        @DefaultValue("stringValue")
+        public String testString = "defaultValue";
     }
 
     private static class TestConfigForIllegalArgumentException {
@@ -73,6 +71,33 @@ public class FieldSetterTest {
         expectedException.expectMessage("IllegalArgumentException");
 
         fieldSetter.setFields(testConfigForIllegalArgumentException, builderConfiguration);
+    }
+
+    @Test
+    public void testSetFields() throws Exception {
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        TestConfig testConfig = new TestConfig();
+
+        fieldSetter.setFields(testConfig, builderConfiguration);
+
+        assertEquals("stringValue",testConfig.testString);
+        assertEquals("stringValue",testConfig.emptyTestString);
+
+    }
+
+    @Test
+    public void testSetEmptyFields() throws Exception {
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        TestConfig testConfig = new TestConfig();
+
+        fieldSetter.setEmptyFields(testConfig, builderConfiguration);
+
+        assertEquals("defaultValue",testConfig.testString);
+        assertEquals("stringValue",testConfig.emptyTestString);
     }
 
     @Test

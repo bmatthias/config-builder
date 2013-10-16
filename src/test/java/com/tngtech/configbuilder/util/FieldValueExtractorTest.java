@@ -161,12 +161,12 @@ public class FieldValueExtractorTest {
         when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
 
         when(defaultValueProcessor.getValue(Matchers.any(DefaultValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("value1,value2");
-        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class), Matchers.anyString())).thenReturn("transformedValue");
+        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class),  eq("value1"))).thenReturn("transformedValue1");
+        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class),  eq("value2"))).thenReturn("transformedValue2");
 
         Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
-        assertEquals(Lists.newArrayList("transformedValue", "transformedValue"), result);
 
-        verify(valueTransformerProcessor, times(2)).transformString(Matchers.any(ValueTransformer.class), Matchers.anyString());
+        assertEquals(Lists.newArrayList("transformedValue1", "transformedValue2"), result);
     }
 
     @Test
