@@ -172,13 +172,20 @@ public class Config {
         }
     }
     
-    @CommandLineValue(shortOpt="t", longOpt="test", hasArg="false")
-    @DefaultValue("false")
+    @DefaultValue("false")      // values are automatically be converted to primitive types
+    @CommandLineValue(shortOpt="t", longOpt="test", hasArg="false")     // this is a flag argument
     private boolean runInTestMode;
     
+    @DefaultValue("3")
+    @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg="true")
+    private boolean runLevel;
+    
+    @EnvironmentVariableValue("PATH")
+    @PropertyValue("PATH")      // maps to the field "PATH" in the properties file
+    private String path;
  
-    @PropertyValue("user.name")   // Maps to the field "user.name" in the properties file
-    @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
+    @SystemPropertyValue("user.name")       // maps to the field "user.name" in the system properties
+    @NotEmpty("username.notEmpty")      // JSR-303 validation (Field should not be empty)
     private String userName;
  
     @Collection
