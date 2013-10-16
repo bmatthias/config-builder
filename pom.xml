@@ -11,9 +11,16 @@
     <name>Config-Builder</name>
     <description>The Config Builder creates fully configured instances of config classes, using values from various sources like properties files, command line arguments etc.</description>
     <url>https://github.com/TNG/config-builder</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <scm>
         <url>git@github.com:TNG/config-builder.git</url>
-        <connection>SSH</connection>
+        <connection>git@github.com:TNG/config-builder.git</connection>
     </scm>
     <developers>
         <developer>
@@ -47,6 +54,25 @@
                     <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
             </plugin>
         </plugins>
     </build>

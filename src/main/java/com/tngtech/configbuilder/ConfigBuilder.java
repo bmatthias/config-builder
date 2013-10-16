@@ -21,6 +21,8 @@ import java.util.List;
  * {@link com.tngtech.configbuilder.annotation.valueextractor.DefaultValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.PropertyValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue}<br>
+ * {@link com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue}<br>
+ * {@link com.tngtech.configbuilder.annotation.valueextractor.EnvironmentVariableValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer}<br>
  * {@link LoadingOrder}<p>
  * <p/>
