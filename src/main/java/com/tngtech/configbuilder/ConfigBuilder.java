@@ -55,12 +55,8 @@ public class ConfigBuilder<T> {
     private Options commandLineOptions;
     private PropertyLoader propertyLoader;
 
-    /**
-     * @param configClass The config class of which an instance shall be built.
-     */
-    public ConfigBuilder(Class<T> configClass) {
+    protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
 
-        ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
         configBuilderFactory.<T>initialize();
 
         this.configClass = configClass;
@@ -73,6 +69,13 @@ public class ConfigBuilder<T> {
 
         propertyLoader = configBuilderFactory.getInstance(PropertyLoaderConfigurator.class).configurePropertyLoader(configClass);
         commandLineOptions = commandLineHelper.getOptions(configClass);
+    }
+
+    /**
+     * @param configClass The config class of which an instance shall be built.
+     */
+    public ConfigBuilder(Class<T> configClass) {
+        this(configClass,new ConfigBuilderFactory());
     }
 
     /**

@@ -58,7 +58,7 @@ public class  ConfigBuilderFactory {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 

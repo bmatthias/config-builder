@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
@@ -34,6 +35,8 @@ public class ConfigBuilderTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
+    @Mock
+    private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private BuilderConfiguration builderConfiguration;
     @Mock
@@ -66,9 +69,17 @@ public class ConfigBuilderTest {
 
         System.setOut(new PrintStream(outContent));
 
+        when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
+        when(configBuilderFactory.getInstance(CommandLineHelper.class)).thenReturn(commandLineHelper);
+        when(configBuilderFactory.getInstance(ConfigValidator.class)).thenReturn(configValidator);
+        when(configBuilderFactory.getInstance(FieldSetter.class)).thenReturn(fieldSetter);
+        when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
+        when(configBuilderFactory.getInstance(ConstructionHelper.class)).thenReturn(constructionHelper);
+        when(configBuilderFactory.getInstance(PropertyLoaderConfigurator.class)).thenReturn(propertyLoaderConfigurator);
         when(propertyLoaderConfigurator.configurePropertyLoader(TestConfig.class)).thenReturn(propertyLoader);
         when(commandLineHelper.getOptions(TestConfig.class)).thenReturn(commandLineOptions);
-        configBuilder = new ConfigBuilder<>(TestConfig.class);
+
+        configBuilder = new ConfigBuilder<>(TestConfig.class, configBuilderFactory);
     }
 
     @After
@@ -77,7 +88,6 @@ public class ConfigBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testWithCommandLineArgs() throws Exception {
         when(commandLineHelper.getCommandLine(TestConfig.class, new String[]{})).thenReturn(commandLine);
         configBuilder.withCommandLineArgs(new String[]{});
@@ -86,7 +96,6 @@ public class ConfigBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testOverridePropertiesFiles() throws Exception {
         List<String> baseNames = Lists.newArrayList("file");
         configBuilder.overridePropertiesFiles(baseNames);
@@ -94,14 +103,12 @@ public class ConfigBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testPrintCommandLineHelp() throws Exception {
         configBuilder.printCommandLineHelp();
         assertTrue(outContent.toString().contains("Command Line Options for class TestConfig"));
     }
 
     @Test
-    @Ignore
     public void testBuild() throws Exception {
         when(propertyLoader.load()).thenReturn(properties);
         configBuilder.build();
@@ -114,7 +121,6 @@ public class ConfigBuilderTest {
     }
 
     @Test
-    @Ignore
     public void testMerge() throws Exception {
         TestConfig testConfig = new TestConfig();
         when(propertyLoader.load()).thenReturn(properties);
