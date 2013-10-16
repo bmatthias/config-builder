@@ -96,7 +96,7 @@ If you use both the @CollectionType and @ValueTransformer annotations, you will 
 ```java
 @CollectionType
 @ValueTransformer(MyFieldValueProvider.class)
-private Collection<AnyType> fieldOfAnyType;
+private Collection<AnyType> listOfAnyType;
 ```
 
 The MyFieldValueProvider.class is an inner class of your config and implements the getValue method:
@@ -118,7 +118,7 @@ To specify a global order for parsing ValueExtractorAnnotation annotations, anno
 The order may only contain ValueExtractorAnnotations, i.e. 
 CommandLineValue.class, PropertyValue.class and DefaultValue.class. Example:
 ```java
-@LoadingOrder({PropertyValue.class, CommandLineValue.class, DefaultValue.class})
+@LoadingOrder({PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, CommandLineValue.class, DefaultValue.class})
 ```
 
 To specify your own error messages file (which is loaded by the PropertyLoader with the same settings as other the properties files), 
@@ -142,9 +142,9 @@ Say you have a config class that looks like this:
 @PropertiesFiles("config")    // Uses "config.properties", "config.<hostname>.properties", etc.
 @ErrorMessageFile("config.errormessages") // Uses "config.errormessages.properties" for i18n error messages
 public class Config {
-    public static class PidFixFactory implements CollectionProvider<PidFix> {
+    public static class PidFixFactory implements FieldValueProvider<PidFix> {
         @Override
-        public Collection<PidFix> getValues(String optionValue) {
+        public PidFix getValues(String optionValue) {
             <...>
         }
     }
@@ -155,6 +155,7 @@ public class Config {
     @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
     private String someNumber;
  
+    @Collection
     @ValueProvider(PidFixFactory.class)
     @CommandLineValue(shortOpt="p", longOpt="stringCollection")
     private Collection<PidFix> stringCollection
