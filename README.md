@@ -151,7 +151,7 @@ How To Merge With An Existing Config
 
 If you already have an instance of your config class and want to only configure the fields which are not null, use
 ```java
-Config newConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).merge(existingConfig);
+newConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).merge(existingConfig);
 ```
 Note that primitive type fields are always overwritten!
 
