@@ -58,7 +58,6 @@ public class ConfigBuilder<T> {
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
 
         configBuilderFactory.<T>initialize();
-
         this.configClass = configClass;
         this.builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);
         this.commandLineHelper = configBuilderFactory.getInstance(CommandLineHelper.class);

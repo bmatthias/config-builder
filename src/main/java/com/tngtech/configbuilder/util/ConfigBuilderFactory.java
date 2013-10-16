@@ -15,7 +15,7 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.util.Map;
 
-public class  ConfigBuilderFactory {
+public class ConfigBuilderFactory {
 
     private Map<Class,Object> singletonMap = Maps.newHashMap();
 
