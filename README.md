@@ -64,23 +64,35 @@ by annotating your config class with
 ####3. Annotate the fields
 
 #####3.1 Get the String value
-There are three annotations that specify where the String value that configures a field comes from:
+There are five annotations that specify where the String value that configures a field comes from:
 ```java
 @DefaultValue("value")
+@SystemPropertyValue("property.key")
+@EnvironmentVariableValue("ENV_VAR")
 @PropertyValue("property.key")
 @CommandLineValue(shortOpt = "o", longOpt = "option")
 ```
 
-By default, any value found on the command line overwrites a value found in properties, which in turn overwrites the default value.
+By default, when parsing the annotations, priority is as above, i.e. any value found on the command line overwrites a value found in properties, which in turn overwrites the environment variable value and so on.
 This order can be customized, see [4.](#4-change-the-order-in-which-annotations-are-processed-and-use-your-own-error-messages).
 
-#####3.2 Transform it to any object
-Fields don't have to be Strings. You can have any type and configure it, if you annotate the field with the
+#####3.2 Transform it to any object or a collection
+Fields don't have to be Strings. You can configure collection fields or even any type you wish (or a collection of that type).
+
+If you annotate the field with the @CollectionType annotation, the String is splitted and an ArrayList is created. 
+The default split character is a comma, but you can also define your own:
+```java
+ @CollectionType(";")
+```
+
+If you want your field to be of an arbitrary type (or a collection of that type, annotate it with the
 @ValueTransformer annotation and specify a class that implements the (see)FieldValueProvider interface, like so:
 ```java
 @ValueTransformer(MyFieldValueProvider.class)
 private AnyType fieldOfAnyType;
 ```
+
+If you use both the @CollectionType and @ValueTransformer annotations, you will get a List of objects of the type you defined.
 
 The MyFieldValueProvider.class is an inner class of your config and implements the getValue method:
 ```java
