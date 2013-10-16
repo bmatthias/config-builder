@@ -160,7 +160,7 @@ Usage example
 Say you have a config class that looks like this:
 ```java
 @PropertiesFiles("config")    // Uses "config.properties", "config.<hostname>.properties", etc.
-@PropertyLocations(directories = {"/home/user"}, resourcesForClasses={MyApp.class}, contextClassLoader = true)
+@PropertyLocations(directories = {"/home/user"}, contextClassLoader = true)
 @PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
 public class Config {
     public static class PidFixFactory implements FieldValueProvider<PidFix> {
