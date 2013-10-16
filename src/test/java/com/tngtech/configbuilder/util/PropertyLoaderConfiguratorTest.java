@@ -2,7 +2,6 @@ package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.*;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.junit.Before;

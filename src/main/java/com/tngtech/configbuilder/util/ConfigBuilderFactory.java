@@ -1,4 +1,4 @@
-package com.tngtech.configbuilder.context;
+package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Maps;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFilesProcessor;

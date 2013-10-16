@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.util;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;

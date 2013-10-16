@@ -8,7 +8,6 @@ import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

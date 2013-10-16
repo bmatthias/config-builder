@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.IPropertyLoaderConfigurationProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;

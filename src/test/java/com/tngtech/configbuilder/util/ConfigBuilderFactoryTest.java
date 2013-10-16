@@ -1,6 +1,7 @@
-package com.tngtech.configbuilder.context;
+package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import org.apache.commons.cli.GnuParser;
 import org.junit.Before;
 import org.junit.Rule;

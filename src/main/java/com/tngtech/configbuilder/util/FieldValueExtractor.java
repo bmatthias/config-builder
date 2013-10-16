@@ -9,7 +9,6 @@ import com.tngtech.configbuilder.annotation.valuetransformer.IValueTransformerPr
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import org.apache.log4j.Logger;
 
 import java.beans.PropertyEditor;

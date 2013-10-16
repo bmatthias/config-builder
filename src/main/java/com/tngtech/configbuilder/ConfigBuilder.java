@@ -4,7 +4,7 @@ import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.ErrorMessageFile;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
+import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.apache.commons.cli.HelpFormatter;

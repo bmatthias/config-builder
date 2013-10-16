@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.util;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.context.ConfigBuilderFactory;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.junit.Before;
 import org.junit.Rule;
