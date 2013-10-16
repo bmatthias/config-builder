@@ -1,10 +1,10 @@
-Java ConfigBuilder  [![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
+Java Config-Builder  [![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
 ==================
 
 #### Table of Contents
 [What It Is](#what-is-it)  
 [Motivation](#motivation)    
-[How To Build Your Config](#how-to-build-your-config) 
+[How To Build Your Config](#how-to-build-your-config)  
 [How To Merge With An Existing Config](#how-to-merge-with-an-existing-config)  
 [Usage example](#usage-example)  
 [Java Doc](#java-doc)  
