@@ -92,7 +92,12 @@ If you want your field to be of an arbitrary type (or a collection of that type,
 private AnyType fieldOfAnyType;
 ```
 
-If you use both the @CollectionType and @ValueTransformer annotations, you will get a List of objects of the type you defined.
+If you use both the @CollectionType and @ValueTransformer annotations, you will get a List of objects of the type you defined:
+```java
+@CollectionType
+@ValueTransformer(MyFieldValueProvider.class)
+private Collection<AnyType> fieldOfAnyType;
+```
 
 The MyFieldValueProvider.class is an inner class of your config and implements the getValue method:
 ```java
