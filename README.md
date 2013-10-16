@@ -181,7 +181,7 @@ public class Config {
     private int runLevel;
     
     @EnvironmentVariableValue("PATH")
-    @PropertyValue("PATH")      // maps to the field "PATH" in the properties file
+    @PropertyValue("path")      // maps to the key "path" in the properties file
     private String path;
  
     @SystemPropertyValue("user.name")       // maps to the field "user.name" in the system properties
