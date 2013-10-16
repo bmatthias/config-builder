@@ -20,7 +20,8 @@
     </licenses>
     <scm>
         <url>git@github.com:TNG/config-builder.git</url>
-        <connection>git@github.com:TNG/config-builder.git</connection>
+        <connection>scm:git:git@github.com:TNG/config-builder.git</connection>
+        <developerConnection>scm:git:git@github.com:TNG/config-builder.git</developerConnection>
     </scm>
     <developers>
         <developer>
@@ -39,10 +40,6 @@
             <organization>TNG Technology Consulting</organization>
         </developer>
     </developers>
-
-    <properties>
-        <spring.version>3.1.4.RELEASE</spring.version>
-    </properties>
 
     <build>
         <plugins>
