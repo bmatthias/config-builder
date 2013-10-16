@@ -178,7 +178,7 @@ public class Config {
     
     @DefaultValue("3")
     @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg="true")
-    private boolean runLevel;
+    private int runLevel;
     
     @EnvironmentVariableValue("PATH")
     @PropertyValue("PATH")      // maps to the field "PATH" in the properties file
