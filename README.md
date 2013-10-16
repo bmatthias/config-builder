@@ -73,7 +73,7 @@ There are five annotations that specify where the String value that configures a
 @SystemPropertyValue("property.key")
 @EnvironmentVariableValue("ENV_VAR")
 @PropertyValue("property.key")
-@CommandLineValue(shortOpt = "o", longOpt = "option")
+@CommandLineValue(shortOpt = "o", longOpt = "option", hasArg="true")
 ```
 
 By default, when parsing the annotations, priority is as above, i.e. any value found on the command line overwrites a value found in properties, which in turn overwrites the environment variable value and so on.
@@ -171,20 +171,23 @@ public class Config {
             <...>
         }
     }
+    
+    @CommandLineValue(shortOpt="t", longOpt="test", hasArg="false")
+    @DefaultValue("false")
+    private boolean runInTestMode;
+    
  
-    @DefaultValue("user") // Default value is "user"
     @PropertyValue("user.name")   // Maps to the field "user.name" in the properties file
-    @CommandLineValue(shortOpt="u", longOpt="user", required=true)  // Command line arguments (required option "-u/--user"
     @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
     private String userName;
  
     @Collection
     @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="p", longOpt="stringCollection")
+    @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg="true")
     private Collection<PidFix> pidFixCollection
     
     @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="p", longOpt="stringCollection")
+    @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg="true")
     private PidFix pidFix
  
     @Validation
