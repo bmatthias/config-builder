@@ -5,6 +5,9 @@ import com.tngtech.configbuilder.exception.ValueTransformerException;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Processes ValueTransformer annotations, implements IValueTransformerProcessor
+ */
 public class ValueTransformerProcessor implements IValueTransformerProcessor<Object> {
 
     public Object transformString(Annotation annotation, String fieldString) {

@@ -5,6 +5,9 @@ import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * Processes CommandLineValue annotations, implements IValueExtractorProcessor
+ */
 public class CommandLineValueProcessor implements IValueExtractorProcessor {
 
     public String getValue(Annotation annotation, BuilderConfiguration builderConfiguration) {

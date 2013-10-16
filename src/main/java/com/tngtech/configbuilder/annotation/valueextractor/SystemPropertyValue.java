@@ -5,6 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * This annotation is used to specify system properties.<br>
+ * <b>Usage:</b> <code>@EnvironmentVariableValue("property.key")</code>
+ */
 @ValueExtractorAnnotation(SystemPropertyProcessor.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

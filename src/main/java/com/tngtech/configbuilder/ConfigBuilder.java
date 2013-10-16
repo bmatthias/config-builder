@@ -89,11 +89,20 @@ public class ConfigBuilder<T> {
         return this;
     }
 
+    /**
+     * Configures the Config Builder to load given properties files instead of those specified in the config class.
+     *
+     * @param baseNames
+     * @return
+     */
     public ConfigBuilder<T> overridePropertiesFiles(List<String> baseNames) {
         propertyLoader.withBaseNames(baseNames);
         return this;
     }
 
+    /**
+     * Prints a help message for all command line options that are configured in the config class.
+     */
     public void printCommandLineHelp() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.setSyntaxPrefix("Command Line Options for class " + configClass.getSimpleName() + ":");
@@ -118,6 +127,12 @@ public class ConfigBuilder<T> {
         return instanceOfConfigClass;
     }
 
+    /**
+     * Sets fields of the instance, skips all fields that are not null.
+     *
+     * @param instanceOfConfigClass
+     * @return
+     */
     public T merge(T instanceOfConfigClass) {
         setupBuilderConfiguration(propertyLoader);
         initializeErrorMessageSetup(propertyLoader);
