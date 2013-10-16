@@ -159,11 +159,9 @@ Usage example
 -------------
 Say you have a config class that looks like this:
 ```java
-@PropertyLocations(directories = {"/home/user"}, resourcesForClasses={MyApp.class}, contextClassLoader = true)
-@PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
-@PropertyExtension("properties")
 @PropertiesFiles("config")    // Uses "config.properties", "config.<hostname>.properties", etc.
-@ErrorMessageFile("config.errormessages") // Uses "config.errormessages.properties" for i18n error messages
+@PropertyLocations(directories = {"/home/user"}, contextClassLoader = true)
+@PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
 public class Config {
     public static class PidFixFactory implements FieldValueProvider<PidFix> {
         @Override
@@ -178,10 +176,10 @@ public class Config {
     
     @DefaultValue("3")
     @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg="true")
-    private boolean runLevel;
+    private int runLevel;
     
     @EnvironmentVariableValue("PATH")
-    @PropertyValue("PATH")      // maps to the field "PATH" in the properties file
+    @PropertyValue("path")      // maps to the key "path" in the properties file
     private String path;
  
     @SystemPropertyValue("user.name")       // maps to the field "user.name" in the system properties
@@ -211,3 +209,5 @@ Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(ar
 
 Java Doc
 --------
+
+Full javadoc of the code can be found here http://tng.github.io/config-builder/
