@@ -1,10 +1,11 @@
-Java ConfigBuilder[![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
+Java Config-Builder  [![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
 ==================
 
 #### Table of Contents
 [What It Is](#what-is-it)  
 [Motivation](#motivation)    
 [How To Build Your Config](#how-to-build-your-config)  
+[How To Merge With An Existing Config](#how-to-merge-with-an-existing-config)  
 [Usage example](#usage-example)  
 [Java Doc](#java-doc)  
 
@@ -14,9 +15,11 @@ What It Is
 The ConfigBuilder makes use of annotations and reflections in order to build configured instances of custom classes. 
 
 Its features include   
-1. defining default values and loading of values from properties files and the command line  
-2. configuring of not only String values, but fields of arbitrary types   
-3. JSR303 validation of the instances it builds.  
+1. defining default values and loading of values from properties files, system properties, the command line and others  
+2. configuring of not only String values, but fields of arbitrary types 
+3. configuring of collection fields
+4. merging configs
+5. JSR303 validation of the instances it builds.  
 
 Motivation
 ----------
@@ -70,7 +73,7 @@ There are five annotations that specify where the String value that configures a
 @SystemPropertyValue("property.key")
 @EnvironmentVariableValue("ENV_VAR")
 @PropertyValue("property.key")
-@CommandLineValue(shortOpt = "o", longOpt = "option")
+@CommandLineValue(shortOpt = "o", longOpt = "option", hasArg="true")
 ```
 
 By default, when parsing the annotations, priority is as above, i.e. any value found on the command line overwrites a value found in properties, which in turn overwrites the environment variable value and so on.
@@ -110,7 +113,19 @@ public class Config {
     ...
 }
 ```
-####4. Change the order in which annotations are processed and use your own error messages
+####4. Add JSR validation annotations and/or define a custom validation method
+
+After an instance of your config is built, it is automatically validated. You can either use JSR validation annotations
+(@NotNull,...) or define a custom validation method:
+
+```java
+@Validation
+private void validate() {
+  <...>
+}
+```
+
+####5. Change the order in which annotations are processed and use your own error messages
 
 You can change the order in which annotations are processed glabally or individually for each field.
 To specify a global order for parsing ValueExtractorAnnotation annotations, annotate the class with the
@@ -127,10 +142,18 @@ annotate the class with the @ErrorMessageFile annotation:
 @ErrorMessageFile("myErrorMessages")
 ```
 
-####5. Build an instance of your class
+####6. Build an instance of your class
 ```java
 Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).build();
 ```
+How To Merge With An Existing Config
+------------------------------------
+
+If you already have an instance of your config class and want to only configure the fields which are not null, use
+```java
+newConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).merge(existingConfig);
+```
+Note that primitive type fields are always overwritten!
 
 Usage example
 -------------
@@ -148,18 +171,36 @@ public class Config {
             <...>
         }
     }
+    
+    @DefaultValue("false")      // values are automatically be converted to primitive types
+    @CommandLineValue(shortOpt="t", longOpt="test", hasArg="false")     // this is a flag argument
+    private boolean runInTestMode;
+    
+    @DefaultValue("3")
+    @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg="true")
+    private boolean runLevel;
+    
+    @EnvironmentVariableValue("PATH")
+    @PropertyValue("PATH")      // maps to the field "PATH" in the properties file
+    private String path;
  
-    @DefaultValue("user") // Default value is "user"
-    @PropertyValue("user.name")   // Maps to the field "user.name" in the properties file
-    @CommandLineValue(shortOpt="u", longOpt="user", required=true)  // Command line arguments (required option "-u/--user"
-    @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
-    private String someNumber;
+    @SystemPropertyValue("user.name")       // maps to the field "user.name" in the system properties
+    @NotEmpty("username.notEmpty")      // JSR-303 validation (Field should not be empty)
+    private String userName;
  
     @Collection
     @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="p", longOpt="stringCollection")
-    private Collection<PidFix> stringCollection
+    @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg="true")
+    private Collection<PidFix> pidFixCollection
+    
+    @ValueProvider(PidFixFactory.class)
+    @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg="true")
+    private PidFix pidFix
  
+    @Validation
+    private void validate() {
+        <...>
+    }
     ...
 }
 ```
