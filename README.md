@@ -1,4 +1,4 @@
-Java ConfigBuilder[![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
+Java ConfigBuilder  [![Build Status](https://travis-ci.org/TNG/config-builder.png?branch=master)](https://travis-ci.org/TNG/config-builder)
 ==================
 
 #### Table of Contents
@@ -121,7 +121,7 @@ After an instance of your config is built, it is automatically validated. You ca
 ```java
 @Validation
 private void validate() {
-
+  <...>
 }
 ```
 
@@ -176,13 +176,21 @@ public class Config {
     @PropertyValue("user.name")   // Maps to the field "user.name" in the properties file
     @CommandLineValue(shortOpt="u", longOpt="user", required=true)  // Command line arguments (required option "-u/--user"
     @NotEmpty("username.notEmpty")    // JSR-303 validation (Field should not be empty)
-    private String someNumber;
+    private String userName;
  
     @Collection
     @ValueProvider(PidFixFactory.class)
     @CommandLineValue(shortOpt="p", longOpt="stringCollection")
-    private Collection<PidFix> stringCollection
+    private Collection<PidFix> pidFixCollection
+    
+    @ValueProvider(PidFixFactory.class)
+    @CommandLineValue(shortOpt="p", longOpt="stringCollection")
+    private PidFix pidFix
  
+    @Validation
+    private void validate() {
+        <...>
+    }
     ...
 }
 ```
