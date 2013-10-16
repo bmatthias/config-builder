@@ -80,10 +80,4 @@ public class ConfigBuilderIntegrationTest {
         Object result = configBuilder.withCommandLineArgs(args).merge(testConfig2);
         assertReflectionEquals(testConfig, result);
     }
-
-    @Test
-    public void testPrintCommandLine() {
-        ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        configBuilder.printCommandLineHelp();
-    }
 }
