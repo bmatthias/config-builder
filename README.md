@@ -24,6 +24,18 @@ Its features include
 Motivation
 ----------
 
+Many Java Propjects include one or more classes that store configuration values and objects. Often, these come from
+properties files, system properties and environment variables or command line arguments, which requires the developer
+to implement the finding and loading of files, parsing the values etc. for every new project.
+
+This is is a time-consuming process, so why not spare this time and get started much faster? Although there are libraries
+implement the loading of properties files and some possibilities of building configured objects e.g. in Spring, there 
+hasn't been a really easy-yet-powerful solution.
+
+This is where the Config Builder comes in. It doesn't require any additional classes besides the config itself. 
+Instead of manually implementing the loading of values from files etc., building a config can now be easily done 
+by using annotations.
+
 How To Build Your Config
 ------------------------
 
