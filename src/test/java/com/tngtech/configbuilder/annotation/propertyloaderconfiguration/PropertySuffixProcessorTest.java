@@ -40,8 +40,8 @@ public class PropertySuffixProcessorTest {
         propertySuffixProcessor.configurePropertyLoader(propertySuffixes, propertyLoader);
 
         verify(propertySuffix).clear();
-        verify(propertySuffix).addSuffix("suffix1");
-        verify(propertySuffix).addSuffix("suffix2");
+        verify(propertySuffix).addString("suffix1");
+        verify(propertySuffix).addString("suffix2");
     }
 
     @Test
