@@ -11,7 +11,7 @@ public class PropertySuffixProcessor implements IPropertyLoaderConfigurationProc
         propertyLoader.getSuffixes().clear();
         String[] suffixes = ((PropertySuffixes) annotation).extraSuffixes();
         for (String suffix : suffixes) {
-            propertyLoader.getSuffixes().addSuffix(suffix);
+            propertyLoader.getSuffixes().addString(suffix);
         }
         if (((PropertySuffixes) annotation).hostNames()) {
             propertyLoader.getSuffixes().addLocalHostNames();
