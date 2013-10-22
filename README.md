@@ -16,9 +16,9 @@ The ConfigBuilder makes use of annotations and reflections in order to build con
 
 Its features include   
 1. defining default values and loading of values from properties files, system properties, the command line and others  
-2. configuring of not only String values, but fields of arbitrary types 
-3. configuring of collection fields
-4. merging configs
+2. configuring of not only String values, but fields of arbitrary types  
+3. configuring of collection fields   
+4. merging configs   
 5. JSR303 validation of the instances it builds.  
 
 Motivation
