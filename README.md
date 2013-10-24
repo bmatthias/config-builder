@@ -43,7 +43,7 @@ How To Build Your Config
 ```java
 public class Config {
     private String someNumber;
-    private Collection<PidFix> stringCollection
+    private Collection<PidFix> stringCollection;
     ...
 }
 ```
@@ -85,7 +85,7 @@ There are five annotations that specify where the String value that configures a
 @SystemPropertyValue("property.key")
 @EnvironmentVariableValue("ENV_VAR")
 @PropertyValue("property.key")
-@CommandLineValue(shortOpt = "o", longOpt = "option", hasArg="true")
+@CommandLineValue(shortOpt = "o", longOpt = "option", hasArg=true)
 ```
 
 By default, when parsing the annotations, priority is as above, i.e. any value found on the command line overwrites a value found in properties, which in turn overwrites the environment variable value and so on.
@@ -183,11 +183,11 @@ public class Config {
     }
     
     @DefaultValue("false")      // values are automatically be converted to primitive types
-    @CommandLineValue(shortOpt="t", longOpt="test", hasArg="false")     // this is a flag argument
+    @CommandLineValue(shortOpt="t", longOpt="test", hasArg=false)     // this is a flag argument
     private boolean runInTestMode;
     
     @DefaultValue("3")
-    @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg="true")
+    @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg=true)
     private int runLevel;
     
     @EnvironmentVariableValue("PATH")
@@ -198,14 +198,14 @@ public class Config {
     @NotEmpty("username.notEmpty")      // JSR-303 validation (Field should not be empty)
     private String userName;
  
-    @Collection
-    @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg="true")
-    private Collection<PidFix> pidFixCollection
+    @CollectionType
+    @ValueTransformer(PidFixFactory.class)
+    @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg=true)
+    private Collection<PidFix> pidFixCollection;
     
-    @ValueProvider(PidFixFactory.class)
-    @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg="true")
-    private PidFix pidFix
+    @ValueTransformer(PidFixFactory.class)
+    @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg=true)
+    private PidFix pidFix;
  
     @Validation
     private void validate() {
