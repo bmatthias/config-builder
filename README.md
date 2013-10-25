@@ -219,7 +219,13 @@ To build a configured instance, simply call
 Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).build();
 ```
 
+Presentation
+--------
+
+A sample presentation (in german) can be found at http://tng.github.io/config-builder
+
+
 Java Doc
 --------
 
-Full javadoc of the code can be found here http://tng.github.io/config-builder/
+Full javadoc of the code can be found here http://tng.github.io/config-builder/javadoc
