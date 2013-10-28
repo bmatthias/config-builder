@@ -222,7 +222,7 @@ Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(ar
 Presentation
 --------
 
-A sample presentation (in german) can be found at http://tng.github.io/config-builder
+A sample presentation can be found at http://tng.github.io/config-builder
 
 
 Java Doc
