@@ -165,7 +165,9 @@ If you already have an instance of your config class and want to only configure 
 ```java
 newConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).merge(existingConfig);
 ```
-Note that primitive type fields are always overwritten!
+<b>Note that primitive type fields are always overwritten!</b>   
+Since primitive types can not be checked for 'null', it is not possible to check whether primitive fields of an existing config 
+have already been set. Hence, for the moment, primitives are always overwritten.
 
 Usage example
 -------------
