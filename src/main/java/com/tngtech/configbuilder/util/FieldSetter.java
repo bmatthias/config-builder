@@ -16,10 +16,10 @@ public class FieldSetter<T> {
     private final ErrorMessageSetup errorMessageSetup;
     private final AnnotationHelper annotationHelper;
 
-    public FieldSetter(FieldValueExtractor fieldValueExtractor, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
-        this.fieldValueExtractor = fieldValueExtractor;
-        this.errorMessageSetup = errorMessageSetup;
-        this.annotationHelper = annotationHelper;
+    public FieldSetter(ConfigBuilderFactory configBuilderFactory) {
+        this.fieldValueExtractor = configBuilderFactory.getInstance(FieldValueExtractor.class);
+        this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
+        this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
     }
 
     public void setFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration) {

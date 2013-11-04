@@ -21,19 +21,17 @@ public class ConfigBuilderFactory {
 
     public <T> void initialize() {
         ErrorMessageSetup errorMessageSetup = new ErrorMessageSetup();
-        AnnotationHelper annotationHelper = new AnnotationHelper();
-        FieldValueExtractor fieldValueExtractor = new FieldValueExtractor(annotationHelper, this);
 
         //configuration
         singletonMap.put(BuilderConfiguration.class, new BuilderConfiguration());
         singletonMap.put(ErrorMessageSetup.class, errorMessageSetup);
 
         //util
-        singletonMap.put(AnnotationHelper.class, annotationHelper);
+        singletonMap.put(AnnotationHelper.class, new AnnotationHelper());
+        singletonMap.put(FieldValueExtractor.class, new FieldValueExtractor(this));
         singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));
         singletonMap.put(ConstructionHelper.class, new ConstructionHelper<T>(errorMessageSetup));
-        singletonMap.put(FieldSetter.class, new FieldSetter<T>(fieldValueExtractor, errorMessageSetup, annotationHelper));
-        singletonMap.put(FieldValueExtractor.class, fieldValueExtractor);
+        singletonMap.put(FieldSetter.class, new FieldSetter<T>(this));
         singletonMap.put(ConfigValidator.class, new ConfigValidator<T>(this));
         singletonMap.put(CommandLineHelper.class, new CommandLineHelper(this));
 

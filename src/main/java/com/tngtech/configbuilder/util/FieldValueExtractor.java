@@ -24,8 +24,8 @@ public class FieldValueExtractor {
     private final AnnotationHelper annotationHelper;
     private final ConfigBuilderFactory configBuilderFactory;
 
-    public FieldValueExtractor(AnnotationHelper annotationHelper, ConfigBuilderFactory configBuilderFactory) {
-        this.annotationHelper = annotationHelper;
+    public FieldValueExtractor(ConfigBuilderFactory configBuilderFactory) {
+        this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
         this.configBuilderFactory = configBuilderFactory;
     }
 

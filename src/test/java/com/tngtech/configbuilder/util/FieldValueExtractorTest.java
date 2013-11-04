@@ -85,7 +85,9 @@ public class FieldValueExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        fieldValueExtractor = new FieldValueExtractor(annotationHelper, configBuilderFactory);
+        when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
+
+        fieldValueExtractor = new FieldValueExtractor(configBuilderFactory);
 
         when(builderConfiguration.getAnnotationOrder()).thenReturn(order);
 
