@@ -23,6 +23,7 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,9 +90,7 @@ public class ConfigBuilderTest {
     @Test
     public void testWithCommandLineArgs() throws Exception {
         when(commandLineHelper.getCommandLine(TestConfig.class, new String[]{})).thenReturn(commandLine);
-        configBuilder.withCommandLineArgs(new String[]{});
-        verify(commandLineHelper).getCommandLine(TestConfig.class, new String[]{});
-        verify(builderConfiguration).setCommandLine(commandLine);
+        assertEquals(configBuilder,configBuilder.withCommandLineArgs(new String[]{}));
     }
 
     @Test

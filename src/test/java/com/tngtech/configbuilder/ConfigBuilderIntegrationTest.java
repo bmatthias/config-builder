@@ -76,7 +76,7 @@ public class ConfigBuilderIntegrationTest {
         testConfig2.setStringCollection(Lists.newArrayList("collection"));
 
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        String[] args = new String[]{"-u", "--collection", "PIDs fixed with", "--help"};
+        String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
         Object result = configBuilder.withCommandLineArgs(args).merge(testConfig2);
         assertReflectionEquals(testConfig, result);
     }
