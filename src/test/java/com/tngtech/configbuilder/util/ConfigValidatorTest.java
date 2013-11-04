@@ -54,9 +54,12 @@ public class ConfigValidatorTest {
     @Before
     public void setUp() throws Exception {
 
-        configValidator = new ConfigValidator<>(configBuilderFactory, errorMessageSetup, annotationHelper);
+        when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
+        when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getValidatorFactory()).thenReturn(validatorFactory);
         when(validatorFactory.getValidator()).thenReturn(validator);
+
+        configValidator = new ConfigValidator<>(configBuilderFactory);
     }
 
     @Test

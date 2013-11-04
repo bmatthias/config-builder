@@ -38,7 +38,9 @@ public class PropertyLoaderConfiguratorTest {
 
     @Before
     public void setUp() throws Exception {
-        propertyLoaderConfigurator = new PropertyLoaderConfigurator(annotationHelper, configBuilderFactory);
+        when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
+
+        propertyLoaderConfigurator = new PropertyLoaderConfigurator(configBuilderFactory);
 
         List<Annotation> annotationList = Lists.newArrayList(propertySuffixes, propertyLocations);
         when(annotationHelper.getAnnotationsAnnotatedWith(TestConfig.class.getDeclaredAnnotations(), PropertyLoaderConfigurationAnnotation.class)).thenReturn(annotationList);

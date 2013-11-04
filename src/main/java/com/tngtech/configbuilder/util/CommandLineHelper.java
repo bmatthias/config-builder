@@ -16,10 +16,10 @@ public class CommandLineHelper {
     private final AnnotationHelper annotationHelper;
     private final ErrorMessageSetup errorMessageSetup;
 
-    public CommandLineHelper(ConfigBuilderFactory configBuilderFactory, AnnotationHelper annotationHelper, ErrorMessageSetup errorMessageSetup) {
+    public CommandLineHelper(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
-        this.annotationHelper = annotationHelper;
-        this.errorMessageSetup = errorMessageSetup;
+        this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
+        this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
     }
 
     public CommandLine getCommandLine(Class configClass, String[] args) {

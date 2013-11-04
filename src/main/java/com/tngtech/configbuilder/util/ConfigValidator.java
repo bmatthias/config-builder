@@ -19,10 +19,10 @@ public class ConfigValidator<T> {
     private final ErrorMessageSetup errorMessageSetup;
     private final AnnotationHelper annotationHelper;
 
-    public ConfigValidator(ConfigBuilderFactory miscFactory, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
+    public ConfigValidator(ConfigBuilderFactory miscFactory) {
         this.configBuilderFactory = miscFactory;
-        this.errorMessageSetup = errorMessageSetup;
-        this.annotationHelper = annotationHelper;
+        this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
+        this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
     }
 
     public void validate(T instanceOfConfigClass) {

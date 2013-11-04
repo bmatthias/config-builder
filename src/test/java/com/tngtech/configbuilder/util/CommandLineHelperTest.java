@@ -50,7 +50,11 @@ public class CommandLineHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        commandLineHelper = new CommandLineHelper(configBuilderFactory, annotationHelper, errorMessageSetup);
+
+        when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
+        when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
+
+        commandLineHelper = new CommandLineHelper(configBuilderFactory);
 
         Set<Field> fields = Sets.newHashSet(TestConfig.class.getDeclaredFields());
         when(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, CommandLineValue.class)).thenReturn(fields);

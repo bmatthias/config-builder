@@ -30,12 +30,12 @@ public class ConfigBuilderFactory {
 
         //util
         singletonMap.put(AnnotationHelper.class, annotationHelper);
-        singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(annotationHelper, this));
+        singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));
         singletonMap.put(ConstructionHelper.class, new ConstructionHelper<T>(errorMessageSetup));
         singletonMap.put(FieldSetter.class, new FieldSetter<T>(fieldValueExtractor, errorMessageSetup, annotationHelper));
         singletonMap.put(FieldValueExtractor.class, fieldValueExtractor);
-        singletonMap.put(ConfigValidator.class, new ConfigValidator<T>(this, errorMessageSetup, annotationHelper));
-        singletonMap.put(CommandLineHelper.class, new CommandLineHelper(this, annotationHelper, errorMessageSetup));
+        singletonMap.put(ConfigValidator.class, new ConfigValidator<T>(this));
+        singletonMap.put(CommandLineHelper.class, new CommandLineHelper(this));
 
         //AnnotationProcessors
         singletonMap.put(ValueTransformerProcessor.class, new ValueTransformerProcessor());

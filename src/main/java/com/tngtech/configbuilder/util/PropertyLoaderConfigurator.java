@@ -11,8 +11,8 @@ public class PropertyLoaderConfigurator {
     private AnnotationHelper annotationHelper;
     private ConfigBuilderFactory configBuilderFactory;
 
-    public PropertyLoaderConfigurator(AnnotationHelper annotationHelper, ConfigBuilderFactory configBuilderFactory) {
-        this.annotationHelper = annotationHelper;
+    public PropertyLoaderConfigurator(ConfigBuilderFactory configBuilderFactory) {
+        this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
         this.configBuilderFactory = configBuilderFactory;
     }
 
