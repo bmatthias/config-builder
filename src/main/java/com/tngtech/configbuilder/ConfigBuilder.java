@@ -120,8 +120,8 @@ public class ConfigBuilder<T> {
      * @return An instance of the config class.
      */
     public T build(Object... objects) {
-        setupBuilderConfiguration(propertyLoader);
         initializeErrorMessageSetup(propertyLoader);
+        setupBuilderConfiguration(propertyLoader);
         T instanceOfConfigClass = constructionHelper.getInstance(configClass, objects);
         fieldSetter.setFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
@@ -135,8 +135,8 @@ public class ConfigBuilder<T> {
      * @return
      */
     public T merge(T instanceOfConfigClass) {
-        setupBuilderConfiguration(propertyLoader);
         initializeErrorMessageSetup(propertyLoader);
+        setupBuilderConfiguration(propertyLoader);
         fieldSetter.setEmptyFields(instanceOfConfigClass, builderConfiguration);
         configValidator.validate(instanceOfConfigClass);
         return instanceOfConfigClass;
