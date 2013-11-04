@@ -54,6 +54,7 @@ public class ConfigBuilder<T> {
     private Class<T> configClass;
     private Options commandLineOptions;
     private PropertyLoader propertyLoader;
+    private String[] commandLineArgs = {};
 
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
 
@@ -85,7 +86,7 @@ public class ConfigBuilder<T> {
      * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> withCommandLineArgs(String[] args) {
-        builderConfiguration.setCommandLine(commandLineHelper.getCommandLine(configClass, args));
+        this.commandLineArgs = args;
         return this;
     }
 
@@ -146,6 +147,7 @@ public class ConfigBuilder<T> {
             builderConfiguration.setAnnotationOrder(configClass.getAnnotation(LoadingOrder.class).value());
         }
         builderConfiguration.setProperties(propertyLoader.load());
+        builderConfiguration.setCommandLine(commandLineHelper.getCommandLine(configClass, commandLineArgs));
     }
 
     private void initializeErrorMessageSetup(PropertyLoader propertyLoader) {

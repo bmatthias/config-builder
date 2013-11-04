@@ -38,7 +38,6 @@ public class FieldValueExtractor {
         } else {
             return field.isAnnotationPresent(ValueTransformer.class) ? transformStringWithTransformer(field, value) : transformStringToPrimitiveIfApplicable(field.getType(), value);
         }
-
     }
 
     private Object buildCollection(Field field, String[] values) {
@@ -71,7 +70,7 @@ public class FieldValueExtractor {
         Class<? extends IValueTransformerProcessor<Object>> processorClass;
         Object fieldValue = value;
         for (Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(field.getDeclaredAnnotations(), ValueTransformerAnnotation.class)) {
-            log.debug(String.format("transorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
+            log.debug(String.format("tranfsorming string value(s) for field %s with %s annotation", field.getName(), annotation.annotationType()));
             processorClass = annotation.annotationType().getAnnotation(ValueTransformerAnnotation.class).value();
             IValueTransformerProcessor processor = (IValueTransformerProcessor) configBuilderFactory.getInstance(processorClass);
             fieldValue = processor.transformString(annotation, value);
