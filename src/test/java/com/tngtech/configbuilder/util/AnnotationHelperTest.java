@@ -1,12 +1,12 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.FieldValueProvider;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
+import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,15 +23,10 @@ import static org.junit.Assert.*;
 public class AnnotationHelperTest {
 
     public class TestConfig {
-        public class ValueProviderTestClass implements FieldValueProvider<Object> {
-            public Object getValue(String fieldString) {
-                return "testString";
-            }
-        }
 
         @PropertyValue("testField")
         @CommandLineValue(shortOpt = "t", longOpt = "testField")
-        @ValueTransformer(ValueProviderTestClass.class)
+        @TypeTransformers({StringCollectionToCommaSeparatedStringTransformer.class})
         private Collection<String> testField;
     }
 
@@ -52,7 +47,7 @@ public class AnnotationHelperTest {
         assertTrue(result.contains(field.getAnnotation(CommandLineValue.class)));
         assertTrue(result.contains(field.getAnnotation(PropertyValue.class)));
 
-        assertFalse(result.contains(field.getAnnotation(ValueTransformer.class)));
+        assertFalse(result.contains(field.getAnnotation(TypeTransformers.class)));
     }
 
 

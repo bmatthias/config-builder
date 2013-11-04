@@ -12,12 +12,12 @@ public class FieldSetter<T> {
 
     private final static Logger log = Logger.getLogger(FieldSetter.class);
 
-    private final FieldValueExtractor fieldValueExtractor;
+    private final FieldValueTransformer fieldValueTransformer;
     private final ErrorMessageSetup errorMessageSetup;
     private final AnnotationHelper annotationHelper;
 
-    public FieldSetter(FieldValueExtractor fieldValueExtractor, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
-        this.fieldValueExtractor = fieldValueExtractor;
+    public FieldSetter(FieldValueTransformer fieldValueTransformer, ErrorMessageSetup errorMessageSetup, AnnotationHelper annotationHelper) {
+        this.fieldValueTransformer = fieldValueTransformer;
         this.errorMessageSetup = errorMessageSetup;
         this.annotationHelper = annotationHelper;
     }
@@ -26,7 +26,7 @@ public class FieldSetter<T> {
 
         for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
             if (annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class)) {
-                Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
+                Object value = fieldValueTransformer.transformedFieldValue(field, builderConfiguration);
                 setField(instanceOfConfigClass, field, value);
             } else {
                 log.debug(String.format("field %s is not annotated with any ValueExtractorAnnotation: skipping field", field.getName()));
@@ -39,7 +39,7 @@ public class FieldSetter<T> {
             for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
                 if (annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class) && (field.getType().isPrimitive() || field.get(instanceOfConfigClass) == null)) {
-                    Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
+                    Object value = fieldValueTransformer.transformedFieldValue(field, builderConfiguration);
                     setField(instanceOfConfigClass, field, value);
                 } else {
                     log.debug(String.format("skipping field %s", field.getName()));

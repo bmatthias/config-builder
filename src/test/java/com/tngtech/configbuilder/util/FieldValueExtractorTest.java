@@ -1,12 +1,9 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.FieldValueProvider;
 import com.tngtech.configbuilder.annotation.configuration.CollectionType;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,15 +27,8 @@ public class FieldValueExtractorTest {
 
     private static class TestConfig {
 
-        public static class ValueProviderTestClass implements FieldValueProvider<Object> {
-            public Object getValue(String fieldString) {
-                return null;
-            }
-        }
-
         @PropertyValue("testField")
         @CommandLineValue(shortOpt = "t", longOpt = "testField")
-        @ValueTransformer(ValueProviderTestClass.class)
         private Collection<String> testField;
 
         @LoadingOrder({CommandLineValue.class, PropertyValue.class})
@@ -48,7 +38,6 @@ public class FieldValueExtractorTest {
 
         @CollectionType
         @DefaultValue("value1,value2")
-        @ValueTransformer(ValueProviderTestClass.class)
         private Collection<String> collectionField;
 
         @DefaultValue("3")
@@ -73,10 +62,6 @@ public class FieldValueExtractorTest {
     private CommandLineValueProcessor commandLineValueProcessor;
     @Mock
     private DefaultValueProcessor defaultValueProcessor;
-    @Mock
-    private ValueTransformerProcessor valueTransformerProcessor;
-    @Mock
-    private ValueTransformer valueTransformer;
 
     private FieldValueExtractor fieldValueExtractor;
     private Field field;
@@ -85,21 +70,17 @@ public class FieldValueExtractorTest {
 
     @Before
     public void setUp() throws Exception {
-        fieldValueExtractor = new FieldValueExtractor(annotationHelper, configBuilderFactory);
-
         when(builderConfiguration.getAnnotationOrder()).thenReturn(order);
 
+        when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(PropertyValueProcessor.class)).thenReturn(propertyValueProcessor);
         when(configBuilderFactory.getInstance(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
         when(configBuilderFactory.getInstance(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
-        when(configBuilderFactory.getInstance(ValueTransformerProcessor.class)).thenReturn(valueTransformerProcessor);
-
-        when(annotationHelper.getAnnotationsAnnotatedWith(Matchers.any(Annotation[].class), Matchers.any(Class.class))).thenReturn(Lists.newArrayList((Annotation) valueTransformer));
-        when(valueTransformer.annotationType()).thenReturn((Class) ValueTransformer.class);
 
         when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("propertyValue");
-        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("commandLineValue");
-        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class), Matchers.anyString())).thenReturn("propertyValue");
+        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("commandLineValue");   
+        
+        fieldValueExtractor = new FieldValueExtractor(configBuilderFactory);
     }
 
     @Test
@@ -145,70 +126,8 @@ public class FieldValueExtractorTest {
 
         when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
-        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class), Matchers.anyString())).thenReturn(null);
 
-        String result = (String) fieldValueExtractor.extractValue(field, builderConfiguration);
+        Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
         assertEquals(null, result);
-    }
-
-    @Test
-    public void testBuildCollection() throws Exception {
-        field = TestConfig.class.getDeclaredField("collectionField");
-
-        DefaultValue defaultValue = field.getAnnotation(DefaultValue.class);
-        List<Annotation> orderList = Lists.newArrayList((Annotation) defaultValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
-
-        when(defaultValueProcessor.getValue(Matchers.any(DefaultValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("value1,value2");
-        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class),  eq("value1"))).thenReturn("transformedValue1");
-        when(valueTransformerProcessor.transformString(Matchers.any(ValueTransformer.class),  eq("value2"))).thenReturn("transformedValue2");
-
-        Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
-
-        assertEquals(Lists.newArrayList("transformedValue1", "transformedValue2"), result);
-    }
-
-    @Test
-    public void testTransformStringToPrimitive() throws Exception {
-        field = TestConfig.class.getDeclaredField("booleanField");
-
-        DefaultValue defaultValue = field.getAnnotation(DefaultValue.class);
-        List<Annotation> orderList = Lists.newArrayList((Annotation) defaultValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
-
-        when(defaultValueProcessor.getValue(Matchers.any(DefaultValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("true");
-
-        Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
-        assertEquals(true, result);
-    }
-
-    @Test
-    public void testTransformStringToPrimitiveThrowsNumberFormatException() throws Exception {
-        field = TestConfig.class.getDeclaredField("primitiveField");
-
-        DefaultValue defaultValue = field.getAnnotation(DefaultValue.class);
-        List<Annotation> orderList = Lists.newArrayList((Annotation) defaultValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
-
-        when(defaultValueProcessor.getValue(Matchers.any(DefaultValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("someString");
-
-        expectedException.expect(NumberFormatException.class);
-
-        fieldValueExtractor.extractValue(field, builderConfiguration);
-    }
-
-    @Test
-    public void testTransformStringToPrimitiveThrowsIllegalArgumentException() throws Exception {
-        field = TestConfig.class.getDeclaredField("booleanField");
-
-        DefaultValue defaultValue = field.getAnnotation(DefaultValue.class);
-        List<Annotation> orderList = Lists.newArrayList((Annotation) defaultValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
-
-        when(defaultValueProcessor.getValue(Matchers.any(DefaultValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("someString");
-
-        expectedException.expect(IllegalArgumentException.class);
-
-        fieldValueExtractor.extractValue(field, builderConfiguration);
     }
 }

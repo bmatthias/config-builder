@@ -23,7 +23,6 @@ import java.util.List;
  * {@link com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.EnvironmentVariableValue}<br>
- * {@link com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer}<br>
  * {@link LoadingOrder}<p>
  * <p/>
  * Properties files are loaded with a PropertyLoader using its default config. In order to change settings for the PropertyLoader, the config class may be annotated with<br>

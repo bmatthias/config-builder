@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -47,7 +46,7 @@ public class FieldSetterTest {
     @Mock
     private BuilderConfiguration builderConfiguration;
     @Mock
-    private FieldValueExtractor fieldValueExtractor;
+    private FieldValueTransformer fieldValueTransformer;
     @Mock
     private ErrorMessageSetup errorMessageSetup;
     @Mock
@@ -61,10 +60,10 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsThrowsIllegalArgumentException() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class), Matchers.any(String.class), Matchers.any(String.class), Matchers.any(String.class))).thenReturn("IllegalArgumentException");
 
-        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(fieldValueTransformer, errorMessageSetup, annotationHelper);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
 
         expectedException.expect(ConfigBuilderException.class);
@@ -75,9 +74,9 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFields() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
 
-        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueTransformer, errorMessageSetup, annotationHelper);
         TestConfig testConfig = new TestConfig();
 
         fieldSetter.setFields(testConfig, builderConfiguration);
@@ -89,9 +88,9 @@ public class FieldSetterTest {
 
     @Test
     public void testSetEmptyFields() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
 
-        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(fieldValueTransformer, errorMessageSetup, annotationHelper);
         TestConfig testConfig = new TestConfig();
 
         fieldSetter.setEmptyFields(testConfig, builderConfiguration);
@@ -102,10 +101,10 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(false);
 
-        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(fieldValueExtractor, errorMessageSetup, annotationHelper);
+        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(fieldValueTransformer, errorMessageSetup, annotationHelper);
         TestConfigWithoutAnnotations testConfigWithoutAnnotations = new TestConfigWithoutAnnotations();
 
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);
