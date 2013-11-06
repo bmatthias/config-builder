@@ -1,10 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.typetransformer.ITypeTransformer;
-import com.tngtech.configbuilder.annotation.typetransformer.StringToBooleanTransformer;
-import com.tngtech.configbuilder.annotation.typetransformer.StringToIntegerTransformer;
-import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
+import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
@@ -15,8 +12,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class FieldValueTransformer {
 
@@ -35,7 +30,7 @@ public class FieldValueTransformer {
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
         
-        defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class);
+        defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class);
     }
     
     public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
@@ -71,7 +66,7 @@ public class FieldValueTransformer {
     }
     
     private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, Class[] suggestedTransformerClasses) {
-        ArrayList<Class> allTransformers = new ArrayList<Class>();
+        ArrayList<Class> allTransformers = new ArrayList<>();
         allTransformers.addAll(Arrays.asList(suggestedTransformerClasses));
         allTransformers.addAll(defaultTransformers);
         
