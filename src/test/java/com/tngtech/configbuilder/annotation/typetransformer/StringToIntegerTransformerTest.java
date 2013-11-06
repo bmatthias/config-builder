@@ -24,4 +24,8 @@ public class StringToIntegerTransformerTest {
         assertThat(actualResult, equalTo(12));
     }
 
+    @Test(expected = NumberFormatException.class)
+    public void testForExceptionWithMalformedString() {
+        transformer.transform("Not a number");
+    }
 }

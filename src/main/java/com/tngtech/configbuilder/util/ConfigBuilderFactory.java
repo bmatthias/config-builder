@@ -51,11 +51,6 @@ public class ConfigBuilderFactory {
         singletonMap.put(PropertiesFilesProcessor.class, new PropertiesFilesProcessor());
         singletonMap.put(DefaultValueProcessor.class, new DefaultValueProcessor());
         
-        //Transformers
-        singletonMap.put(StringToBooleanTransformer.class, new StringToBooleanTransformer());
-        singletonMap.put(StringToIntegerTransformer.class, new StringToIntegerTransformer());
-        singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
-        singletonMap.put(CommaSeparatedStringToStringCollectionTransformer.class, new CommaSeparatedStringToStringCollectionTransformer());
     }
 
     public <K> K getInstance(Class<K> clazz) {

@@ -81,7 +81,7 @@ public class FieldValueTransformer {
             
             if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
                 log.debug(String.format("Found a transformer: %s", clazz));
-                ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.getInstance(clazz);
+                ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.createInstance(clazz);
                 return transformer;
             }
         }

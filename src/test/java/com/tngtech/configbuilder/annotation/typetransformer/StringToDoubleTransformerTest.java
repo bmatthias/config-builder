@@ -22,4 +22,9 @@ public class StringToDoubleTransformerTest {
         Double actualResult = transformer.transform("18.3");
         assertThat(actualResult, equalTo(18.3));
     }
+    
+    @Test(expected = NumberFormatException.class)
+    public void testForExceptionWithMalformedString() {
+        transformer.transform("17J1");
+    }
 }
