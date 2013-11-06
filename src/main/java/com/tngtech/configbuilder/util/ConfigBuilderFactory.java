@@ -31,6 +31,7 @@ public class ConfigBuilderFactory {
 
         //util
         singletonMap.put(AnnotationHelper.class, new AnnotationHelper());
+        singletonMap.put(ClassCastingHelper.class, new ClassCastingHelper());
         singletonMap.put(FieldValueExtractor.class, new FieldValueExtractor(this));
         singletonMap.put(FieldValueTransformer.class, new FieldValueTransformer(this));
         singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));

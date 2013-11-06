@@ -17,19 +17,24 @@ public class FieldValueTransformer {
 
     private final ConfigBuilderFactory configBuilderFactory;
     private final FieldValueExtractor fieldValueExtractor;
-    private ErrorMessageSetup errorMessageSetup;
+    private final ErrorMessageSetup errorMessageSetup;
+    private final ClassCastingHelper classCastingHelper;
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
         this.fieldValueExtractor = configBuilderFactory.getInstance(FieldValueExtractor.class);
-        
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
+        this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
     }
     
     public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
         Object sourceValue = fieldValueExtractor.extractValue(field, builderConfiguration);
         Class sourceClass = sourceValue.getClass();
         Class targetClass = field.getType();
+        
+        if(targetClass.isPrimitive()) {
+            targetClass = classCastingHelper.getWrapperClassForPrimitive(targetClass);
+        }
         
         log.debug(String.format("Searching for a transformer from %s to %s", sourceClass.toString(),  targetClass.toString()));
         
@@ -60,8 +65,8 @@ public class FieldValueTransformer {
             Type[] interfaceType = clazz.getGenericInterfaces();
             Type[] genericTypes = ((ParameterizedType) interfaceType[0]).getActualTypeArguments();
             
-            Class transformerSourceClass = castToClass(genericTypes[0]);
-            Class transformerTargetClass = castToClass(genericTypes[1]);
+            Class transformerSourceClass = classCastingHelper.castTypeToClass(genericTypes[0]);
+            Class transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
             
             if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
                 ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.getInstance(clazz);
@@ -70,13 +75,5 @@ public class FieldValueTransformer {
         }
 
         throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
-    }
-    
-    private static Class castToClass(Type object) {
-        if(object.getClass().equals(Class.class)) {
-            return (Class<?>) object;
-        } else {
-           return (Class<?>) ((ParameterizedType) object).getRawType(); 
-        }
     }
 }

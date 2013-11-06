@@ -58,6 +58,7 @@ public class FieldValueTransformerTest {
     public void setUp() throws Exception { 
         when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
+        when(configBuilderFactory.getInstance(ClassCastingHelper.class)).thenReturn(new ClassCastingHelper());
         
         stringCollectionField = TestConfigClass.class.getDeclaredField("stringCollectionField");
         intField = TestConfigClass.class.getDeclaredField("intField");

@@ -81,7 +81,7 @@ public class ConfigBuilderIntegrationTest {
         TestConfig expectedTestConfig = new TestConfig();
         expectedTestConfig.setHelloWorld("Hello World!");
         expectedTestConfig.setSomeNumber(3);
-        expectedTestConfig.setBoolean(false);
+        expectedTestConfig.setBoolean(true); // primitives will not be overwritten
         expectedTestConfig.setStringCollection(arrayList);
         expectedTestConfig.setEnvironmentVariable(systemPath);
         expectedTestConfig.setSystemProperty(userLanguage);

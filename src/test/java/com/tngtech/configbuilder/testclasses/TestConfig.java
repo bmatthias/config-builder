@@ -25,14 +25,14 @@ public class TestConfig {
 
     @DefaultValue("3")
     @TypeTransformers({StringToIntegerTransformer.class})
-    private Integer someNumber;
+    private int someNumber;
 
     @PropertyValue("a")
     private String helloWorld;
 
     @CommandLineValue(shortOpt = "u", longOpt = "user")
     @TypeTransformers({StringToBooleanTransformer.class})
-    private Boolean aBoolean;
+    private boolean aBoolean;
 
     @LoadingOrder(value = {CommandLineValue.class})
     @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "command line option description")
