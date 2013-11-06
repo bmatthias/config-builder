@@ -5,11 +5,13 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Properti
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtensionProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocationsProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixProcessor;
+import com.tngtech.configbuilder.annotation.typetransformer.CommaSeparatedStringToStringCollectionTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToBooleanTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToIntegerTransformer;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformerProcessor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.util.*;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
@@ -20,15 +22,17 @@ public class ConfigBuilderFactory {
     private Map<Class,Object> singletonMap = Maps.newHashMap();
 
     public <T> void initialize() {
+        //Order is IMPORTANT!
         ErrorMessageSetup errorMessageSetup = new ErrorMessageSetup();
+        singletonMap.put(ErrorMessageSetup.class, errorMessageSetup);
 
         //configuration
         singletonMap.put(BuilderConfiguration.class, new BuilderConfiguration());
-        singletonMap.put(ErrorMessageSetup.class, errorMessageSetup);
 
         //util
         singletonMap.put(AnnotationHelper.class, new AnnotationHelper());
         singletonMap.put(FieldValueExtractor.class, new FieldValueExtractor(this));
+        singletonMap.put(FieldValueTransformer.class, new FieldValueTransformer(this));
         singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));
         singletonMap.put(ConstructionHelper.class, new ConstructionHelper<T>(errorMessageSetup));
         singletonMap.put(FieldSetter.class, new FieldSetter<T>(this));
@@ -36,7 +40,6 @@ public class ConfigBuilderFactory {
         singletonMap.put(CommandLineHelper.class, new CommandLineHelper(this));
 
         //AnnotationProcessors
-        singletonMap.put(ValueTransformerProcessor.class, new ValueTransformerProcessor());
         singletonMap.put(SystemPropertyProcessor.class, new SystemPropertyProcessor());
         singletonMap.put(PropertyValueProcessor.class, new PropertyValueProcessor());
         singletonMap.put(EnvironmentVariableProcessor.class, new EnvironmentVariableProcessor());
@@ -46,6 +49,12 @@ public class ConfigBuilderFactory {
         singletonMap.put(PropertyExtensionProcessor.class, new PropertyExtensionProcessor());
         singletonMap.put(PropertiesFilesProcessor.class, new PropertiesFilesProcessor());
         singletonMap.put(DefaultValueProcessor.class, new DefaultValueProcessor());
+        
+        //Transformers
+        singletonMap.put(StringToBooleanTransformer.class, new StringToBooleanTransformer());
+        singletonMap.put(StringToIntegerTransformer.class, new StringToIntegerTransformer());
+        singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
+        singletonMap.put(CommaSeparatedStringToStringCollectionTransformer.class, new CommaSeparatedStringToStringCollectionTransformer());
     }
 
     public <K> K getInstance(Class<K> clazz) {

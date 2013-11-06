@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -31,8 +32,7 @@ public class ConfigBuilderIntegrationTest {
         testConfig.setHelloWorld("Hello, World!");
         testConfig.setSomeNumber(3);
         testConfig.setBoolean(true);
-        testConfig.setStringCollection(Lists.newArrayList("PIDs fixed with success"));
-        testConfig.setList(Lists.newArrayList(new String[]{"one success"}, (new String[]{"two success"})));
+        testConfig.setStringCollection(Lists.newArrayList("one entry"));
         testConfig.setEnvironmentVariable(System.getenv("PATH"));
         testConfig.setSystemProperty(System.getProperty("user.language"));
 
@@ -47,7 +47,7 @@ public class ConfigBuilderIntegrationTest {
     @Test
     public void testConfigBuilderWithParameters() {
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
+        String[] args = new String[]{"-u", "--collection", "one entry"};
         Object result = configBuilder.withCommandLineArgs(args).build();
         assertReflectionEquals(configInstance, result);
     }
@@ -61,23 +61,35 @@ public class ConfigBuilderIntegrationTest {
 
     @Test
     public void testMerge() {
-        TestConfig testConfig = new TestConfig();
-        testConfig.setHelloWorld("HelloWorld!");
-        testConfig.setSomeNumber(3);
-        testConfig.setBoolean(true);
-        testConfig.setStringCollection(Lists.newArrayList("collection"));
-        testConfig.setList(Lists.newArrayList(new String[]{"one success"}, (new String[]{"two success"})));
-        testConfig.setEnvironmentVariable(System.getenv("PATH"));
-        testConfig.setSystemProperty(System.getProperty("user.language"));
+        ArrayList<String> arrayList = Lists.newArrayList("collection", "two");
+        String systemPath = System.getenv("PATH");
+        String userLanguage = System.getProperty("user.language");
+        
+        TestConfig originalTestConfig = new TestConfig();
+        originalTestConfig.setHelloWorld("astringwithoutspaces");
+        originalTestConfig.setSomeNumber(3);
+        originalTestConfig.setBoolean(true);
+        originalTestConfig.setStringCollection(Lists.newArrayList("collection"));
+        originalTestConfig.setEnvironmentVariable(systemPath);
+        originalTestConfig.setSystemProperty(userLanguage);
 
-        TestConfig testConfig2 = new TestConfig();
-        testConfig2.setHelloWorld("HelloWorld!");
-        testConfig2.setBoolean(false);
-        testConfig2.setStringCollection(Lists.newArrayList("collection"));
+        TestConfig overwritingTestConfig = new TestConfig();
+        overwritingTestConfig.setHelloWorld("Hello World!");
+        overwritingTestConfig.setBoolean(false);
+        overwritingTestConfig.setStringCollection(arrayList);
+        
+        TestConfig expectedTestConfig = new TestConfig();
+        expectedTestConfig.setHelloWorld("Hello World!");
+        expectedTestConfig.setSomeNumber(3);
+        expectedTestConfig.setBoolean(false);
+        expectedTestConfig.setStringCollection(arrayList);
+        expectedTestConfig.setEnvironmentVariable(systemPath);
+        expectedTestConfig.setSystemProperty(userLanguage);
+        
 
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
         String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
-        Object result = configBuilder.withCommandLineArgs(args).merge(testConfig2);
-        assertReflectionEquals(testConfig, result);
+        Object result = configBuilder.withCommandLineArgs(args).merge(overwritingTestConfig);
+        assertReflectionEquals(expectedTestConfig, result);
     }
 }

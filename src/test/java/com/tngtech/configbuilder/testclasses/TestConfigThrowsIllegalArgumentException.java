@@ -1,6 +1,5 @@
 package com.tngtech.configbuilder.testclasses;
 
-import com.tngtech.configbuilder.FieldValueProvider;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
@@ -9,7 +8,6 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Property
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
-import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import com.tngtech.propertyloader.PropertyLoader;
 
 @PropertyExtension("testproperties")
@@ -19,14 +17,6 @@ import com.tngtech.propertyloader.PropertyLoader;
 @LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, DefaultValue.class})
 public class TestConfigThrowsIllegalArgumentException {
 
-    public static class IntegerFactory implements FieldValueProvider<Integer> {
-
-        public Integer getValue(String optionValue) {
-            return null;
-        }
-    }
-
     @DefaultValue("what")
-    @ValueTransformer(IntegerFactory.class)
     private int integer;
 }
