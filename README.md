@@ -94,9 +94,9 @@ This order can be customized, see [4.](#4-change-the-order-in-which-annotations-
 #####3.2 Transform it to any object or a collection
 Fields don't have to be Strings. You can configure collection fields or even any type you wish (or a collection of that type).
 
-Some simple transformers are included, so the String can be used as an integer, or a boolean value. All you have to do is specify a @TypeTransformers({StringToIntegerTransformer.class}) annotation, and it will work.
+Some simple transformers are included and used by default, so a String can be used as an integer, or a boolean value.
 
-If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface. 
+If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface, and specifying it in the ```@TypeTransformers``` annotation.
  
 Finally, the original value is not always a String. To support this case, the annotation takes a list of possible transformers, and the one with the right types is automatically detected and used. 
  

@@ -3,6 +3,7 @@ package com.tngtech.configbuilder.util;
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.typetransformer.CommaSeparatedStringToStringCollectionTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToIntegerTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -30,7 +31,7 @@ public class FieldValueTransformerTest {
         @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
         private Collection<String> stringCollectionField;
         
-        private Integer intField;
+        private int intField;
         
         @TypeTransformers({StringCollectionToCommaSeparatedStringTransformer.class})
         private Boolean boolField;
@@ -86,11 +87,14 @@ public class FieldValueTransformerTest {
         assertThat(result, equalTo(expectResult));
     }
     
-    @Test(expected = TypeTransformerException.class)
-    public void testExceptionIfNoTransformerGiven() {
-        when(fieldValueExtractor.extractValue(intField, builderConfiguration)).thenReturn("Olo");
+    @Test
+    public void testIfDefaultTransformersAreFound() {
+        when(fieldValueExtractor.extractValue(intField, builderConfiguration)).thenReturn("17");
+        when(configBuilderFactory.getInstance(StringToIntegerTransformer.class)).thenReturn(new StringToIntegerTransformer());
         
-        fieldValueTransformer.transformedFieldValue(intField, builderConfiguration);
+        int actualResult = fieldValueTransformer.transformedFieldValue(intField, builderConfiguration);
+        
+        assertThat(actualResult, equalTo(17));
     }
     
     @Test(expected = TypeTransformerException.class)

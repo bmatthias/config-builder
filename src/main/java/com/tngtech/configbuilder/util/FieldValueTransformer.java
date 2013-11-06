@@ -1,6 +1,9 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.typetransformer.ITypeTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToBooleanTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToIntegerTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -10,6 +13,10 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class FieldValueTransformer {
 
@@ -19,12 +26,16 @@ public class FieldValueTransformer {
     private final FieldValueExtractor fieldValueExtractor;
     private final ErrorMessageSetup errorMessageSetup;
     private final ClassCastingHelper classCastingHelper;
+    
+    private final ArrayList defaultTransformers;
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
         this.fieldValueExtractor = configBuilderFactory.getInstance(FieldValueExtractor.class);
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
+        
+        defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class);
     }
     
     public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
@@ -42,10 +53,6 @@ public class FieldValueTransformer {
             return (TargetClass) sourceValue;
         }
         
-        if(!field.isAnnotationPresent(TypeTransformers.class)) {
-            throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
-        }
-            
         Class[] suggestedTransformers = getSuggestedTransformers(field);
         ITypeTransformer<Object, TargetClass> transformer = findApplicableTransformer(sourceClass, targetClass, suggestedTransformers);
         log.debug(String.format("Transformer found: %s", transformer.toString()));
@@ -55,20 +62,30 @@ public class FieldValueTransformer {
     }
     
     private Class[] getSuggestedTransformers(Field field) {
-        TypeTransformers annotation =  field.getAnnotation(TypeTransformers.class);
-        return annotation.value();
+        if(field.isAnnotationPresent(TypeTransformers.class)) {
+            TypeTransformers annotation =  field.getAnnotation(TypeTransformers.class);
+            return annotation.value();
+        } else {
+            return new Class[]{};
+        }
     }
     
     private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, Class[] suggestedTransformerClasses) {
-        for(int i=0; i < suggestedTransformerClasses.length; i++) {
-            Class clazz = suggestedTransformerClasses[i];
-            Type[] interfaceType = clazz.getGenericInterfaces();
-            Type[] genericTypes = ((ParameterizedType) interfaceType[0]).getActualTypeArguments();
+        ArrayList<Class> allTransformers = new ArrayList<Class>();
+        allTransformers.addAll(Arrays.asList(suggestedTransformerClasses));
+        allTransformers.addAll(defaultTransformers);
+        
+        log.debug(String.format("All available transformers: %s", allTransformers.toString()));
+        
+        for(Class clazz: allTransformers) {
+            Type[] typeOfInterface = clazz.getGenericInterfaces();
+            Type[] genericTypes = ((ParameterizedType) typeOfInterface[0]).getActualTypeArguments();
             
             Class transformerSourceClass = classCastingHelper.castTypeToClass(genericTypes[0]);
             Class transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
             
             if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
+                log.debug(String.format("Found a transformer: %s", clazz));
                 ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.getInstance(clazz);
                 return transformer;
             }
