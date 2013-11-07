@@ -22,15 +22,13 @@ public class FieldValueTransformer {
     private final ErrorMessageSetup errorMessageSetup;
     private final ClassCastingHelper classCastingHelper;
     
-    private final ArrayList defaultTransformers;
+    private final ArrayList defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class);
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
         this.fieldValueExtractor = configBuilderFactory.getInstance(FieldValueExtractor.class);
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
-        
-        defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class);
     }
     
     public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
@@ -42,15 +40,15 @@ public class FieldValueTransformer {
             targetClass = classCastingHelper.getWrapperClassForPrimitive(targetClass);
         }
         
-        log.debug(String.format("Searching for a transformer from %s to %s", sourceClass.toString(),  targetClass.toString()));
+        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
         
         if(sourceClass.isAssignableFrom(targetClass)) {
             return (TargetClass) sourceValue;
         }
         
         Class[] suggestedTransformers = getSuggestedTransformers(field);
-        ITypeTransformer<Object, TargetClass> transformer = findApplicableTransformer(sourceClass, targetClass, suggestedTransformers);
-        log.debug(String.format("Transformer found: %s", transformer.toString()));
+        Class[] allTransformers = addDefaultTransformersTo(suggestedTransformers);
+        ITypeTransformer<Object, TargetClass> transformer = findApplicableTransformer(sourceClass, targetClass, allTransformers);
         
         TargetClass transformedValue = transformer.transform(sourceValue);
         return transformedValue; 
@@ -64,15 +62,17 @@ public class FieldValueTransformer {
             return new Class[]{};
         }
     }
-    
-    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, Class[] suggestedTransformerClasses) {
+
+    private Class[] addDefaultTransformersTo(Class[] additionalTransformerClasses) {
         ArrayList<Class> allTransformers = new ArrayList<>();
-        allTransformers.addAll(Arrays.asList(suggestedTransformerClasses));
+        allTransformers.addAll(Arrays.asList(additionalTransformerClasses));
         allTransformers.addAll(defaultTransformers);
-        
-        log.debug(String.format("All available transformers: %s", allTransformers.toString()));
-        
-        for(Class clazz: allTransformers) {
+
+        return allTransformers.toArray(new Class[allTransformers.size()]);
+    }
+    
+    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, Class[] availableTransformerClasses) {
+        for(Class clazz: availableTransformerClasses) {
             Type[] typeOfInterface = clazz.getGenericInterfaces();
             Type[] genericTypes = ((ParameterizedType) typeOfInterface[0]).getActualTypeArguments();
             
@@ -80,7 +80,6 @@ public class FieldValueTransformer {
             Class transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
             
             if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
-                log.debug(String.format("Found a transformer: %s", clazz));
                 ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.createInstance(clazz);
                 return transformer;
             }

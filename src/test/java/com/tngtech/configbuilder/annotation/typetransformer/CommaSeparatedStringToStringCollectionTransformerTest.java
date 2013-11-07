@@ -22,9 +22,9 @@ public class CommaSeparatedStringToStringCollectionTransformerTest {
 
     @Test
     public void testTransformer() {
-        Collection<String> expectedResult = Lists.newArrayList("12","Game","of","Love");
+        Collection<String> expectedResult = Lists.newArrayList("Wayne","André","Kanye","Lebron");
         
-        Collection<String> actualResult = transformer.transform("12,Game,of,Love");
+        Collection<String> actualResult = transformer.transform("Wayne,André,Kanye,Lebron");
         assertThat(actualResult,equalTo(expectedResult));
     }
 }

@@ -110,7 +110,7 @@ public class FieldValueTransformerTest {
     
     @Test(expected = TypeTransformerException.class)
     public void testExceptionIfNoTransformerFound() {
-        when(fieldValueExtractor.extractValue(boolField, builderConfiguration)).thenReturn(17);
+        when(fieldValueExtractor.extractValue(boolField, builderConfiguration)).thenReturn(38.7);
         
         fieldValueTransformer.transformedFieldValue(boolField, builderConfiguration);
     }

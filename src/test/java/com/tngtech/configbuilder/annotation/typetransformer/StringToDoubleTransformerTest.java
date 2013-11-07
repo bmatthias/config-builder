@@ -25,6 +25,6 @@ public class StringToDoubleTransformerTest {
     
     @Test(expected = NumberFormatException.class)
     public void testForExceptionWithMalformedString() {
-        transformer.transform("17J1");
+        transformer.transform("Definitely not a double value");
     }
 }
