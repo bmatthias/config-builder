@@ -11,7 +11,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FieldValueTransformer {
 
@@ -34,11 +33,7 @@ public class FieldValueTransformer {
     public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
         Object sourceValue = fieldValueExtractor.extractValue(field, builderConfiguration);
         Class sourceClass = sourceValue.getClass();
-        Class targetClass = field.getType();
-        
-        if(targetClass.isPrimitive()) {
-            targetClass = classCastingHelper.getWrapperClassForPrimitive(targetClass);
-        }
+        Class targetClass = getNonPrimitiveTargetClass(field);
         
         log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
         
@@ -46,32 +41,46 @@ public class FieldValueTransformer {
             return (TargetClass) sourceValue;
         }
         
-        Class[] suggestedTransformers = getSuggestedTransformers(field);
-        Class[] allTransformers = addDefaultTransformersTo(suggestedTransformers);
+        ArrayList<Class> allTransformers = getAllTransformers(field);
         ITypeTransformer<Object, TargetClass> transformer = findApplicableTransformer(sourceClass, targetClass, allTransformers);
         
-        TargetClass transformedValue = transformer.transform(sourceValue);
-        return transformedValue; 
+        return transformer.transform(sourceValue);
     }
     
-    private Class[] getSuggestedTransformers(Field field) {
+    private Class getNonPrimitiveTargetClass(Field field) {
+        Class targetClass = field.getType();
+
+        if(targetClass.isPrimitive()) {
+            targetClass = classCastingHelper.getWrapperClassForPrimitive(targetClass);
+        }
+        
+        return targetClass;
+    }
+    
+    private ArrayList<Class> getAllTransformers(Field field) {
+        ArrayList<Class> suggestedTransformers = getUserSuggestedTransformers(field);
+        ArrayList<Class> allTransformers = addDefaultTransformersTo(suggestedTransformers);
+        return allTransformers;
+    }
+    
+    private ArrayList getUserSuggestedTransformers(Field field) {
         if(field.isAnnotationPresent(TypeTransformers.class)) {
             TypeTransformers annotation =  field.getAnnotation(TypeTransformers.class);
-            return annotation.value();
+            return Lists.newArrayList(annotation.value());
         } else {
-            return new Class[]{};
+            return Lists.newArrayList();
         }
     }
 
-    private Class[] addDefaultTransformersTo(Class[] additionalTransformerClasses) {
+    private ArrayList<Class> addDefaultTransformersTo(ArrayList<Class> additionalTransformerClasses) {
         ArrayList<Class> allTransformers = new ArrayList<>();
-        allTransformers.addAll(Arrays.asList(additionalTransformerClasses));
+        allTransformers.addAll(additionalTransformerClasses);
         allTransformers.addAll(defaultTransformers);
 
-        return allTransformers.toArray(new Class[allTransformers.size()]);
+        return allTransformers;
     }
     
-    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, Class[] availableTransformerClasses) {
+    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, ArrayList<Class> availableTransformerClasses) {
         for(Class clazz: availableTransformerClasses) {
             Type[] typeOfInterface = clazz.getGenericInterfaces();
             Type[] genericTypes = ((ParameterizedType) typeOfInterface[0]).getActualTypeArguments();
