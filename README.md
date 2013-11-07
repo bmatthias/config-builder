@@ -24,7 +24,7 @@ Its features include
 Motivation
 ----------
 
-Many Java Propjects include one or more classes that store configuration values and objects. Often, these come from
+Many Java Projects include one or more classes that store configuration values and objects. Often, these come from
 properties files, system properties and environment variables or command line arguments, which requires the developer
 to implement the finding and loading of files, parsing the values etc. for every new project.
 
