@@ -36,6 +36,7 @@ public class ClassCastingHelperTest {
         assertEquals(classCastingHelper.getWrapperClassForPrimitive(int.class), Integer.class);
         assertEquals(classCastingHelper.getWrapperClassForPrimitive(boolean.class), Boolean.class);
         assertEquals(classCastingHelper.getWrapperClassForPrimitive(double.class), Double.class);
+        assertEquals(classCastingHelper.getWrapperClassForPrimitive(byte.class), Byte.class);
     }
     
     @Test
