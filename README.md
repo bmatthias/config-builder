@@ -24,7 +24,7 @@ Its features include
 Motivation
 ----------
 
-Many Java Propjects include one or more classes that store configuration values and objects. Often, these come from
+Many Java Projects include one or more classes that store configuration values and objects. Often, these come from
 properties files, system properties and environment variables or command line arguments, which requires the developer
 to implement the finding and loading of files, parsing the values etc. for every new project.
 
@@ -94,37 +94,12 @@ This order can be customized, see [4.](#4-change-the-order-in-which-annotations-
 #####3.2 Transform it to any object or a collection
 Fields don't have to be Strings. You can configure collection fields or even any type you wish (or a collection of that type).
 
-If you annotate the field with the @CollectionType annotation, the String is splitted and an ArrayList is created. 
-The default split character is a comma, but you can also define your own:
-```java
- @CollectionType(";")
-```
+Some simple transformers are included and used by default, so a String can be used as an integer, or a boolean value.
 
-If you want your field to be of an arbitrary type (or a collection of that type, annotate it with the
-@ValueTransformer annotation and specify a class that implements the (see)FieldValueProvider interface, like so:
-```java
-@ValueTransformer(MyFieldValueProvider.class)
-private AnyType fieldOfAnyType;
-```
-
-If you use both the @CollectionType and @ValueTransformer annotations, you will get a List of objects of the type you defined:
-```java
-@CollectionType
-@ValueTransformer(MyFieldValueProvider.class)
-private Collection<AnyType> listOfAnyType;
-```
-
-The MyFieldValueProvider.class is an inner class of your config and implements the getValue method:
-```java
-public class Config {
-    public static class MyFieldValueProvider implements FieldValueProvider<AnyType> {
-        public AnyType getValues(String optionValue) {
-            <...>
-        }
-    }
-    ...
-}
-```
+If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface, and specifying it in the ```@TypeTransformers``` annotation.
+ 
+Finally, the original value is not always a String. To support this case, the annotation takes a list of possible transformers, and the one with the right types is automatically detected and used. 
+ 
 ####4. Add JSR validation annotations and/or define a custom validation method
 
 After an instance of your config is built, it is automatically validated. You can either use JSR validation annotations
