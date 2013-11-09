@@ -94,11 +94,13 @@ This order can be customized, see [4.](#4-change-the-order-in-which-annotations-
 #####3.2 Transform it to any object or a collection
 Fields don't have to be Strings. You can configure collection fields or even any type you wish (or a collection of that type).
 
-Some simple transformers are included and used by default, so a String can be used as an integer, or a boolean value.
+Some simple transformers are included and used by default, e.g. a String will automatically be converted to an integer, a
+boolean value or even a collection as needed.
 
-If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface, and specifying it in the ```@TypeTransformers``` annotation.
+If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface, and specifying them in the ```@TypeTransformers``` annotation.
  
-Finally, the original value is not always a String. To support this case, the annotation takes a list of possible transformers, and the one with the right types is automatically detected and used. 
+Finally, the original value may not always be a String. To support this case, the annotation takes a list of possible transformers, and the one with the right 
+source and target types is automatically detected and used. 
  
 ####4. Add JSR validation annotations and/or define a custom validation method
 
@@ -146,18 +148,19 @@ have already been set. Hence, for the moment, primitives are always overwritten.
 
 Usage example
 -------------
-Say you have a config class that looks like this:
+Say you have a config that looks like this:
 ```java
+public class StringToPidFixTransformer implements ITypeTransformer<String,PidFix> {
+    @Override
+    public PidFix transform(String input) {
+        <...>
+    }
+}
+
 @PropertiesFiles("config")    // Uses "config.properties", "config.<hostname>.properties", etc.
 @PropertyLocations(directories = {"/home/user"}, contextClassLoader = true)
 @PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
 public class Config {
-    public static class PidFixFactory implements FieldValueProvider<PidFix> {
-        @Override
-        public PidFix getValues(String optionValue) {
-            <...>
-        }
-    }
     
     @DefaultValue("false")      // values are automatically be converted to primitive types
     @CommandLineValue(shortOpt="t", longOpt="test", hasArg=false)     // this is a flag argument
@@ -175,12 +178,11 @@ public class Config {
     @NotEmpty("username.notEmpty")      // JSR-303 validation (Field should not be empty)
     private String userName;
  
-    @CollectionType
-    @ValueTransformer(PidFixFactory.class)
+    @TypeTransformer(StringToPidFixTransformer.class)
     @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg=true)
     private Collection<PidFix> pidFixCollection;
     
-    @ValueTransformer(PidFixFactory.class)
+    @TypeTransformer(StringToPidFixTransformer.class)
     @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg=true)
     private PidFix pidFix;
  
