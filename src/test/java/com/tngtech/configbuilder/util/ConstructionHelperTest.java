@@ -43,16 +43,19 @@ public class ConstructionHelperTest {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
+    private ConfigBuilderFactory configBuilderFactory;
+    @Mock
     private ErrorMessageSetup errorMessageSetup;
 
     @Before
     public void setUp() throws Exception {
+        when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(errorMessageSetup.getErrorMessage(NoConstructorFoundException.class)).thenReturn("NoConstructorFoundException");
     }
 
     @Test
     public void testGetInstance() throws Exception {
-        ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<>(errorMessageSetup);
+        ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
         TestConfig testConfig = constructionHelper.getInstance(TestConfig.class, "string", 3);
         assertEquals("string", testConfig.getString());
         assertEquals(3, (long) testConfig.getInteger());
@@ -62,7 +65,7 @@ public class ConstructionHelperTest {
     public void testGetInstanceThrowsException() throws Exception {
         expectedException.expect(NoConstructorFoundException.class);
         expectedException.expectMessage("NoConstructorFoundException");
-        ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<>(errorMessageSetup);
+        ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
         constructionHelper.getInstance(TestConfigForException.class, "string", 3);
     }
 }

@@ -21,7 +21,15 @@ public class FieldValueTransformer {
     private final ErrorMessageSetup errorMessageSetup;
     private final ClassCastingHelper classCastingHelper;
     
-    private final ArrayList defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class, StringToPathTransformer.class);
+    private final ArrayList defaultTransformers = Lists.newArrayList(
+            CommaSeparatedStringToStringCollectionTransformer.class,
+            StringCollectionToCommaSeparatedStringTransformer.class,
+            StringToIntegerTransformer.class,
+            StringToBooleanTransformer.class,
+            StringToDoubleTransformer.class,
+            IntegerToDoubleTransformer.class,
+            StringToPathTransformer.class,
+            CollectionTransformer.class);
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
@@ -30,23 +38,37 @@ public class FieldValueTransformer {
         this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
     }
     
-    public <TargetClass> TargetClass transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
+    public Object transformedFieldValue(Field field, BuilderConfiguration builderConfiguration) {
         Object sourceValue = fieldValueExtractor.extractValue(field, builderConfiguration);
+
+        if(sourceValue == null) {
+            return sourceValue;
+        }
+
         Class sourceClass = sourceValue.getClass();
         Class targetClass = getNonPrimitiveTargetClass(field);
         
         log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
         
-        if(sourceClass.isAssignableFrom(targetClass)) {
-            return (TargetClass) sourceValue;
+        if(targetClass.isAssignableFrom(sourceClass)) {
+            return sourceValue;
         }
-        
+
         ArrayList<Class> allTransformers = getAllTransformers(field);
-        ITypeTransformer<Object, TargetClass> transformer = findApplicableTransformer(sourceClass, targetClass, allTransformers);
-        
+        ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetClass, allTransformers);
+
+        Type typeOfInterface = transformer.getClass().getGenericSuperclass();
+        Type[] genericTypes = ((ParameterizedType) typeOfInterface).getActualTypeArguments();
+
+        if(!classCastingHelper.typeMatches((ParameterizedType)genericTypes[1],(ParameterizedType)field.getGenericType())) {
+            sourceValue = transformer.transform(sourceValue);
+            sourceClass = sourceValue.getClass();
+            transformer = findApplicableTransformer(sourceClass, targetClass, allTransformers);
+        }
+
         return transformer.transform(sourceValue);
     }
-    
+
     private Class getNonPrimitiveTargetClass(Field field) {
         Class targetClass = field.getType();
 
@@ -59,8 +81,8 @@ public class FieldValueTransformer {
     
     private ArrayList<Class> getAllTransformers(Field field) {
         ArrayList<Class> suggestedTransformers = getUserSuggestedTransformers(field);
-        ArrayList<Class> allTransformers = addDefaultTransformersTo(suggestedTransformers);
-        return allTransformers;
+        suggestedTransformers.addAll(defaultTransformers);
+        return suggestedTransformers;
     }
     
     private ArrayList getUserSuggestedTransformers(Field field) {
@@ -71,29 +93,15 @@ public class FieldValueTransformer {
             return Lists.newArrayList();
         }
     }
-
-    private ArrayList<Class> addDefaultTransformersTo(ArrayList<Class> additionalTransformerClasses) {
-        ArrayList<Class> allTransformers = new ArrayList<>();
-        allTransformers.addAll(additionalTransformerClasses);
-        additionalTransformerClasses.addAll(defaultTransformers);
-
-        return allTransformers;
-    }
     
-    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<S> sourceClass, Class<T> targetClass, ArrayList<Class> availableTransformerClasses) {
+    private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<?> sourceClass, Class<?> targetClass, ArrayList<Class> availableTransformerClasses) {
+        ITypeTransformer<S, T> transformer = null;
         for(Class clazz: availableTransformerClasses) {
-            Type[] typeOfInterface = clazz.getGenericInterfaces();
-            Type[] genericTypes = ((ParameterizedType) typeOfInterface[0]).getActualTypeArguments();
-            
-            Class transformerSourceClass = classCastingHelper.castTypeToClass(genericTypes[0]);
-            Class transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
-            
-            if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
-                ITypeTransformer<S, T> transformer = (ITypeTransformer<S, T>) configBuilderFactory.createInstance(clazz);
+            transformer = (ITypeTransformer<S, T>) configBuilderFactory.getInstance(clazz);
+            if(transformer.isMatching(sourceClass, targetClass)) {
                 return transformer;
             }
         }
-
         throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
     }
 }

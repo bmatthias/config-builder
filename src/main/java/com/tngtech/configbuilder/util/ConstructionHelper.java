@@ -14,8 +14,8 @@ public class ConstructionHelper<T> {
 
     private ErrorMessageSetup errorMessageSetup;
 
-    public ConstructionHelper(ErrorMessageSetup errorMessageSetup) {
-        this.errorMessageSetup = errorMessageSetup;
+    public ConstructionHelper(ConfigBuilderFactory configBuilderFactory) {
+        this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
     }
 
     public T getInstance(Class<T> configClass, Object... objects) {

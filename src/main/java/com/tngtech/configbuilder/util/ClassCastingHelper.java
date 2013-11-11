@@ -32,4 +32,16 @@ public class ClassCastingHelper {
             return (Class<?>) ((ParameterizedType) object).getRawType();
         }
     }
+
+    public boolean typeMatches(ParameterizedType sourceType, ParameterizedType targetType) {
+        Class<?> sourceClass = (Class<?>)sourceType.getRawType();
+        Class<?> targetClass = (Class<?>)targetType.getRawType();
+        boolean matches = targetClass.isAssignableFrom(sourceClass) && sourceType.getActualTypeArguments().length == targetType.getActualTypeArguments().length;
+        if(matches) {
+            for(int i = 0; i < sourceType.getActualTypeArguments().length; i++) {
+                matches &=  ((Class<?>)targetType.getActualTypeArguments()[i]).isAssignableFrom((Class<?>)sourceType.getActualTypeArguments()[i]);
+            }
+        }
+        return matches;
+    }
 }

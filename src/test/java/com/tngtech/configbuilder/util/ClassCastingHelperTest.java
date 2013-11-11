@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassCastingHelperTest {
     
-    private class testClass implements ITypeTransformer<String, Collection<String>> {
+    private class testClass extends ITypeTransformer<String, Collection<String>> {
 
         @Override
         public Collection<String> transform(String argument) {
