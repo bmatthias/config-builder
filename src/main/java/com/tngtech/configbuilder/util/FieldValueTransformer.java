@@ -75,7 +75,7 @@ public class FieldValueTransformer {
     private ArrayList<Class> addDefaultTransformersTo(ArrayList<Class> additionalTransformerClasses) {
         ArrayList<Class> allTransformers = new ArrayList<>();
         allTransformers.addAll(additionalTransformerClasses);
-        allTransformers.addAll(defaultTransformers);
+        additionalTransformerClasses.addAll(defaultTransformers);
 
         return allTransformers;
     }
