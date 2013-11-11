@@ -21,7 +21,7 @@ public class FieldValueTransformer {
     private final ErrorMessageSetup errorMessageSetup;
     private final ClassCastingHelper classCastingHelper;
     
-    private final ArrayList defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class);
+    private final ArrayList defaultTransformers = Lists.newArrayList(StringToIntegerTransformer.class, StringToBooleanTransformer.class, StringToDoubleTransformer.class, IntegerToDoubleTransformer.class, StringToPathTransformer.class);
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
