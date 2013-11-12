@@ -21,9 +21,8 @@ public class FieldValueExtractor {
         this.annotationHelper = configBuilderFactory.getInstance(AnnotationHelper.class);
     }
 
-
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
-        String value = null;
+        Object value = null;
         Class<? extends Annotation>[] annotationOrderOfField = field.isAnnotationPresent(LoadingOrder.class) ? field.getAnnotation(LoadingOrder.class).value() : builderConfiguration.getAnnotationOrder();
         Class<? extends IValueExtractorProcessor> processor;
        
