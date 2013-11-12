@@ -31,7 +31,8 @@ public class FieldValueTransformer {
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
     }
-    
+
+    //TODO: Better way to differentiate between user suggested and default transformers, maybe introduce content transformer?
     public Object transformFieldValue(Field field, Object sourceValue) {
         sourceValue = applyUserSuggestedTransformers(field, sourceValue);
         return performApplicableTransformations(field.getGenericType(), sourceValue, defaultTransformers);
