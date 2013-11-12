@@ -29,25 +29,4 @@ public class CollectionTransformer extends ITypeTransformer<Collection,ArrayList
         }
         return result;
     }
-
-    @Override
-    public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
-
-        boolean isMatching = false;
-        if(Collection.class.isAssignableFrom(sourceClass) && Collection.class.isAssignableFrom(targetClass)) {
-            /*for(ITypeTransformer transformer : availableTransformers) {
-                isMatching |= transformer.isMatching(sourceClass,targetClass);
-            }*/
-            return true;
-        };
-        return isMatching;
-    }
-
-    private Class castTypeToClass(Type object) {
-        if(object.getClass().equals(Class.class)) {
-            return (Class<?>) object;
-        } else {
-            return (Class<?>) ((ParameterizedType) object).getRawType();
-        }
-    }
 }

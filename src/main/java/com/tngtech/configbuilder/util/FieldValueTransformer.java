@@ -92,13 +92,15 @@ public class FieldValueTransformer {
         }
     }
 
-    //TODO: Get rid of isMatching method
     private <S, T> ITypeTransformer<S, T> findApplicableTransformer(Class<?> sourceClass, Class<?> targetClass, ArrayList<Class> availableTransformerClasses) {
-        ITypeTransformer<S, T> transformer = null;
         for(Class clazz: availableTransformerClasses) {
-            transformer = (ITypeTransformer<S, T>) configBuilderFactory.createInstance(clazz);
-            if(transformer.isMatching(sourceClass, targetClass)) {
-                return transformer;
+            Type typeOfInterface = clazz.getGenericSuperclass();
+            Type[] genericTypes = ((ParameterizedType) typeOfInterface).getActualTypeArguments();
+
+            Class transformerSourceClass = classCastingHelper.castTypeToClass(genericTypes[0]);
+            Class transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
+            if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
+                return (ITypeTransformer)configBuilderFactory.createInstance(clazz);
             }
         }
         throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
