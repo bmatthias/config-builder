@@ -44,4 +44,14 @@ public class ClassCastingHelper {
         }
         return matches;
     }
+
+    public boolean isPrimitiveOrWrapper(Class targetClass) {
+        if(targetClass.isPrimitive()) {
+            return true;
+        }
+        else if(primitiveToWrapperMapping.containsValue(targetClass)) {
+            return true;
+        }
+        else return false;
+    }
 }

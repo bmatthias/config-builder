@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class ClassCastingHelperTest {
     
-    private class testClass extends ITypeTransformer<String, Collection<String>> {
+    private class TestClass extends ITypeTransformer<String, Collection<String>> {
 
         @Override
         public Collection<String> transform(String argument) {
@@ -41,8 +41,8 @@ public class ClassCastingHelperTest {
     
     @Test
     public void testCastTypeToClass() {
-        Type[] interfaceType = testClass.class.getGenericInterfaces();
-        Type[] genericTypes = ((ParameterizedType) interfaceType[0]).getActualTypeArguments();
+        Type interfaceType = TestClass.class.getGenericSuperclass();
+        Type[] genericTypes = ((ParameterizedType)interfaceType).getActualTypeArguments();
         
         assertEquals(classCastingHelper.castTypeToClass(genericTypes[0]).getClass(), Class.class);
         assertEquals(classCastingHelper.castTypeToClass(genericTypes[1]).getClass(), Class.class);

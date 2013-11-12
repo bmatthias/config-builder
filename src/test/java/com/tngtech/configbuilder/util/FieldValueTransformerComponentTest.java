@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import static com.google.common.collect.Lists.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -43,14 +42,17 @@ public class FieldValueTransformerComponentTest {
         private Collection<String> stringCollectionField;
         
         private int intField;
-        
-        @TypeTransformers({StringCollectionToCommaSeparatedStringTransformer.class})
+
+        private double doubleField;
+
         private Boolean boolField;
         
         @TypeTransformers({TestTransformer.class})
         private int otherIntField;
 
         private Collection<Path> pathCollectionField;
+
+        private Collection<Integer> integerCollectionField;
     }
 
     @Mock
@@ -67,9 +69,11 @@ public class FieldValueTransformerComponentTest {
     
     private Field stringCollectionField;
     private Field intField;
+    private Field doubleField;
     private Field boolField;
     private Field otherIntField;
     private Field pathCollectionField;
+    private Field integerCollectionField;
     
     private FieldValueTransformer fieldValueTransformer;
     
@@ -81,93 +85,73 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(ClassCastingHelper.class)).thenReturn(new ClassCastingHelper());
 
-        when(configBuilderFactory.getInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
-        when(configBuilderFactory.getInstance(IntegerToDoubleTransformer.class)).thenReturn(new IntegerToDoubleTransformer());
-        when(configBuilderFactory.getInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
-        when(configBuilderFactory.getInstance(StringToBooleanTransformer.class)).thenReturn(new StringToBooleanTransformer());
-        when(configBuilderFactory.getInstance(StringToDoubleTransformer.class)).thenReturn(new StringToDoubleTransformer());
-        when(configBuilderFactory.getInstance(StringToIntegerTransformer.class)).thenReturn(new StringToIntegerTransformer());
-        when(configBuilderFactory.getInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
-
-        CollectionTransformer collectionTransformer = new CollectionTransformer(configBuilderFactory);
-        when(configBuilderFactory.getInstance(CollectionTransformer.class)).thenReturn(collectionTransformer);
+        when(configBuilderFactory.createInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
+        when(configBuilderFactory.createInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
+        when(configBuilderFactory.createInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
+        when(configBuilderFactory.createInstance(TestTransformer.class)).thenReturn(new TestTransformer());
         
         stringCollectionField = TestConfigClass.class.getDeclaredField("stringCollectionField");
         intField = TestConfigClass.class.getDeclaredField("intField");
         boolField = TestConfigClass.class.getDeclaredField("boolField");
         otherIntField = TestConfigClass.class.getDeclaredField("otherIntField");
         pathCollectionField = TestConfigClass.class.getDeclaredField("pathCollectionField");
+        integerCollectionField = TestConfigClass.class.getDeclaredField("integerCollectionField");
+        doubleField = TestConfigClass.class.getDeclaredField("doubleField");
         
         this.fieldValueTransformer = new FieldValueTransformer(configBuilderFactory);
     }
 
     @Test
     public void testTransformingFieldValue() {
-        String content = "Alpha,Beta,Gamma";
-        
-        when(fieldValueExtractor.extractValue(stringCollectionField, builderConfiguration)).thenReturn(content);
-                
-        ArrayList<String> expectResult = newArrayList();
-        for (String value : content.split(",")) {
-            expectResult.add(value);
-        }
-        
-        ArrayList<String> actualResult = (ArrayList<String>)fieldValueTransformer.transformedFieldValue(stringCollectionField, builderConfiguration);
-        
-        verify(fieldValueExtractor).extractValue(stringCollectionField, builderConfiguration);
-        
-        assertEquals(expectResult, actualResult);
+        ArrayList<String> actualResult = (ArrayList<String>)fieldValueTransformer.transformFieldValue(stringCollectionField, "Alpha,Beta,Gamma");
+        assertEquals(Lists.newArrayList("Alpha","Beta","Gamma"), actualResult);
     }
 
     @Test
     public void testIfDefaultTransformersAreFound() {
-        when(fieldValueExtractor.extractValue(intField, builderConfiguration)).thenReturn("17");
-
-        Object actualResult = fieldValueTransformer.transformedFieldValue(intField, builderConfiguration);
+        Object actualResult = fieldValueTransformer.transformFieldValue(intField, "17");
 
         assertEquals(17, actualResult);
     }
 
+    @Test
+    public void testThatIntegerIsTransformedToDouble() {
+        Object actualResult = fieldValueTransformer.transformFieldValue(doubleField, 17);
+        assertEquals(17.0, actualResult);
+    }
+
     @Test(expected = TypeTransformerException.class)
     public void testExceptionIfNoTransformerFound() {
-        when(fieldValueExtractor.extractValue(boolField, builderConfiguration)).thenReturn(38.7);
-        
-        fieldValueTransformer.transformedFieldValue(boolField, builderConfiguration);
+        fieldValueTransformer.transformFieldValue(boolField, 38.7);
     }
 
     @Test
     public void testWhenNoTransformerNecessary() {
-        when(fieldValueExtractor.extractValue(intField, builderConfiguration)).thenReturn(197);
-
-        Object actualResult = fieldValueTransformer.transformedFieldValue(intField, builderConfiguration);
+        Object actualResult = fieldValueTransformer.transformFieldValue(intField, 197);
         assertEquals(197, actualResult);
     }
 
-    @Ignore
     @Test
     public void testThatTransformersInAnnotationArePrioritized() {
-        when(fieldValueExtractor.extractValue(otherIntField, builderConfiguration)).thenReturn("2");
-
-        Object actualResult = fieldValueTransformer.transformedFieldValue(otherIntField, builderConfiguration);
-        
-        verify(configBuilderFactory, never()).createInstance(StringToIntegerTransformer.class);
-
+        Object actualResult = fieldValueTransformer.transformFieldValue(otherIntField, "2");
         assertEquals(1472, actualResult);
     }
 
     @Test
-    public void testThatMultipleTransformersAreApplied() {
-        when(fieldValueExtractor.extractValue(pathCollectionField, builderConfiguration)).thenReturn("/etc,/usr");
-
-        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformedFieldValue(pathCollectionField, builderConfiguration);
+    public void testThatMultipleTransformersAreApplied1() {
+        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, "/etc,/usr");
         assertEquals(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")), actualResult);
     }
 
     @Test
-    public void testThatValueTransformerIgnoresNull() {
-        when(fieldValueExtractor.extractValue(stringCollectionField, builderConfiguration)).thenReturn(null);
+    public void testThatMultipleTransformersAreApplied2() {
+        Collection<Integer> actualResult = (Collection<Integer>)fieldValueTransformer.transformFieldValue(integerCollectionField, "3,4");
+        assertEquals(Lists.newArrayList(3,4), actualResult);
+    }
 
-        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformedFieldValue(pathCollectionField, builderConfiguration);
+    @Test
+    public void testThatValueTransformerIgnoresNull() {
+        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, null);
         assertEquals(null, actualResult);
     }
 

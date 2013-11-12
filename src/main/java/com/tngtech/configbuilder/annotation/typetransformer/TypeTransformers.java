@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TypeTransformers {
-    public Class<? extends ITypeTransformer>[] value();
+    public Class[] value();
 }

@@ -50,14 +50,9 @@ public class ConfigBuilderFactory {
 
         //TypeTransformers
         singletonMap.put(CommaSeparatedStringToStringCollectionTransformer.class, new CommaSeparatedStringToStringCollectionTransformer());
-        singletonMap.put(IntegerToDoubleTransformer.class, new IntegerToDoubleTransformer());
         singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
-        singletonMap.put(StringToBooleanTransformer.class, new StringToBooleanTransformer());
-        singletonMap.put(StringToDoubleTransformer.class, new StringToDoubleTransformer());
-        singletonMap.put(StringToIntegerTransformer.class, new StringToIntegerTransformer());
         singletonMap.put(PropertyExtensionProcessor.class, new PropertyExtensionProcessor());
         singletonMap.put(StringToPathTransformer.class, new StringToPathTransformer());
-        singletonMap.put(CollectionTransformer.class, new CollectionTransformer(this));
     }
 
     public <K> K getInstance(Class<K> clazz) {

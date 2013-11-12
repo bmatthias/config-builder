@@ -48,6 +48,8 @@ public class FieldSetterTest {
     @Mock
     private FieldValueTransformer fieldValueTransformer;
     @Mock
+    private FieldValueExtractor fieldValueExtractor;
+    @Mock
     private ErrorMessageSetup errorMessageSetup;
     @Mock
     private AnnotationHelper annotationHelper;
@@ -58,6 +60,7 @@ public class FieldSetterTest {
     @Before
     public void setUp() throws Exception {
         when(configBuilderFactory.getInstance(FieldValueTransformer.class)).thenReturn(fieldValueTransformer);
+        when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(true);
@@ -65,7 +68,8 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsThrowsIllegalArgumentException() throws Exception {
-        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn(null);
         when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class), Matchers.any(String.class), Matchers.any(String.class), Matchers.any(String.class))).thenReturn("IllegalArgumentException");
 
         FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(configBuilderFactory);
@@ -79,7 +83,8 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFields() throws Exception {
-        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
 
         FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfig testConfig = new TestConfig();
@@ -93,7 +98,8 @@ public class FieldSetterTest {
 
     @Test
     public void testSetEmptyFields() throws Exception {
-        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
 
         FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfig testConfig = new TestConfig();
@@ -106,7 +112,7 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() throws Exception {
-        when(fieldValueTransformer.transformedFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(false);
 
         FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(configBuilderFactory);
