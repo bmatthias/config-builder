@@ -37,7 +37,7 @@ public class FieldValueTransformerComponentTest {
     }
     
     private class TestConfigClass {
-        
+
         @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
         private Collection<String> stringCollectionField;
         
@@ -88,6 +88,8 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.createInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
         when(configBuilderFactory.createInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
         when(configBuilderFactory.createInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
+        when(configBuilderFactory.createInstance(CollectionTransformer.class)).thenReturn(new CollectionTransformer());
+        when(configBuilderFactory.createInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
         when(configBuilderFactory.createInstance(TestTransformer.class)).thenReturn(new TestTransformer());
         
         stringCollectionField = TestConfigClass.class.getDeclaredField("stringCollectionField");

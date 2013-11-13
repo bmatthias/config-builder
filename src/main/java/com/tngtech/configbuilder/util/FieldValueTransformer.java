@@ -7,10 +7,8 @@ import com.tngtech.configbuilder.exception.TypeTransformerException;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class FieldValueTransformer {
 
@@ -23,7 +21,9 @@ public class FieldValueTransformer {
     private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
             CommaSeparatedStringToStringCollectionTransformer.class,
             StringCollectionToCommaSeparatedStringTransformer.class,
-            StringToPathTransformer.class});
+            StringToPathTransformer.class,
+            CollectionTransformer.class,
+            StringOrPrimitiveToPrimitiveTransformer.class});
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
@@ -37,7 +37,9 @@ public class FieldValueTransformer {
         if(!getUserSuggestedTransformers(field).isEmpty() && sourceValue != null) {
             Class<?> sourceClass = classCastingHelper.getWrapperClassForPrimitive(sourceValue.getClass());
             ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, field.getGenericType(), getUserSuggestedTransformers(field));
-            sourceValue = transformer.transform(sourceValue);
+            if(transformer != null) {
+                sourceValue = transformer.transform(sourceValue);
+            }
         }
         return sourceValue;
     }
@@ -53,36 +55,30 @@ public class FieldValueTransformer {
         log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
 
         ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType, allTransformers);
+        if(transformer == null) {
+            throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
+        }
         sourceValue = transformer.transform(sourceValue);
         return performNecessaryTransformations(sourceValue, targetType, allTransformers);
     }
 
-    //TODO: Simplify & make this work for transformers that are inner classes (cannot be instantiated by configBuilderFactory)
+    //TODO: Bring back generics
     private ITypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
         Class<?> targetClass = classCastingHelper.getWrapperClassForPrimitive(classCastingHelper.castTypeToClass(targetType));
-
         for(Class clazz: availableTransformerClasses) {
-            Type typeOfInterface = clazz.getGenericSuperclass();
-            Type[] genericTypes = ((ParameterizedType) typeOfInterface).getActualTypeArguments();
-            Class<?> transformerSourceClass = classCastingHelper.castTypeToClass(genericTypes[0]);
-            Class<?> transformerTargetClass = classCastingHelper.castTypeToClass(genericTypes[1]);
-            if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
-                return (ITypeTransformer)configBuilderFactory.createInstance(clazz);
+            //TODO: Do not instantiate new transformers all the time & Make this work for transformers that are inner classes (i.e. cannot be instantiated by configBuilderFactory)
+            ITypeTransformer transformer = (ITypeTransformer)configBuilderFactory.createInstance(clazz);
+            transformer.setClassCastingHelper(classCastingHelper);
+            if(transformer.isMatching(sourceClass, targetClass)) {
+                transformer.setFieldValueTransformer(this);
+                transformer.setClassCastingHelper(classCastingHelper);
+                transformer.setErrorMessageSetup(errorMessageSetup);
+                transformer.setTargetType(targetType);
+                transformer.setAvailableTransformers(availableTransformerClasses);
+                return transformer;
             }
         }
-
-        if(classCastingHelper.isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || classCastingHelper.isPrimitiveOrWrapper(sourceClass))) {
-            return new StringOrPrimitiveToPrimitiveTransformer(targetClass);
-        }
-
-        if(Collection.class.isAssignableFrom(targetClass) && String.class.equals(sourceClass)) {
-            return new CommaSeparatedStringToStringCollectionTransformer();
-        }
-
-        if(Collection.class.isAssignableFrom(targetClass) && Collection.class.isAssignableFrom(sourceClass)) {
-            return new CollectionTransformer(this, ((ParameterizedType)targetType).getActualTypeArguments()[0], availableTransformerClasses);
-        }
-        throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
+        return null;
     }
 
     private ArrayList<Class> getUserSuggestedTransformers(Field field) {

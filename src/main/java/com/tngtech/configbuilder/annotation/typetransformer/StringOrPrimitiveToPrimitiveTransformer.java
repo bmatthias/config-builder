@@ -5,18 +5,13 @@ import com.tngtech.configbuilder.exception.TypeTransformerException;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.util.Collection;
 
 public class StringOrPrimitiveToPrimitiveTransformer extends ITypeTransformer<Object,Object>{
 
-    Class<?> primitiveType;
-
-    public StringOrPrimitiveToPrimitiveTransformer(Class primitiveType) {
-        this.primitiveType = primitiveType;
-    }
-
     @Override
     public Object transform(Object argument) {
-        PropertyEditor editor = PropertyEditorManager.findEditor(primitiveType);
+        PropertyEditor editor = PropertyEditorManager.findEditor(this.getClassCastingHelper().castTypeToClass(this.getTargetType()));
         if (editor != null) {
             try {
                 editor.setAsText(String.valueOf(argument));
@@ -29,5 +24,10 @@ public class StringOrPrimitiveToPrimitiveTransformer extends ITypeTransformer<Ob
         } else {
             return argument;
         }
+    }
+
+    @Override
+    public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
+        return this.getClassCastingHelper().isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || this.getClassCastingHelper().isPrimitiveOrWrapper(sourceClass));
     }
 }
