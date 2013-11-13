@@ -27,4 +27,9 @@ public class CommaSeparatedStringToStringCollectionTransformerTest {
         Collection<String> actualResult = transformer.transform("Wayne,André,Kanye,Lebron");
         assertThat(actualResult,equalTo(expectedResult));
     }
+
+    @Test
+    public void testIsMatching() throws Exception {
+
+    }
 }

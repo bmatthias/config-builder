@@ -26,4 +26,9 @@ public class StringCollectionToCommaSeparatedStringTransformerTest {
         String actualResult = transformer.transform(collection);
         assertThat(actualResult, equalTo("Rakim,Lakim Shabazz,2Pac"));
     }
+
+    @Test
+    public void testIsMatching() throws Exception {
+
+    }
 }
