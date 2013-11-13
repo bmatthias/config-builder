@@ -2,6 +2,7 @@ package com.tngtech.configbuilder.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +22,11 @@ public class ClassCastingHelper {
         primitiveToWrapperMapping.put(double.class, Double.class);
     }
 
-    public Class getWrapperClassForPrimitive(Class primitiveClass) {
-        return primitiveToWrapperMapping.get(primitiveClass);
+    public Class<?> getWrapperClassForPrimitive(Class primitiveClass) {
+        return primitiveToWrapperMapping.get(primitiveClass) == null? primitiveClass : primitiveToWrapperMapping.get(primitiveClass);
     }
 
-    public Class castTypeToClass(Type object) {
+    public Class<?> castTypeToClass(Type object) {
         if(object.getClass().equals(Class.class)) {
             return (Class<?>) object;
         } else {
@@ -33,16 +34,29 @@ public class ClassCastingHelper {
         }
     }
 
-    public boolean typeMatches(ParameterizedType sourceType, ParameterizedType targetType) {
-        Class<?> sourceClass = (Class<?>)sourceType.getRawType();
-        Class<?> targetClass = (Class<?>)targetType.getRawType();
-        boolean matches = targetClass.isAssignableFrom(sourceClass) && sourceType.getActualTypeArguments().length == targetType.getActualTypeArguments().length;
-        if(matches) {
-            for(int i = 0; i < sourceType.getActualTypeArguments().length; i++) {
-                matches &=  ((Class<?>)targetType.getActualTypeArguments()[i]).isAssignableFrom((Class<?>)sourceType.getActualTypeArguments()[i]);
+    public boolean typesMatch(Object sourceValue, Type targetType) {
+        if(sourceValue == null) {
+            return !castTypeToClass(targetType).isPrimitive();
+        }
+        Class<?> sourceClass = getWrapperClassForPrimitive(sourceValue.getClass());
+        if(targetType.getClass().equals(Class.class)) {
+            return getWrapperClassForPrimitive((Class<?>)targetType).isAssignableFrom(sourceClass);
+        }
+        else if(Collection.class.isAssignableFrom((Class<?>)((ParameterizedType)targetType).getRawType())) {
+            if(Collection.class.isAssignableFrom(sourceClass)) {
+                Class<?> typeArgument = (Class<?>)((ParameterizedType) targetType).getActualTypeArguments()[0];
+                for(Object object : (Collection)sourceValue) {
+                    if(!typeArgument.isAssignableFrom(object.getClass())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else {
+                return false;
             }
         }
-        return matches;
+        return ((Class<?>)targetType).isAssignableFrom(sourceClass);
     }
 
     public boolean isPrimitiveOrWrapper(Class targetClass) {
