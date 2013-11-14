@@ -65,13 +65,12 @@ public class FieldValueTransformer {
     //TODO: Bring back generics
     private ITypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
         Class<?> targetClass = classCastingHelper.getWrapperClassForPrimitive(classCastingHelper.castTypeToClass(targetType));
-        for(Class clazz: availableTransformerClasses) {
+        for(Class<ITypeTransformer> clazz: availableTransformerClasses) {
             //TODO: Do not instantiate new transformers all the time & Make this work for transformers that are inner classes (i.e. cannot be instantiated by configBuilderFactory)
-            ITypeTransformer transformer = (ITypeTransformer)configBuilderFactory.createInstance(clazz);
+            ITypeTransformer transformer = configBuilderFactory.getInstance(clazz);
             transformer.setClassCastingHelper(classCastingHelper);
             if(transformer.isMatching(sourceClass, targetClass)) {
                 transformer.setFieldValueTransformer(this);
-                transformer.setClassCastingHelper(classCastingHelper);
                 transformer.setErrorMessageSetup(errorMessageSetup);
                 transformer.setTargetType(targetType);
                 transformer.setAvailableTransformers(availableTransformerClasses);

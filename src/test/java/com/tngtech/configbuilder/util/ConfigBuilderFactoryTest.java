@@ -36,7 +36,7 @@ public class ConfigBuilderFactoryTest {
     @Test
     public void testGetInstance() throws Exception {
         assertEquals(ErrorMessageSetup.class, configBuilderFactory.getInstance(ErrorMessageSetup.class).getClass());
-        assertEquals(null, configBuilderFactory.getInstance(GnuParser.class));
+        assertEquals(GnuParser.class, configBuilderFactory.getInstance(GnuParser.class).getClass());
     }
 
     @Test

@@ -6,7 +6,6 @@ import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -18,10 +17,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static com.google.common.collect.Lists.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,12 +82,12 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(ClassCastingHelper.class)).thenReturn(new ClassCastingHelper());
 
-        when(configBuilderFactory.createInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
-        when(configBuilderFactory.createInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
-        when(configBuilderFactory.createInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
-        when(configBuilderFactory.createInstance(CollectionTransformer.class)).thenReturn(new CollectionTransformer());
-        when(configBuilderFactory.createInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
-        when(configBuilderFactory.createInstance(TestTransformer.class)).thenReturn(new TestTransformer());
+        when(configBuilderFactory.getInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
+        when(configBuilderFactory.getInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
+        when(configBuilderFactory.getInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
+        when(configBuilderFactory.getInstance(CollectionTransformer.class)).thenReturn(new CollectionTransformer());
+        when(configBuilderFactory.getInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
+        when(configBuilderFactory.getInstance(TestTransformer.class)).thenReturn(new TestTransformer());
         
         stringCollectionField = TestConfigClass.class.getDeclaredField("stringCollectionField");
         intField = TestConfigClass.class.getDeclaredField("intField");
