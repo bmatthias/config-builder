@@ -12,6 +12,7 @@ import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 public class ConfigBuilderFactory {
@@ -28,7 +29,7 @@ public class ConfigBuilderFactory {
 
         //util
         singletonMap.put(AnnotationHelper.class, new AnnotationHelper());
-        singletonMap.put(ClassCastingHelper.class, new ClassCastingHelper());
+        singletonMap.put(GenericsAndCastingHelper.class, new GenericsAndCastingHelper());
         singletonMap.put(FieldValueExtractor.class, new FieldValueExtractor(this));
         singletonMap.put(FieldValueTransformer.class, new FieldValueTransformer(this));
         singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));
@@ -54,6 +55,9 @@ public class ConfigBuilderFactory {
         singletonMap.put(CommaSeparatedStringToStringCollectionTransformer.class, new CommaSeparatedStringToStringCollectionTransformer());
         singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
         singletonMap.put(StringToPathTransformer.class, new StringToPathTransformer());
+
+        //other
+        singletonMap.put(ValidatorFactory.class, Validation.buildDefaultValidatorFactory());
     }
 
     public <K> K getInstance(Class<K> clazz) {
@@ -65,15 +69,21 @@ public class ConfigBuilderFactory {
         }
     }
 
+    //TODO: Make this work if config class has no default constructor & better exception
     public <K> K createInstance(Class<K> clazz) {
         try {
             return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            Class superClass = clazz.getDeclaringClass();
+            try {
+                Object superInstance = superClass.newInstance();
+                Constructor<K> constructor = clazz.getConstructor(superClass);
+                return constructor.newInstance(superInstance);
+            } catch (Exception e1) {
+                throw new RuntimeException(e1);
+            }
         }
-    }
-
-    public ValidatorFactory getValidatorFactory() {
-        return Validation.buildDefaultValidatorFactory();
     }
 }

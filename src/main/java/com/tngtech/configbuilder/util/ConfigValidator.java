@@ -43,7 +43,7 @@ public class ConfigValidator<T> {
     }
 
     private void callJSRValidation(T instanceOfConfigClass) {
-        ValidatorFactory factory = configBuilderFactory.getValidatorFactory();
+        ValidatorFactory factory = configBuilderFactory.getInstance(ValidatorFactory.class);
         javax.validation.Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
         if (!constraintViolations.isEmpty()) {

@@ -10,13 +10,14 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+//TODO: Content transformers (transform even if types already match, allow null as argument) & bring back generics
 public class FieldValueTransformer {
 
     private final static Logger log = Logger.getLogger(FieldValueTransformer.class);
 
     private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;
-    private final ClassCastingHelper classCastingHelper;
+    private final GenericsAndCastingHelper genericsAndCastingHelper;
     
     private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
             CommaSeparatedStringToStringCollectionTransformer.class,
@@ -28,56 +29,39 @@ public class FieldValueTransformer {
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
-        this.classCastingHelper = configBuilderFactory.getInstance(ClassCastingHelper.class);
+        this.genericsAndCastingHelper = configBuilderFactory.getInstance(GenericsAndCastingHelper.class);
     }
 
-    //TODO: Better algorithm for when to apply user suggested transformers (e.g. allow null), maybe introduce content transformers?
     public Object transformFieldValue(Field field, Object sourceValue) {
         sourceValue = performNecessaryTransformations(sourceValue, field.getGenericType(), getAllTransformers(field));
-        if(!getUserSuggestedTransformers(field).isEmpty() && sourceValue != null) {
-            Class<?> sourceClass = classCastingHelper.getWrapperClassForPrimitive(sourceValue.getClass());
-            ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, field.getGenericType(), getUserSuggestedTransformers(field));
-            if(transformer != null) {
-                sourceValue = transformer.transform(sourceValue);
-            }
-        }
         return sourceValue;
     }
 
     public Object performNecessaryTransformations(Object sourceValue, Type targetType, ArrayList<Class> allTransformers) {
-        if(classCastingHelper.typesMatch(sourceValue, targetType)) {
+        if(genericsAndCastingHelper.typesMatch(sourceValue, targetType)) {
             return sourceValue;
         }
-
-        Class<?> sourceClass = classCastingHelper.getWrapperClassForPrimitive(sourceValue.getClass());
-        Class<?> targetClass = classCastingHelper.castTypeToClass(targetType);
+        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassForPrimitive(sourceValue.getClass());
+        Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
 
         log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
 
         ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType, allTransformers);
-        if(transformer == null) {
-            throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
-        }
         sourceValue = transformer.transform(sourceValue);
         return performNecessaryTransformations(sourceValue, targetType, allTransformers);
     }
 
-    //TODO: Bring back generics
     private ITypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
-        Class<?> targetClass = classCastingHelper.getWrapperClassForPrimitive(classCastingHelper.castTypeToClass(targetType));
+        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassForPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
         for(Class<ITypeTransformer> clazz: availableTransformerClasses) {
-            //TODO: Do not instantiate new transformers all the time & Make this work for transformers that are inner classes (i.e. cannot be instantiated by configBuilderFactory)
             ITypeTransformer transformer = configBuilderFactory.getInstance(clazz);
-            transformer.setClassCastingHelper(classCastingHelper);
+            transformer.setGenericsAndCastingHelper(genericsAndCastingHelper);
             if(transformer.isMatching(sourceClass, targetClass)) {
-                transformer.setFieldValueTransformer(this);
-                transformer.setErrorMessageSetup(errorMessageSetup);
-                transformer.setTargetType(targetType);
-                transformer.setAvailableTransformers(availableTransformerClasses);
+                transformer.initialize(this, configBuilderFactory, targetType, availableTransformerClasses);
                 return transformer;
             }
         }
-        return null;
+        throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
     }
 
     private ArrayList<Class> getUserSuggestedTransformers(Field field) {

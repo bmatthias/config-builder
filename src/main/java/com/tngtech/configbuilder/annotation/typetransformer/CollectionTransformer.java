@@ -15,7 +15,7 @@ public class CollectionTransformer extends ITypeTransformer<Collection,ArrayList
     public ArrayList transform(Collection argument) {
         ArrayList result = Lists.newArrayList();
         for(Object value : argument) {
-            result.add(this.getFieldValueTransformer().performNecessaryTransformations(value, ((ParameterizedType)this.getTargetType()).getActualTypeArguments()[0], this.getAvailableTransformers()));
+            result.add(fieldValueTransformer.performNecessaryTransformations(value, ((ParameterizedType)targetType).getActualTypeArguments()[0], availableTransformers));
         }
         return result;
     }
