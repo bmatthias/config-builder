@@ -19,7 +19,6 @@ import java.util.List;
 @PropertySuffixes(extraSuffixes = {"test"})
 @PropertyLocations(resourcesForClasses = {PropertyLoader.class})
 @PropertiesFiles("demoapp-configuration")
-@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, DefaultValue.class})
 public class TestConfig {
 
     public TestConfig() {

@@ -61,9 +61,9 @@ public class ConfigBuilderIntegrationTest {
         TestConfigWithoutDefaultConstructor c = configBuilder.build(3);
         assertEquals(3, c.getNumber());
     }
-
+    
     @Test
-    public void testMerge() {
+    public void testImportWithLowPriority() {
         ArrayList<String> arrayList = Lists.newArrayList("collection", "two");
         String home = System.getenv("HOME");
         String userLanguage = System.getProperty("user.language");
@@ -77,14 +77,14 @@ public class ConfigBuilderIntegrationTest {
         originalTestConfig.setSystemProperty(userLanguage);
 
         TestConfig overwritingTestConfig = new TestConfig();
-        overwritingTestConfig.setSomeString("Hello World!");
+        overwritingTestConfig.setSomeString("Hello, World!");
         overwritingTestConfig.setBoolean(false);
-        overwritingTestConfig.setStringCollection(arrayList);
+        overwritingTestConfig.setSystemProperty(userLanguage);
         
         TestConfig expectedTestConfig = new TestConfig();
-        expectedTestConfig.setSomeString("Hello World!");
+        expectedTestConfig.setSomeString("Hello, World!");
         expectedTestConfig.setSomeNumber(3);
-        expectedTestConfig.setBoolean(true); // primitives will not be overwritten
+        expectedTestConfig.setBoolean(true);
         expectedTestConfig.setStringCollection(arrayList);
         expectedTestConfig.setIntegerList(Lists.newArrayList(1,2,3,4,5));
         expectedTestConfig.setPathCollection(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")));
@@ -93,8 +93,8 @@ public class ConfigBuilderIntegrationTest {
         
 
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        String[] args = new String[]{"-u", "--collection", "PIDs fixed with"};
-        Object result = configBuilder.withCommandLineArgs(args).merge(overwritingTestConfig);
+        String[] args = new String[]{"-u", "--collection", "collection,two"};
+        Object result = configBuilder.withCommandLineArgs(args).withImportedConfiguration(overwritingTestConfig).build();
         assertReflectionEquals(expectedTestConfig, result);
     }
 }
