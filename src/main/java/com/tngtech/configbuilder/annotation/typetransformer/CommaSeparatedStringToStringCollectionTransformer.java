@@ -3,10 +3,8 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-public class CommaSeparatedStringToStringCollectionTransformer extends ITypeTransformer<String, ArrayList<String>> {
+public class CommaSeparatedStringToStringCollectionTransformer extends TypeTransformer<String, ArrayList<String>> {
 
     @Override
     public ArrayList<String> transform(String argument) {

@@ -6,7 +6,7 @@ import com.tngtech.configbuilder.exception.TypeTransformerException;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 
-public class StringOrPrimitiveToPrimitiveTransformer extends ITypeTransformer<Object,Object>{
+public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Object,Object> {
 
     @Override
     public Object transform(Object argument) {

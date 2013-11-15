@@ -10,7 +10,10 @@ import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.propertyloader.PropertyLoader;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -23,15 +26,41 @@ public class TestConfig {
 
     }
 
+    public Collection<Path> getPathCollection() {
+        return pathCollection;
+    }
+
+    public void setPathCollection(Collection<Path> pathCollection) {
+        this.pathCollection = pathCollection;
+    }
+
+    public List<Integer> getIntegerList() {
+        return integerList;
+    }
+
+    public void setIntegerList(List<Integer> integerList) {
+        this.integerList = integerList;
+    }
+
+    public ArrayList<TestConfig> getTestConfigList() {
+        return testConfigList;
+    }
+
+    public class TestConfigFactory extends TypeTransformer<String,TestConfig> {
+        public TestConfig transform(String input) {
+            TestConfig testConfig = new TestConfig();
+            testConfig.setSomeString(input);
+            return testConfig;
+        }
+    }
+
     @DefaultValue("3")
-//    @TypeTransformers({StringToIntegerTransformer.class})
     private int someNumber;
 
     @PropertyValue("a")
-    private String helloWorld;
+    private String someString;
 
     @CommandLineValue(shortOpt = "u", longOpt = "user")
-//    @TypeTransformers({StringToBooleanTransformer.class})
     private boolean aBoolean;
 
     @LoadingOrder(value = {CommandLineValue.class})
@@ -39,8 +68,17 @@ public class TestConfig {
     @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
     private Collection<String> stringCollection;
 
-    @EnvironmentVariableValue("PATH")
-    private String environmentVariable;
+    @DefaultValue("/etc,/usr")
+    private Collection<Path> pathCollection;
+
+    @DefaultValue("1,2,3,4,5")
+    private List<Integer> integerList;
+
+    @TypeTransformers(TestConfigFactory.class)
+    private ArrayList<TestConfig> testConfigList;
+
+    @EnvironmentVariableValue("HOME")
+    private Path homeDir;
 
     @SystemPropertyValue("user.language")
     private String systemProperty;
@@ -49,8 +87,8 @@ public class TestConfig {
         this.someNumber = someNumber;
     }
 
-    public void setHelloWorld(String helloWorld) {
-        this.helloWorld = helloWorld;
+    public void setSomeString(String someString) {
+        this.someString = someString;
     }
 
     public void setBoolean(boolean aBoolean) {
@@ -61,8 +99,8 @@ public class TestConfig {
         this.stringCollection = stringCollection;
     }
 
-    public void setEnvironmentVariable(String environmentVariable) {
-        this.environmentVariable = environmentVariable;
+    public void setHomeDir(Path homeDir) {
+        this.homeDir = homeDir;
     }
 
     public void setSystemProperty(String systemProperty) {

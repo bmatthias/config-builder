@@ -1,7 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 
-import com.tngtech.configbuilder.annotation.typetransformer.ITypeTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class GenericsAndCastingHelperTest {
     
-    private class TestClass extends ITypeTransformer<String, Collection<String>> {
+    private class TestClass extends TypeTransformer<String, Collection<String>> {
 
         @Override
         public Collection<String> transform(String argument) {

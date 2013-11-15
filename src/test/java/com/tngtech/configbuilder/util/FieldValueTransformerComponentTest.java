@@ -25,7 +25,15 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FieldValueTransformerComponentTest {
     
-    public class TestTransformer extends ITypeTransformer<String, Integer> {
+    public class TestTransformer extends TypeTransformer<String, Integer> {
+
+        @Override
+        public Integer transform(String argument) {
+            return 1472;
+        }
+    }
+
+    public static class AnotherTestTransformer extends TypeTransformer<String, Integer> {
 
         @Override
         public Integer transform(String argument) {
@@ -37,19 +45,16 @@ public class FieldValueTransformerComponentTest {
 
         @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
         private Collection<String> stringCollectionField;
-        
         private int intField;
-
         private double doubleField;
-
         private Boolean boolField;
-        
         @TypeTransformers({TestTransformer.class})
         private int otherIntField;
-
+        @TypeTransformers({AnotherTestTransformer.class})
+        private Integer integerField;
         private Collection<Path> pathCollectionField;
-
         private Collection<Integer> integerCollectionField;
+        private Collection<Object> objectCollectionField;
     }
 
     @Mock
@@ -69,8 +74,10 @@ public class FieldValueTransformerComponentTest {
     private Field doubleField;
     private Field boolField;
     private Field otherIntField;
+    private Field integerField;
     private Field pathCollectionField;
     private Field integerCollectionField;
+    private Field objectCollectionField;
     
     private FieldValueTransformer fieldValueTransformer;
     
@@ -93,34 +100,36 @@ public class FieldValueTransformerComponentTest {
         intField = TestConfigClass.class.getDeclaredField("intField");
         boolField = TestConfigClass.class.getDeclaredField("boolField");
         otherIntField = TestConfigClass.class.getDeclaredField("otherIntField");
+        integerField = TestConfigClass.class.getDeclaredField("integerField");
         pathCollectionField = TestConfigClass.class.getDeclaredField("pathCollectionField");
         integerCollectionField = TestConfigClass.class.getDeclaredField("integerCollectionField");
         doubleField = TestConfigClass.class.getDeclaredField("doubleField");
+        objectCollectionField = TestConfigClass.class.getDeclaredField("objectCollectionField");
         
         this.fieldValueTransformer = new FieldValueTransformer(configBuilderFactory);
     }
 
     @Test
-    public void testTransformingFieldValue() {
+    public void testTransformingStringToStringCollection() {
         ArrayList<String> actualResult = (ArrayList<String>)fieldValueTransformer.transformFieldValue(stringCollectionField, "Alpha,Beta,Gamma");
         assertEquals(Lists.newArrayList("Alpha","Beta","Gamma"), actualResult);
     }
 
     @Test
-    public void testIfDefaultTransformersAreFound() {
+    public void testTransformingStringToInt() {
         Object actualResult = fieldValueTransformer.transformFieldValue(intField, "17");
 
         assertEquals(17, actualResult);
     }
 
     @Test
-    public void testThatIntegerIsTransformedToDouble() {
+    public void testTransformingIntegerToDouble() {
         Object actualResult = fieldValueTransformer.transformFieldValue(doubleField, 17);
         assertEquals(17.0, actualResult);
     }
 
     @Test(expected = TypeTransformerException.class)
-    public void testExceptionIfNoTransformerFound() {
+    public void testExceptionIfValueCannotBeParsedToBoolean() {
         fieldValueTransformer.transformFieldValue(boolField, 38.7);
     }
 
@@ -137,15 +146,21 @@ public class FieldValueTransformerComponentTest {
     }
 
     @Test
-    public void testThatMultipleTransformersAreApplied1() {
+    public void testTransformingStringToPathCollection() {
         Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, "/etc,/usr");
         assertEquals(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")), actualResult);
     }
 
     @Test
-    public void testThatMultipleTransformersAreApplied2() {
+    public void testTransformingStringToIntegerCollection() {
         Collection<Integer> actualResult = (Collection<Integer>)fieldValueTransformer.transformFieldValue(integerCollectionField, "3,4");
         assertEquals(Lists.newArrayList(3,4), actualResult);
+    }
+
+    @Test
+    public void testTransformingStringToObjectCollection() {
+        Collection<Object> actualResult = (Collection<Object>)fieldValueTransformer.transformFieldValue(objectCollectionField, "someString,anotherString");
+        assertEquals(Lists.newArrayList("someString","anotherString"), actualResult);
     }
 
     @Test
@@ -153,5 +168,4 @@ public class FieldValueTransformerComponentTest {
         Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, null);
         assertEquals(null, actualResult);
     }
-
 }

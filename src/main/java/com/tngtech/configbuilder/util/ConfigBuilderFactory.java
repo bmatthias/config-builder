@@ -69,21 +69,26 @@ public class ConfigBuilderFactory {
         }
     }
 
-    //TODO: Make this work if config class has no default constructor & better exception
+    //TODO: exception message
     public <K> K createInstance(Class<K> clazz) {
         try {
             return clazz.newInstance();
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
-            Class superClass = clazz.getDeclaringClass();
-            try {
-                Object superInstance = superClass.newInstance();
-                Constructor<K> constructor = clazz.getConstructor(superClass);
-                return constructor.newInstance(superInstance);
-            } catch (Exception e1) {
-                throw new RuntimeException(e1);
-            }
+            return createInstanceOfInnerClass(clazz);
+        }
+    }
+
+    //TODO: exception message
+    private <K> K createInstanceOfInnerClass(Class<K> clazz) {
+        Class superClass = clazz.getDeclaringClass();
+        try {
+            Object superInstance = superClass.newInstance();
+            Constructor<K> constructor = clazz.getConstructor(superClass);
+            return constructor.newInstance(superInstance);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

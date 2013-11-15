@@ -22,11 +22,11 @@ public class GenericsAndCastingHelper {
         primitiveToWrapperMapping.put(double.class, Double.class);
     }
 
-    public Class<?> getWrapperClassForPrimitive(Class primitiveClass) {
-        return primitiveToWrapperMapping.get(primitiveClass) == null? primitiveClass : primitiveToWrapperMapping.get(primitiveClass);
+    public Class getWrapperClassForPrimitive(Class clazz) {
+        return primitiveToWrapperMapping.get(clazz) == null? clazz : primitiveToWrapperMapping.get(clazz);
     }
 
-    public Class<?> castTypeToClass(Type object) {
+    public Class castTypeToClass(Type object) {
         if(object.getClass().equals(Class.class)) {
             return (Class<?>) object;
         } else {
@@ -56,7 +56,7 @@ public class GenericsAndCastingHelper {
                 return false;
             }
         }
-        return ((Class<?>)targetType).isAssignableFrom(sourceClass);
+        return (castTypeToClass(targetType)).isAssignableFrom(sourceClass);
     }
 
     public boolean isPrimitiveOrWrapper(Class targetClass) {

@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,11 +30,13 @@ public class ConfigBuilderIntegrationTest {
     @Parameterized.Parameters
     public static Collection configs() {
         TestConfig testConfig = new TestConfig();
-        testConfig.setHelloWorld("Hello, World!");
+        testConfig.setSomeString("Hello, World!");
         testConfig.setSomeNumber(3);
         testConfig.setBoolean(true);
-        testConfig.setStringCollection(Lists.newArrayList("one entry"));
-        testConfig.setEnvironmentVariable(System.getenv("PATH"));
+        testConfig.setStringCollection(Lists.newArrayList("first entry","second entry"));
+        testConfig.setIntegerList(Lists.newArrayList(1,2,3,4,5));
+        testConfig.setPathCollection(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")));
+        testConfig.setHomeDir(Paths.get(System.getenv("HOME")));
         testConfig.setSystemProperty(System.getProperty("user.language"));
 
         return Arrays.asList(new Object[][]{{TestConfig.class, testConfig}});
@@ -47,7 +50,7 @@ public class ConfigBuilderIntegrationTest {
     @Test
     public void testConfigBuilderWithParameters() {
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        String[] args = new String[]{"-u", "--collection", "one entry"};
+        String[] args = new String[]{"-u", "--collection", "first entry,second entry"};
         Object result = configBuilder.withCommandLineArgs(args).build();
         assertReflectionEquals(configInstance, result);
     }
@@ -62,28 +65,30 @@ public class ConfigBuilderIntegrationTest {
     @Test
     public void testMerge() {
         ArrayList<String> arrayList = Lists.newArrayList("collection", "two");
-        String systemPath = System.getenv("PATH");
+        String home = System.getenv("HOME");
         String userLanguage = System.getProperty("user.language");
         
         TestConfig originalTestConfig = new TestConfig();
-        originalTestConfig.setHelloWorld("astringwithoutspaces");
+        originalTestConfig.setSomeString("astringwithoutspaces");
         originalTestConfig.setSomeNumber(3);
         originalTestConfig.setBoolean(true);
         originalTestConfig.setStringCollection(Lists.newArrayList("collection"));
-        originalTestConfig.setEnvironmentVariable(systemPath);
+        originalTestConfig.setHomeDir(Paths.get(home));
         originalTestConfig.setSystemProperty(userLanguage);
 
         TestConfig overwritingTestConfig = new TestConfig();
-        overwritingTestConfig.setHelloWorld("Hello World!");
+        overwritingTestConfig.setSomeString("Hello World!");
         overwritingTestConfig.setBoolean(false);
         overwritingTestConfig.setStringCollection(arrayList);
         
         TestConfig expectedTestConfig = new TestConfig();
-        expectedTestConfig.setHelloWorld("Hello World!");
+        expectedTestConfig.setSomeString("Hello World!");
         expectedTestConfig.setSomeNumber(3);
         expectedTestConfig.setBoolean(true); // primitives will not be overwritten
         expectedTestConfig.setStringCollection(arrayList);
-        expectedTestConfig.setEnvironmentVariable(systemPath);
+        expectedTestConfig.setIntegerList(Lists.newArrayList(1,2,3,4,5));
+        expectedTestConfig.setPathCollection(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")));
+        expectedTestConfig.setHomeDir(Paths.get(home));
         expectedTestConfig.setSystemProperty(userLanguage);
         
 

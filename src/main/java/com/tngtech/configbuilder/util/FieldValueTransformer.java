@@ -20,11 +20,11 @@ public class FieldValueTransformer {
     private final GenericsAndCastingHelper genericsAndCastingHelper;
     
     private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
+            StringOrPrimitiveToPrimitiveTransformer.class,
             CommaSeparatedStringToStringCollectionTransformer.class,
-            StringCollectionToCommaSeparatedStringTransformer.class,
-            StringToPathTransformer.class,
             CollectionTransformer.class,
-            StringOrPrimitiveToPrimitiveTransformer.class});
+            StringCollectionToCommaSeparatedStringTransformer.class,
+            StringToPathTransformer.class});
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
@@ -46,15 +46,15 @@ public class FieldValueTransformer {
 
         log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
 
-        ITypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType, allTransformers);
+        TypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType, allTransformers);
         sourceValue = transformer.transform(sourceValue);
         return performNecessaryTransformations(sourceValue, targetType, allTransformers);
     }
 
-    private ITypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
+    private TypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
         Class<?> targetClass = genericsAndCastingHelper.getWrapperClassForPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
-        for(Class<ITypeTransformer> clazz: availableTransformerClasses) {
-            ITypeTransformer transformer = configBuilderFactory.getInstance(clazz);
+        for(Class<TypeTransformer> clazz: availableTransformerClasses) {
+            TypeTransformer transformer = configBuilderFactory.getInstance(clazz);
             transformer.setGenericsAndCastingHelper(genericsAndCastingHelper);
             if(transformer.isMatching(sourceClass, targetClass)) {
                 transformer.initialize(this, configBuilderFactory, targetType, availableTransformerClasses);

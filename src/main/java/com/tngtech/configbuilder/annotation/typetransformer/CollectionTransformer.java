@@ -2,14 +2,12 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.util.FieldValueTransformer;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class CollectionTransformer extends ITypeTransformer<Collection,ArrayList> {
+public class CollectionTransformer extends TypeTransformer<Collection,ArrayList> {
 
     @Override
     public ArrayList transform(Collection argument) {
