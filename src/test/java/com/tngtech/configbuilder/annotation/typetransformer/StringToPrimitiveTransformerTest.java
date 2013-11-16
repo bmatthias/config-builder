@@ -2,6 +2,7 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.exception.PrimitiveParsingException;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
@@ -48,32 +49,34 @@ public class StringToPrimitiveTransformerTest {
 
     @Test
     public void testTransform() throws Exception {
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, boolean.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
+
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
         assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform("true"));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, int.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
         assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform("1"));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, double.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
         assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform("1"));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, double.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
         assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform("1.0"));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, boolean.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
         assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(true));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, double.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
         assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform(1));
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, double.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
         assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform(1.0));
-
     }
 
-    @Test(expected = TypeTransformerException.class)
+    @Test(expected = PrimitiveParsingException.class)
     public void testTransformThrowsException() throws Exception {
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, int.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
         assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(1.0));
     }
 
@@ -83,7 +86,7 @@ public class StringToPrimitiveTransformerTest {
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Integer.class)).thenReturn(true);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Object.class)).thenReturn(false);
 
-        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory, int.class, new ArrayList<Class>());
+        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Integer.class));
         assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(String.class, int.class));

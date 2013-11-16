@@ -5,7 +5,7 @@ import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;
 
-public class PropertySuffixProcessor implements IPropertyLoaderConfigurationProcessor {
+public class PropertySuffixProcessor implements PropertyLoaderConfigurationProcessor {
 
     public void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader) {
         propertyLoader.getSuffixes().clear();

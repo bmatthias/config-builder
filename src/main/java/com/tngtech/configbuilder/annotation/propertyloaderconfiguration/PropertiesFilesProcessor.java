@@ -6,7 +6,7 @@ import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;
 
-public class PropertiesFilesProcessor implements IPropertyLoaderConfigurationProcessor {
+public class PropertiesFilesProcessor implements PropertyLoaderConfigurationProcessor {
 
     public void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader) {
         propertyLoader.withBaseNames(Lists.newArrayList(((PropertiesFiles) annotation).value()));

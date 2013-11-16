@@ -5,6 +5,7 @@ import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -20,17 +21,14 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
     protected FieldValueTransformer fieldValueTransformer;
     protected GenericsAndCastingHelper genericsAndCastingHelper;
     protected ErrorMessageSetup errorMessageSetup;
-    protected ArrayList<Class> availableTransformers;
 
     public abstract TargetClass transform(SourceClass argument);
 
-    public void initialize(FieldValueTransformer fieldValueTransformer, ConfigBuilderFactory configBuilderFactory, Type targetType, ArrayList<Class> availableTransformers) {
+    public void initialize(FieldValueTransformer fieldValueTransformer, ConfigBuilderFactory configBuilderFactory) {
 
-        this.targetType = targetType;
         this.fieldValueTransformer = fieldValueTransformer;
         this.genericsAndCastingHelper = configBuilderFactory.getInstance(GenericsAndCastingHelper.class);
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
-        this.availableTransformers = availableTransformers;
     }
 
     public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
@@ -54,8 +52,7 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
         return genericsAndCastingHelper.castTypeToClass(genericTypes[1]);
     }
 
-
-    public void setGenericsAndCastingHelper(GenericsAndCastingHelper genericsAndCastingHelper) {
-        this.genericsAndCastingHelper = genericsAndCastingHelper;
+    public void setTargetType(Type targetType) {
+        this.targetType = targetType;
     }
 }

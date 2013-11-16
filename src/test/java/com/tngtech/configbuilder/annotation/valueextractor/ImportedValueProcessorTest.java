@@ -18,8 +18,7 @@ import static org.mockito.Mockito.when;
 public class ImportedValueProcessorTest {
     
     private class ImportedTestConfig {
-        int intField = 23;
-        
+        private int intField = 23;
         String stringField = "Foo";
     }
     
@@ -60,6 +59,15 @@ public class ImportedValueProcessorTest {
 
         String actualResult = (String) importedValueProcessor.getValue(importedValue, configBuilderFactory);
         assertThat(actualResult, equalTo("Foo"));
+    }
+
+    @Test
+    public void testReturnNullIfNoImportedConfigurationProvided() {
+        when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
+        when(builderConfiguration.getImportedConfiguration()).thenReturn(null);
+
+        String actualResult = (String) importedValueProcessor.getValue(importedValue, configBuilderFactory);
+        assertThat(actualResult, equalTo(null));
     }
     
     @Test(expected = ImportedConfigurationException.class)

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.exception.PrimitiveParsingException;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class FieldValueTransformerComponentTest {
     
     private class TestConfigClass {
 
-        @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
+        @TypeTransformers({CharacterSeparatedStringToStringListTransformer.class})
         private Collection<String> stringCollectionField;
         private int intField;
         private double doubleField;
@@ -89,10 +90,12 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
 
-        when(configBuilderFactory.getInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(new CommaSeparatedStringToStringCollectionTransformer());
+        when(configBuilderFactory.getInstance(CharacterSeparatedStringToStringListTransformer.class)).thenReturn(new CharacterSeparatedStringToStringListTransformer());
+        when(configBuilderFactory.getInstance(CharacterSeparatedStringToStringSetTransformer.class)).thenReturn(new CharacterSeparatedStringToStringSetTransformer());
         when(configBuilderFactory.getInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(new StringCollectionToCommaSeparatedStringTransformer());
         when(configBuilderFactory.getInstance(StringToPathTransformer.class)).thenReturn(new StringToPathTransformer());
-        when(configBuilderFactory.getInstance(CollectionTransformer.class)).thenReturn(new CollectionTransformer());
+        when(configBuilderFactory.getInstance(CollectionToArrayListTransformer.class)).thenReturn(new CollectionToArrayListTransformer());
+        when(configBuilderFactory.getInstance(CollectionToHashSetTransformer.class)).thenReturn(new CollectionToHashSetTransformer());
         when(configBuilderFactory.getInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
         when(configBuilderFactory.getInstance(TestTransformer.class)).thenReturn(new TestTransformer());
         
@@ -128,7 +131,7 @@ public class FieldValueTransformerComponentTest {
         assertEquals(17.0, actualResult);
     }
 
-    @Test(expected = TypeTransformerException.class)
+    @Test(expected = PrimitiveParsingException.class)
     public void testExceptionIfValueCannotBeParsedToBoolean() {
         fieldValueTransformer.transformFieldValue(boolField, 38.7);
     }

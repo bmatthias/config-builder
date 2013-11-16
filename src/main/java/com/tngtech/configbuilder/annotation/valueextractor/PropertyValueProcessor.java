@@ -6,9 +6,9 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes PropertyValue annotations, implements IValueExtractorProcessor
+ * Processes PropertyValue annotations, implements ValueExtractorProcessor
  */
-public class PropertyValueProcessor implements IValueExtractorProcessor {
+public class PropertyValueProcessor implements ValueExtractorProcessor {
 
     public String getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory) {
         BuilderConfiguration builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);

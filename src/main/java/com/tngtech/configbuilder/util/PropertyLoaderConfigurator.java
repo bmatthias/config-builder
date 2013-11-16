@@ -1,7 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.IPropertyLoaderConfigurationProcessor;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
 import com.tngtech.propertyloader.PropertyLoader;
 
@@ -20,7 +20,7 @@ public class PropertyLoaderConfigurator {
 
         PropertyLoader propertyLoader = configBuilderFactory.createInstance(PropertyLoader.class).withDefaultConfig();
         for (Annotation annotation : annotationHelper.getAnnotationsAnnotatedWith(configClass.getDeclaredAnnotations(), PropertyLoaderConfigurationAnnotation.class)) {
-            Class<? extends IPropertyLoaderConfigurationProcessor> processorClass = annotation.annotationType().getAnnotation(PropertyLoaderConfigurationAnnotation.class).value();
+            Class<? extends PropertyLoaderConfigurationProcessor> processorClass = annotation.annotationType().getAnnotation(PropertyLoaderConfigurationAnnotation.class).value();
             configBuilderFactory.getInstance(processorClass).configurePropertyLoader(annotation, propertyLoader);
         }
         return propertyLoader;

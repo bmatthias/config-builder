@@ -1,6 +1,8 @@
 package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.exception.FactoryInstantiationException;
+import com.tngtech.propertyloader.PropertyLoader;
 import org.apache.commons.cli.GnuParser;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,8 +19,13 @@ import static org.junit.Assert.assertEquals;
 
 public class ConfigBuilderFactoryTest {
 
-    public class InnerClass {}
+    public class InnerClass {
+        public class InnerInnerClass{}
+    }
     public static class NestedClass {}
+    public static class ClassWithoutDefaultConstructor {
+        private ClassWithoutDefaultConstructor(){}
+    }
 
     private ConfigBuilderFactory configBuilderFactory;
 
@@ -47,6 +54,18 @@ public class ConfigBuilderFactoryTest {
         //test instantiation of nested and inner classes
         assertEquals(InnerClass.class, configBuilderFactory.getInstance(InnerClass.class).getClass());
         assertEquals(NestedClass.class, configBuilderFactory.getInstance(NestedClass.class).getClass());
+    }
+
+    @Test(expected = FactoryInstantiationException.class)
+    public void testGetInstanceThrowsExceptionForInnerClass() throws Exception {
+        configBuilderFactory.getInstance(ErrorMessageSetup.class).initialize("errors", new PropertyLoader());
+        configBuilderFactory.getInstance(InnerClass.InnerInnerClass.class);
+    }
+
+    @Test(expected = FactoryInstantiationException.class)
+    public void testGetInstanceThrowsExceptionForClassWithoutDefaultConstructor() throws Exception {
+        configBuilderFactory.getInstance(ErrorMessageSetup.class).initialize("errors", new PropertyLoader());
+        configBuilderFactory.getInstance(ClassWithoutDefaultConstructor.class);
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;
 
-public class PropertyExtensionProcessor implements IPropertyLoaderConfigurationProcessor {
+public class PropertyExtensionProcessor implements PropertyLoaderConfigurationProcessor {
 
     public void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader) {
         String fileExtension = ((PropertyExtension) annotation).value();

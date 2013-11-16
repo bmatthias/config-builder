@@ -8,5 +8,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyLoaderConfigurationAnnotation {
-    Class<? extends IPropertyLoaderConfigurationProcessor> value();
+    Class<? extends PropertyLoaderConfigurationProcessor> value();
 }

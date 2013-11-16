@@ -18,13 +18,18 @@ public class FieldValueTransformer {
     private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;
     private final GenericsAndCastingHelper genericsAndCastingHelper;
-    
+
+    //Order is important: Prefer List over Set if both apply!
     private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
             StringOrPrimitiveToPrimitiveTransformer.class,
-            CommaSeparatedStringToStringCollectionTransformer.class,
-            CollectionTransformer.class,
+            CharacterSeparatedStringToStringListTransformer.class,
+            CharacterSeparatedStringToStringSetTransformer.class,
+            CollectionToArrayListTransformer.class,
+            CollectionToHashSetTransformer.class,
             StringCollectionToCommaSeparatedStringTransformer.class,
             StringToPathTransformer.class});
+
+    private ArrayList<TypeTransformer> availableTransformers = Lists.newArrayList();
 
     public FieldValueTransformer(ConfigBuilderFactory configBuilderFactory) {
         this.configBuilderFactory = configBuilderFactory;
@@ -33,35 +38,20 @@ public class FieldValueTransformer {
     }
 
     public Object transformFieldValue(Field field, Object sourceValue) {
-        sourceValue = performNecessaryTransformations(sourceValue, field.getGenericType(), getAllTransformers(field));
-        return sourceValue;
+        initialize(field);
+        return performNecessaryTransformations(sourceValue, field.getGenericType());
     }
 
-    public Object performNecessaryTransformations(Object sourceValue, Type targetType, ArrayList<Class> allTransformers) {
-        if(genericsAndCastingHelper.typesMatch(sourceValue, targetType)) {
-            return sourceValue;
+    private void initialize(Field field) {
+        for(Class<TypeTransformer> transformerClass : getAllTransformers(field)) {
+            availableTransformers.add(configBuilderFactory.getInstance(transformerClass));
         }
-        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassForPrimitive(sourceValue.getClass());
-        Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
-
-        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
-
-        TypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType, allTransformers);
-        sourceValue = transformer.transform(sourceValue);
-        return performNecessaryTransformations(sourceValue, targetType, allTransformers);
     }
 
-    private TypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType, ArrayList<Class> availableTransformerClasses) {
-        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassForPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
-        for(Class<TypeTransformer> clazz: availableTransformerClasses) {
-            TypeTransformer transformer = configBuilderFactory.getInstance(clazz);
-            transformer.setGenericsAndCastingHelper(genericsAndCastingHelper);
-            if(transformer.isMatching(sourceClass, targetClass)) {
-                transformer.initialize(this, configBuilderFactory, targetType, availableTransformerClasses);
-                return transformer;
-            }
-        }
-        throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetClass.toString()));
+    private ArrayList<Class> getAllTransformers(Field field) {
+        ArrayList<Class> allTransformers = getUserSuggestedTransformers(field);
+        allTransformers.addAll(defaultTransformers);
+        return  allTransformers;
     }
 
     private ArrayList<Class> getUserSuggestedTransformers(Field field) {
@@ -73,9 +63,29 @@ public class FieldValueTransformer {
         }
     }
 
-    private ArrayList<Class> getAllTransformers(Field field) {
-        ArrayList<Class> allTransformers = getUserSuggestedTransformers(field);
-        allTransformers.addAll(defaultTransformers);
-        return  allTransformers;
+    public Object performNecessaryTransformations(Object sourceValue, Type targetType) {
+        if(genericsAndCastingHelper.typesMatch(sourceValue, targetType)) {
+            return sourceValue;
+        }
+        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
+        Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
+
+        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
+
+        TypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType);
+        sourceValue = transformer.transform(sourceValue);
+        return performNecessaryTransformations(sourceValue, targetType);
+    }
+
+    private TypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType) {
+        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
+        for(TypeTransformer transformer: availableTransformers) {
+            transformer.initialize(this, configBuilderFactory);
+            if(transformer.isMatching(sourceClass, targetClass)) {
+                transformer.setTargetType(targetType);
+                return transformer;
+            }
+        }
+        throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetType.toString()));
     }
 }

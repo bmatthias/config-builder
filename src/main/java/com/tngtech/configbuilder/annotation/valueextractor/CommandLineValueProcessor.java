@@ -7,9 +7,9 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes CommandLineValue annotations, implements IValueExtractorProcessor
+ * Processes CommandLineValue annotations, implements ValueExtractorProcessor
  */
-public class CommandLineValueProcessor implements IValueExtractorProcessor {
+public class CommandLineValueProcessor implements ValueExtractorProcessor {
 
     public String getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory) {
         BuilderConfiguration builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);

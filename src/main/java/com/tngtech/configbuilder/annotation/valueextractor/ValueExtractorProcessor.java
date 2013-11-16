@@ -8,6 +8,6 @@ import java.lang.annotation.Annotation;
 /**
  * This interface is implemented by annotation processors that get String values from annotations.
  */
-public interface IValueExtractorProcessor {
+public interface ValueExtractorProcessor {
     public Object getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory);
 }

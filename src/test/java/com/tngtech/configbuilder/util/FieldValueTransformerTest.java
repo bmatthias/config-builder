@@ -38,9 +38,9 @@ public class FieldValueTransformerTest {
     @Mock
     private GenericsAndCastingHelper genericsAndCastingHelper;
     @Mock
-    private CollectionTransformer collectionTransformer;
+    private CollectionToArrayListTransformer collectionToArrayListTransformer;
     @Mock
-    private CommaSeparatedStringToStringCollectionTransformer commaSeparatedStringToStringCollectionTransformer;
+    private CharacterSeparatedStringToStringListTransformer characterSeparatedStringToStringListTransformer;
     @Mock
     private StringCollectionToCommaSeparatedStringTransformer stringCollectionToCommaSeparatedStringTransformer;
     @Mock
@@ -49,6 +49,11 @@ public class FieldValueTransformerTest {
     private StringToPathTransformer stringToPathTransformer;
     @Mock
     private FieldValueTransformerComponentTest.TestTransformer testTransformer;
+    @Mock
+    private CollectionToHashSetTransformer collectionToHashSetTransformer;
+    @Mock
+    private
+    CharacterSeparatedStringToStringSetTransformer characterSeparatedStringToStringSetTransformer;
 
     private Field field;
 
@@ -58,8 +63,10 @@ public class FieldValueTransformerTest {
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
         when(configBuilderFactory.getInstance(FieldValueTransformerComponentTest.TestTransformer.class)).thenReturn(testTransformer);
-        when(configBuilderFactory.getInstance(CollectionTransformer.class)).thenReturn(collectionTransformer);
-        when(configBuilderFactory.getInstance(CommaSeparatedStringToStringCollectionTransformer.class)).thenReturn(commaSeparatedStringToStringCollectionTransformer);
+        when(configBuilderFactory.getInstance(CollectionToArrayListTransformer.class)).thenReturn(collectionToArrayListTransformer);
+        when(configBuilderFactory.getInstance(CollectionToHashSetTransformer.class)).thenReturn(collectionToHashSetTransformer);
+        when(configBuilderFactory.getInstance(CharacterSeparatedStringToStringListTransformer.class)).thenReturn(characterSeparatedStringToStringListTransformer);
+        when(configBuilderFactory.getInstance(CharacterSeparatedStringToStringSetTransformer.class)).thenReturn(characterSeparatedStringToStringSetTransformer);
         when(configBuilderFactory.getInstance(StringCollectionToCommaSeparatedStringTransformer.class)).thenReturn(stringCollectionToCommaSeparatedStringTransformer);
         when(configBuilderFactory.getInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(stringOrPrimitiveToPrimitiveTransformer);
         when(configBuilderFactory.getInstance(StringToPathTransformer.class)).thenReturn(stringToPathTransformer);
@@ -81,35 +88,34 @@ public class FieldValueTransformerTest {
         ArrayList<Path> expectedOutput = Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr"));
 
         when(genericsAndCastingHelper.typesMatch(input,field.getGenericType())).thenReturn(false);
-        when(genericsAndCastingHelper.typesMatch(Lists.newArrayList(input.split(",")),field.getGenericType())).thenReturn(false);
-        when(genericsAndCastingHelper.typesMatch(expectedOutput,field.getGenericType())).thenReturn(true);
-        when(genericsAndCastingHelper.getWrapperClassForPrimitive(String.class)).thenReturn(String.class);
-        when(genericsAndCastingHelper.getWrapperClassForPrimitive(ArrayList.class)).thenReturn(ArrayList.class);
+        when(genericsAndCastingHelper.typesMatch(Lists.newArrayList(input.split(",")), field.getGenericType())).thenReturn(false);
+        when(genericsAndCastingHelper.typesMatch(expectedOutput, field.getGenericType())).thenReturn(true);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn(String.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn(ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(field.getGenericType())).thenReturn(ArrayList.class);
-        when(commaSeparatedStringToStringCollectionTransformer.isMatching(String.class, ArrayList.class)).thenReturn(true);
-        when(collectionTransformer.isMatching(ArrayList.class, ArrayList.class)).thenReturn(true);
-        when(commaSeparatedStringToStringCollectionTransformer.transform(input)).thenReturn(Lists.newArrayList(input.split(",")));
-        when(collectionTransformer.transform(Lists.newArrayList(input.split(",")))).thenReturn(expectedOutput);
+        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn(String.class);
+        when(characterSeparatedStringToStringListTransformer.isMatching(String.class, ArrayList.class)).thenReturn(true);
+        when(collectionToArrayListTransformer.isMatching(ArrayList.class, ArrayList.class)).thenReturn(true);
+        when(characterSeparatedStringToStringListTransformer.transform(input)).thenReturn(Lists.newArrayList(input.split(",")));
+        when(collectionToArrayListTransformer.transform(Lists.newArrayList(input.split(",")))).thenReturn(expectedOutput);
 
         assertEquals(expectedOutput, fieldValueTransformer.transformFieldValue(field, input));
 
         verify(testTransformer, times(2)).isMatching(Matchers.any(Class.class), Matchers.any(Class.class));
-        verify(testTransformer, times(2)).setGenericsAndCastingHelper(genericsAndCastingHelper);
-        verify(configBuilderFactory, times(2)).getInstance(CommaSeparatedStringToStringCollectionTransformer.class);
-        verify(configBuilderFactory).getInstance(CollectionTransformer.class);
-        verify(commaSeparatedStringToStringCollectionTransformer, times(2)).setGenericsAndCastingHelper(genericsAndCastingHelper);
-        verify(collectionTransformer).setGenericsAndCastingHelper(genericsAndCastingHelper);
-        verify(commaSeparatedStringToStringCollectionTransformer).initialize(Matchers.any(FieldValueTransformer.class), Matchers.any(ConfigBuilderFactory.class), Matchers.any(Type.class), Matchers.any(ArrayList.class));
-        verify(collectionTransformer).initialize(Matchers.any(FieldValueTransformer.class), Matchers.any(ConfigBuilderFactory.class), Matchers.any(Type.class), Matchers.any(ArrayList.class));
+        verify(testTransformer, times(2)).initialize(fieldValueTransformer, configBuilderFactory);
+        verify(characterSeparatedStringToStringListTransformer, times(2)).initialize(fieldValueTransformer, configBuilderFactory);
+        verify(collectionToArrayListTransformer).initialize(fieldValueTransformer, configBuilderFactory);
+        verify(characterSeparatedStringToStringListTransformer).setTargetType(Matchers.any(Type.class));
+        verify(collectionToArrayListTransformer).setTargetType(Matchers.any(Type.class));
     }
 
     @Test(expected = TypeTransformerException.class)
     public void testPerformNecessaryTransformationsThrowsTypeTransformerException() throws Exception {
         String input = "input";
 
-        when(genericsAndCastingHelper.typesMatch(input,field.getGenericType())).thenReturn(false);
-        when(genericsAndCastingHelper.getWrapperClassForPrimitive(String.class)).thenReturn(String.class);
-        when(genericsAndCastingHelper.getWrapperClassForPrimitive(ArrayList.class)).thenReturn(ArrayList.class);
+        when(genericsAndCastingHelper.typesMatch(input, field.getGenericType())).thenReturn(false);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn(String.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn(ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(field.getGenericType())).thenReturn(ArrayList.class);
 
         fieldValueTransformer.transformFieldValue(field, input);

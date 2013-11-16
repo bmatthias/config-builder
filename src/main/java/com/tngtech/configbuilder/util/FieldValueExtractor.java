@@ -1,7 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
-import com.tngtech.configbuilder.annotation.valueextractor.IValueExtractorProcessor;
+import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.apache.log4j.Logger;
@@ -24,7 +24,7 @@ public class FieldValueExtractor {
     public Object extractValue(Field field, BuilderConfiguration builderConfiguration) {
         Object value = null;
         Class<? extends Annotation>[] annotationOrderOfField = field.isAnnotationPresent(LoadingOrder.class) ? field.getAnnotation(LoadingOrder.class).value() : builderConfiguration.getAnnotationOrder();
-        Class<? extends IValueExtractorProcessor> processor;
+        Class<? extends ValueExtractorProcessor> processor;
        
         for (Annotation annotation : annotationHelper.getAnnotationsInOrder(field, annotationOrderOfField)) {
             log.debug(String.format("trying to find a value for field %s with %s annotation", field.getName(), annotation.annotationType()));

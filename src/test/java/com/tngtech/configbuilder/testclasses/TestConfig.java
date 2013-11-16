@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -29,7 +30,7 @@ public class TestConfig {
         return pathCollection;
     }
 
-    public void setPathCollection(Collection<Path> pathCollection) {
+    public void setPathCollection(Set<Path> pathCollection) {
         this.pathCollection = pathCollection;
     }
 
@@ -45,6 +46,14 @@ public class TestConfig {
         return testConfigList;
     }
 
+    public Collection<String> getStringCollection() {
+        return stringCollection;
+    }
+
+    public void setCopiedStringCollection(Iterable<String> copiedStringCollection) {
+        this.copiedStringCollection = copiedStringCollection;
+    }
+
     public class TestConfigFactory extends TypeTransformer<String,TestConfig> {
         public TestConfig transform(String input) {
             TestConfig testConfig = new TestConfig();
@@ -54,6 +63,7 @@ public class TestConfig {
     }
 
     @DefaultValue("3")
+    @ImportedValue("someNumber")
     private int someNumber;
 
     @PropertyValue("a")
@@ -64,11 +74,15 @@ public class TestConfig {
 
     @LoadingOrder(value = {CommandLineValue.class})
     @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "command line option description")
-    @TypeTransformers({CommaSeparatedStringToStringCollectionTransformer.class})
+    @TypeTransformers({CharacterSeparatedStringToStringListTransformer.class})
     private Collection<String> stringCollection;
 
     @DefaultValue("/etc,/usr")
-    private Collection<Path> pathCollection;
+    @ImportedValue("stringCollection")
+    private Set<Path> pathCollection;
+
+    @ImportedValue("stringCollection")
+    private Iterable<String> copiedStringCollection;
 
     @DefaultValue("1,2,3,4,5")
     private List<Integer> integerList;

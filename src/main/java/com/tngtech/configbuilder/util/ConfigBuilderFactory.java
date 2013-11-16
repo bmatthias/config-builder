@@ -9,6 +9,7 @@ import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.exception.FactoryInstantiationException;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
@@ -51,8 +52,10 @@ public class ConfigBuilderFactory {
 
         //TypeTransformers
         singletonMap.put(StringOrPrimitiveToPrimitiveTransformer.class, new StringOrPrimitiveToPrimitiveTransformer());
-        singletonMap.put(CollectionTransformer.class, new CollectionTransformer());
-        singletonMap.put(CommaSeparatedStringToStringCollectionTransformer.class, new CommaSeparatedStringToStringCollectionTransformer());
+        singletonMap.put(CollectionToArrayListTransformer.class, new CollectionToArrayListTransformer());
+        singletonMap.put(CollectionToHashSetTransformer.class, new CollectionToHashSetTransformer());
+        singletonMap.put(CharacterSeparatedStringToStringListTransformer.class, new CharacterSeparatedStringToStringListTransformer());
+        singletonMap.put(CharacterSeparatedStringToStringSetTransformer.class, new CharacterSeparatedStringToStringSetTransformer());
         singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
         singletonMap.put(StringToPathTransformer.class, new StringToPathTransformer());
 
@@ -74,7 +77,8 @@ public class ConfigBuilderFactory {
         try {
             return clazz.newInstance();
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            ErrorMessageSetup errorMessageSetup = (ErrorMessageSetup)singletonMap.get(ErrorMessageSetup.class);
+            throw new FactoryInstantiationException(errorMessageSetup.getErrorMessage(FactoryInstantiationException.class, clazz.toString()));
         } catch (InstantiationException e) {
             return createInstanceOfInnerClass(clazz);
         }
@@ -88,7 +92,8 @@ public class ConfigBuilderFactory {
             Constructor<K> constructor = clazz.getConstructor(superClass);
             return constructor.newInstance(superInstance);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorMessageSetup errorMessageSetup = (ErrorMessageSetup)singletonMap.get(ErrorMessageSetup.class);
+            throw new FactoryInstantiationException(errorMessageSetup.getErrorMessage(FactoryInstantiationException.class, clazz.toString()));
         }
     }
 }
