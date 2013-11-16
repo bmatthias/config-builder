@@ -2,6 +2,7 @@ package com.tngtech.configbuilder;
 
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
+import com.tngtech.configbuilder.testclasses.TestConfigThrowsIllegalArgumentException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsInvocationTargetExceptionException;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
 import org.junit.Before;
@@ -32,8 +33,9 @@ public class ConfigBuilderExceptionTest {
     public static Collection configs() {
         return Arrays.asList(new Object[][]{
                 {TestConfigWithoutDefaultConstructor.class, NoConstructorFoundException.class, "build()"},
-                {TestConfigThrowsInvocationTargetExceptionException.class, ConfigBuilderException.class, "InvocationTargetException"}
-                });
+                {TestConfigThrowsInvocationTargetExceptionException.class, ConfigBuilderException.class, "InvocationTargetException"},
+                {TestConfigThrowsIllegalArgumentException.class, ConfigBuilderException.class, "null"}
+        });
     }
 
     public ConfigBuilderExceptionTest(Class configClass, Class<? extends Throwable> exceptionClass, String message) {
