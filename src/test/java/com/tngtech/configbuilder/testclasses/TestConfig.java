@@ -124,6 +124,6 @@ public class TestConfig {
 
     @Validation
     private void validate() {
-
+        System.out.println("config validated");
     }
 }
