@@ -41,7 +41,9 @@ public class FieldValueTransformer {
 
     public Object transformFieldValue(Field field, Object sourceValue) {
         initialize(field);
-        return performNecessaryTransformations(sourceValue, field.getGenericType());
+        sourceValue = performNecessaryTransformations(sourceValue, field.getGenericType());
+        reset();
+        return sourceValue;
     }
 
     private void initialize(Field field) {
@@ -90,5 +92,9 @@ public class FieldValueTransformer {
             }
         }
         throw new TypeTransformerException(errorMessageSetup.getErrorMessage(TypeTransformerException.class, sourceClass.toString(), targetType.toString()));
+    }
+
+    private void reset() {
+        availableTransformers = Lists.newArrayList();
     }
 }
