@@ -97,7 +97,7 @@ Fields don't have to be Strings. You can configure collection fields or even any
 Some simple transformers are included and used by default, e.g. a String will automatically be converted to an integer, a
 boolean value or even a collection as needed.
 
-If you need more complex transformers, you can also implement your own by inheriting from the ITypeTransformer interface, and specifying them in the ```@TypeTransformers``` annotation.
+If you need more complex transformers, you can also implement your own by extending the TypeTransformer class, and specifying them in the ```@TypeTransformers``` annotation.
  
 Finally, the original value may not always be a String. To support this case, the annotation takes a list of possible transformers, and the one with the right 
 source and target types is automatically detected and used. 
@@ -150,17 +150,17 @@ Usage example
 -------------
 Say you have a config that looks like this:
 ```java
-public class StringToPidFixTransformer implements ITypeTransformer<String,PidFix> {
-    @Override
-    public PidFix transform(String input) {
-        <...>
-    }
-}
-
 @PropertiesFiles("config")    // Uses "config.properties", "config.<hostname>.properties", etc.
 @PropertyLocations(directories = {"/home/user"}, contextClassLoader = true)
 @PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
 public class Config {
+
+    public static class StringToPidFixTransformer implements TypeTransformer<String,PidFix> {
+        @Override
+        public PidFix transform(String input) {
+            <...>
+        }
+    }
     
     @DefaultValue("false")      // values are automatically be converted to primitive types
     @CommandLineValue(shortOpt="t", longOpt="test", hasArg=false)     // this is a flag argument

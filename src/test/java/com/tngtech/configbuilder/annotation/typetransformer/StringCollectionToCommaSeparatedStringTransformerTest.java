@@ -63,10 +63,10 @@ public class StringCollectionToCommaSeparatedStringTransformerTest {
     private void initializeFactoryAndHelperMocks(){
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
-        when(genericsAndCastingHelper.castTypeToClass(List.class)).thenReturn(List.class);
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn(String.class);
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
-        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn(Object.class);
-        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[0])).thenReturn(Collection.class);
+        when(genericsAndCastingHelper.castTypeToClass(List.class)).thenReturn((Class)List.class);
+        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
+        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
+        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
+        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[0])).thenReturn((Class)Collection.class);
     }
 }

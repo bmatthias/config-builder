@@ -85,9 +85,9 @@ public class StringToPrimitiveTransformerTest {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
-        when(genericsAndCastingHelper.castTypeToClass(boolean.class)).thenReturn(boolean.class);
-        when(genericsAndCastingHelper.castTypeToClass(double.class)).thenReturn(double.class);
-        when(genericsAndCastingHelper.castTypeToClass(int.class)).thenReturn(int.class);
+        when(genericsAndCastingHelper.castTypeToClass(boolean.class)).thenReturn((Class)boolean.class);
+        when(genericsAndCastingHelper.castTypeToClass(double.class)).thenReturn((Class)double.class);
+        when(genericsAndCastingHelper.castTypeToClass(int.class)).thenReturn((Class)int.class);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(int.class)).thenReturn(true);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Integer.class)).thenReturn(true);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Object.class)).thenReturn(false);

@@ -64,6 +64,9 @@ public class TestConfig {
     @ImportedValue("someNumber")
     private int someNumber;
 
+    @PropertyValue("keyThatDoesNotExist")
+    private int shouldBeZero;
+
     @PropertyValue("a")
     private String someString;
 

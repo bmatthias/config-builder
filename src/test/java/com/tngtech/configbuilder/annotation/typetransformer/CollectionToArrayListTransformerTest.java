@@ -69,8 +69,8 @@ public class CollectionToArrayListTransformerTest {
     }
 
     private void initializeFactoryAndHelper() {
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
-        when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn(ArrayList.class);
-        when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn(Double.class);
+        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
+        when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn((Class)ArrayList.class);
+        when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn((Class)Double.class);
     }
 }
