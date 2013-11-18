@@ -40,8 +40,13 @@ public class FieldSetter<T> {
     private void setField(T instanceOfConfigClass, Field field, Object value) {
         try {
             field.setAccessible(true);
-            field.set(instanceOfConfigClass, value);
-            log.info(String.format("set field %s of type %s to a value of type %s", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName()));
+            if(value == null && field.getType().isPrimitive()) {
+                log.warn(String.format("no value found for field %s of primitive type %s: field will be initialized to default", field.getName(), field.getType().getName()));
+            }
+            else {
+                field.set(instanceOfConfigClass, value);
+                log.info(String.format("set field %s of type %s to a value of type %s", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName()));
+            }
         } catch (Exception e) {
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e, field.getName(), field.getType().getName(), value == null ? "null" : value.toString()), e);
         }

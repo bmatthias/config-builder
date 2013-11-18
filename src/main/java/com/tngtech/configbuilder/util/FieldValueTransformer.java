@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-//TODO: Content transformers (transform even if types already match, allow null as argument) & bring back generics
+//TODO: Content transformers (transform even if types already match, allow null as argument)
 public class FieldValueTransformer {
 
     private final static Logger log = Logger.getLogger(FieldValueTransformer.class);
