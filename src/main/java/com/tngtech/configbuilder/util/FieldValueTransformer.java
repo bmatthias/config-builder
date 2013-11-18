@@ -22,7 +22,7 @@ public class FieldValueTransformer {
     private Object[] additionalOptions;
 
     //Order is important: Prefer List over Set if both apply!
-    private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
+    private final ArrayList<Class<? extends TypeTransformer>> defaultTransformers = Lists.<Class<? extends TypeTransformer>>newArrayList(new Class[]{
             StringOrPrimitiveToPrimitiveTransformer.class,
             CharacterSeparatedStringToStringListTransformer.class,
             CharacterSeparatedStringToStringSetTransformer.class,
@@ -45,19 +45,19 @@ public class FieldValueTransformer {
     }
 
     private void initialize(Field field) {
-        for(Class<TypeTransformer> transformerClass : getAllTransformers(field)) {
+        for(Class<? extends TypeTransformer> transformerClass : getAllTransformers(field)) {
             availableTransformers.add(configBuilderFactory.getInstance(transformerClass));
         }
         additionalOptions = field.isAnnotationPresent(Separator.class)? new Object[]{field.getAnnotation(Separator.class).value()} : new Object[]{","};
     }
 
-    private ArrayList<Class> getAllTransformers(Field field) {
-        ArrayList<Class> allTransformers = getUserSuggestedTransformers(field);
+    private ArrayList<Class<? extends TypeTransformer>> getAllTransformers(Field field) {
+        ArrayList<Class<? extends TypeTransformer>> allTransformers = getUserSuggestedTransformers(field);
         allTransformers.addAll(defaultTransformers);
         return  allTransformers;
     }
 
-    private ArrayList<Class> getUserSuggestedTransformers(Field field) {
+    private ArrayList<Class<? extends TypeTransformer>> getUserSuggestedTransformers(Field field) {
         if(field.isAnnotationPresent(TypeTransformers.class)) {
             TypeTransformers annotation =  field.getAnnotation(TypeTransformers.class);
             return Lists.newArrayList(annotation.value());
@@ -73,7 +73,7 @@ public class FieldValueTransformer {
         Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
         Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
 
-        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.toString(), targetClass.toString()));
+        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.getSimpleName(), targetClass.getSimpleName()));
 
         TypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType);
         sourceValue = transformer.transform(sourceValue);
@@ -82,7 +82,7 @@ public class FieldValueTransformer {
 
     private TypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType) {
         Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
-        for(TypeTransformer transformer: availableTransformers) {
+        for(TypeTransformer<?,?> transformer: availableTransformers) {
             transformer.initialize(this, configBuilderFactory, additionalOptions);
             if(transformer.isMatching(sourceClass, targetClass)) {
                 transformer.setTargetType(targetType);
