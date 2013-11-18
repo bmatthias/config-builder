@@ -24,34 +24,6 @@ public class TestConfig {
 
     }
 
-    public Collection<Path> getPathCollection() {
-        return pathCollection;
-    }
-
-    public void setPathCollection(HashSet<Path> pathCollection) {
-        this.pathCollection = pathCollection;
-    }
-
-    public List<Integer> getIntegerList() {
-        return integerList;
-    }
-
-    public void setIntegerList(List<Integer> integerList) {
-        this.integerList = integerList;
-    }
-
-    public ArrayList<TestConfig> getTestConfigList() {
-        return testConfigList;
-    }
-
-    public Collection<String> getStringCollection() {
-        return stringCollection;
-    }
-
-    public void setCopiedStringCollection(Iterable<String> copiedStringCollection) {
-        this.copiedStringCollection = copiedStringCollection;
-    }
-
     public class TestConfigFactory extends TypeTransformer<String,TestConfig> {
         public TestConfig transform(String input) {
             TestConfig testConfig = new TestConfig();
@@ -120,6 +92,34 @@ public class TestConfig {
 
     public void setSystemProperty(String systemProperty) {
         this.systemProperty = systemProperty;
+    }
+    
+    public Collection<Path> getPathCollection() {
+        return pathCollection;
+    }
+
+    public void setPathCollection(HashSet<Path> pathCollection) {
+        this.pathCollection = pathCollection;
+    }
+
+    public List<Integer> getIntegerList() {
+        return integerList;
+    }
+
+    public void setIntegerList(List<Integer> integerList) {
+        this.integerList = integerList;
+    }
+
+    public ArrayList<TestConfig> getTestConfigList() {
+        return testConfigList;
+    }
+
+    public Collection<String> getStringCollection() {
+        return stringCollection;
+    }
+
+    public void setCopiedStringCollection(Iterable<String> copiedStringCollection) {
+        this.copiedStringCollection = copiedStringCollection;
     }
 
     @Validation
