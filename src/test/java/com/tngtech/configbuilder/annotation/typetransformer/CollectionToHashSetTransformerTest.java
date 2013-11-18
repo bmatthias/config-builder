@@ -61,14 +61,18 @@ public class CollectionToHashSetTransformerTest {
     public void testIsMatching() throws Exception {
         collectionToHashSetTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
+        initializeFactoryAndHelper();
+
+        assertTrue(collectionToHashSetTransformer.isMatching(ArrayList.class, Set.class));
+        assertFalse(collectionToHashSetTransformer.isMatching(ArrayList.class, ArrayList.class));
+        assertFalse(collectionToHashSetTransformer.isMatching(Collection.class, Double.class));
+    }
+
+    private void initializeFactoryAndHelper() {
         when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(Set.class)).thenReturn(Set.class);
         when(genericsAndCastingHelper.castTypeToClass(HashSet.class)).thenReturn(HashSet.class);
         when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn(ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn(Double.class);
-
-        assertTrue(collectionToHashSetTransformer.isMatching(ArrayList.class, Set.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(ArrayList.class, ArrayList.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(Collection.class, Double.class));
     }
 }

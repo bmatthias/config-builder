@@ -1,6 +1,7 @@
 package com.tngtech.configbuilder.testclasses;
 
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
+import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
@@ -11,10 +12,7 @@ import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.propertyloader.PropertyLoader;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -30,7 +28,7 @@ public class TestConfig {
         return pathCollection;
     }
 
-    public void setPathCollection(Set<Path> pathCollection) {
+    public void setPathCollection(HashSet<Path> pathCollection) {
         this.pathCollection = pathCollection;
     }
 
@@ -79,12 +77,13 @@ public class TestConfig {
 
     @DefaultValue("/etc,/usr")
     @ImportedValue("stringCollection")
-    private Set<Path> pathCollection;
+    private HashSet<Path> pathCollection;
 
     @ImportedValue("stringCollection")
     private Iterable<String> copiedStringCollection;
 
-    @DefaultValue("1,2,3,4,5")
+    @Separator(";")
+    @DefaultValue("1;2;3;4;5")
     private List<Integer> integerList;
 
     @TypeTransformers(TestConfigFactory.class)

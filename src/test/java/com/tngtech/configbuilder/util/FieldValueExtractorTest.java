@@ -1,7 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.configuration.CollectionType;
+import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
@@ -36,7 +36,7 @@ public class FieldValueExtractorTest {
         @CommandLineValue(shortOpt = "t", longOpt = "testFieldWithLoadingOrder")
         private Collection<String> testFieldWithLoadingOrder;
 
-        @CollectionType
+        @Separator
         @DefaultValue("value1,value2")
         private Collection<String> collectionField;
 

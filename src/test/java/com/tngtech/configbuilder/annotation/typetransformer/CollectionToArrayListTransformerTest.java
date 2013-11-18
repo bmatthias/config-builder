@@ -62,11 +62,15 @@ public class CollectionToArrayListTransformerTest {
     public void testIsMatching() throws Exception {
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
-        when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn(ArrayList.class);
-        when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn(Double.class);
+        initializeFactoryAndHelper();
 
         assertTrue(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class));
         assertFalse(collectionToArrayListTransformer.isMatching(Collection.class, Double.class));
+    }
+
+    private void initializeFactoryAndHelper() {
+        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
+        when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn(ArrayList.class);
+        when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn(Double.class);
     }
 }

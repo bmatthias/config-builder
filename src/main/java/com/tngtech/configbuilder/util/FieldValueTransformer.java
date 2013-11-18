@@ -1,6 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
+import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
@@ -18,6 +19,7 @@ public class FieldValueTransformer {
     private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;
     private final GenericsAndCastingHelper genericsAndCastingHelper;
+    private Object[] additionalOptions;
 
     //Order is important: Prefer List over Set if both apply!
     private final ArrayList<Class> defaultTransformers = Lists.newArrayList(new Class[]{
@@ -46,6 +48,7 @@ public class FieldValueTransformer {
         for(Class<TypeTransformer> transformerClass : getAllTransformers(field)) {
             availableTransformers.add(configBuilderFactory.getInstance(transformerClass));
         }
+        additionalOptions = field.isAnnotationPresent(Separator.class)? new Object[]{field.getAnnotation(Separator.class).value()} : new Object[]{","};
     }
 
     private ArrayList<Class> getAllTransformers(Field field) {
@@ -80,7 +83,7 @@ public class FieldValueTransformer {
     private TypeTransformer findApplicableTransformer(Class<?> sourceClass, Type targetType) {
         Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
         for(TypeTransformer transformer: availableTransformers) {
-            transformer.initialize(this, configBuilderFactory);
+            transformer.initialize(this, configBuilderFactory, additionalOptions);
             if(transformer.isMatching(sourceClass, targetClass)) {
                 transformer.setTargetType(targetType);
                 return transformer;

@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class CharacterSeparatedStringToStringListTransformer extends TypeTransformer<String, List<String>> {
+public class CharacterSeparatedStringToStringListTransformer extends TypeTransformer<String, ArrayList<String>> {
 
     @Override
-    public List<String> transform(String argument) {
+    public ArrayList<String> transform(String argument) {
 
         ArrayList<String> collection = Lists.newArrayList();
-        for (String value : argument.split(",")) {
+        for (String value : argument.split((String)additionalOptions[0])) {
             collection.add(value);
         }
         return collection;

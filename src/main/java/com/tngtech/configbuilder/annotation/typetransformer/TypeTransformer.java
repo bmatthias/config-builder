@@ -21,14 +21,15 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
     protected FieldValueTransformer fieldValueTransformer;
     protected GenericsAndCastingHelper genericsAndCastingHelper;
     protected ErrorMessageSetup errorMessageSetup;
+    protected Object[] additionalOptions;
 
     public abstract TargetClass transform(SourceClass argument);
 
-    public void initialize(FieldValueTransformer fieldValueTransformer, ConfigBuilderFactory configBuilderFactory) {
-
+    public void initialize(FieldValueTransformer fieldValueTransformer, ConfigBuilderFactory configBuilderFactory, Object... additionalOptions) {
         this.fieldValueTransformer = fieldValueTransformer;
         this.genericsAndCastingHelper = configBuilderFactory.getInstance(GenericsAndCastingHelper.class);
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
+        this.additionalOptions = additionalOptions;
     }
 
     public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {

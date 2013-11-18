@@ -8,7 +8,7 @@ public class StringCollectionToCommaSeparatedStringTransformer extends TypeTrans
     
     @Override
     public String transform(Collection<String> argument) {
-        Joiner joiner = Joiner.on(",");
+        Joiner joiner = Joiner.on((String)additionalOptions[0]);
         return joiner.join(argument);
     }
 }

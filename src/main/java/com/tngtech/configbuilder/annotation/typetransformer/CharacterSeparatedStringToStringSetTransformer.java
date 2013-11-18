@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CharacterSeparatedStringToStringSetTransformer extends TypeTransformer<String, Set<String>> {
+public class CharacterSeparatedStringToStringSetTransformer extends TypeTransformer<String, HashSet<String>> {
 
     @Override
-    public Set<String> transform(String argument) {
+    public HashSet<String> transform(String argument) {
 
         HashSet<String> collection = Sets.newHashSet();
-        for (String value : argument.split(",")) {
+        for (String value : argument.split((String)additionalOptions[0])) {
             collection.add(value);
         }
         return collection;
