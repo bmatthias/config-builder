@@ -1,7 +1,7 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.configuration.CollectionType;
+import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
@@ -36,7 +36,7 @@ public class FieldValueExtractorTest {
         @CommandLineValue(shortOpt = "t", longOpt = "testFieldWithLoadingOrder")
         private Collection<String> testFieldWithLoadingOrder;
 
-        @CollectionType
+        @Separator
         @DefaultValue("value1,value2")
         private Collection<String> collectionField;
 
@@ -77,8 +77,8 @@ public class FieldValueExtractorTest {
         when(configBuilderFactory.getInstance(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
         when(configBuilderFactory.getInstance(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
 
-        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("propertyValue");
-        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn("commandLineValue");   
+        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn("propertyValue");
+        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn("commandLineValue");   
         
         fieldValueExtractor = new FieldValueExtractor(configBuilderFactory);
     }
@@ -124,8 +124,8 @@ public class FieldValueExtractorTest {
         List<Annotation> orderList = Lists.newArrayList(propertyValue, commandLineValue);
         when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
 
-        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
-        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
+        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn(null);
+        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn(null);
 
         Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
         assertEquals(null, result);

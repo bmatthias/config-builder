@@ -9,9 +9,11 @@ import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import com.tngtech.configbuilder.exception.FactoryInstantiationException;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 public class ConfigBuilderFactory {
@@ -28,7 +30,7 @@ public class ConfigBuilderFactory {
 
         //util
         singletonMap.put(AnnotationHelper.class, new AnnotationHelper());
-        singletonMap.put(ClassCastingHelper.class, new ClassCastingHelper());
+        singletonMap.put(GenericsAndCastingHelper.class, new GenericsAndCastingHelper());
         singletonMap.put(FieldValueExtractor.class, new FieldValueExtractor(this));
         singletonMap.put(FieldValueTransformer.class, new FieldValueTransformer(this));
         singletonMap.put(PropertyLoaderConfigurator.class, new PropertyLoaderConfigurator(this));
@@ -48,22 +50,50 @@ public class ConfigBuilderFactory {
         singletonMap.put(PropertiesFilesProcessor.class, new PropertiesFilesProcessor());
         singletonMap.put(DefaultValueProcessor.class, new DefaultValueProcessor());
 
-        //TODO: TypeTransformers
+        //TypeTransformers
+        singletonMap.put(StringOrPrimitiveToPrimitiveTransformer.class, new StringOrPrimitiveToPrimitiveTransformer());
+        singletonMap.put(CollectionToArrayListTransformer.class, new CollectionToArrayListTransformer());
+        singletonMap.put(CollectionToHashSetTransformer.class, new CollectionToHashSetTransformer());
+        singletonMap.put(CharacterSeparatedStringToStringListTransformer.class, new CharacterSeparatedStringToStringListTransformer());
+        singletonMap.put(CharacterSeparatedStringToStringSetTransformer.class, new CharacterSeparatedStringToStringSetTransformer());
+        singletonMap.put(StringCollectionToCommaSeparatedStringTransformer.class, new StringCollectionToCommaSeparatedStringTransformer());
+        singletonMap.put(StringToPathTransformer.class, new StringToPathTransformer());
+
+        //other
+        singletonMap.put(ValidatorFactory.class, Validation.buildDefaultValidatorFactory());
     }
 
     public <K> K getInstance(Class<K> clazz) {
-        return (K)singletonMap.get(clazz);
-    }
-
-    public <K> K createInstance(Class<K> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+        if(singletonMap.get(clazz) != null) {
+            return (K)singletonMap.get(clazz);
+        }
+        else {
+            return createInstance(clazz);
         }
     }
 
-    public ValidatorFactory getValidatorFactory() {
-        return Validation.buildDefaultValidatorFactory();
+    //TODO: exception message
+    public <K> K createInstance(Class<K> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (IllegalAccessException e) {
+            ErrorMessageSetup errorMessageSetup = (ErrorMessageSetup)singletonMap.get(ErrorMessageSetup.class);
+            throw new FactoryInstantiationException(errorMessageSetup.getErrorMessage(FactoryInstantiationException.class, clazz.toString()));
+        } catch (InstantiationException e) {
+            return createInstanceOfInnerClass(clazz);
+        }
+    }
+
+    //TODO: exception message
+    private <K> K createInstanceOfInnerClass(Class<K> clazz) {
+        Class superClass = clazz.getDeclaringClass();
+        try {
+            Object superInstance = superClass.newInstance();
+            Constructor<K> constructor = clazz.getConstructor(superClass);
+            return constructor.newInstance(superInstance);
+        } catch (Exception e) {
+            ErrorMessageSetup errorMessageSetup = (ErrorMessageSetup)singletonMap.get(ErrorMessageSetup.class);
+            throw new FactoryInstantiationException(errorMessageSetup.getErrorMessage(FactoryInstantiationException.class, clazz.toString()));
+        }
     }
 }

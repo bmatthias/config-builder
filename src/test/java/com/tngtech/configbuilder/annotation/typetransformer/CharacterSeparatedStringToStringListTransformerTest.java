@@ -3,6 +3,7 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
+import com.tngtech.configbuilder.util.FieldValueTransformerComponentTest;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +24,8 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StringCollectionToCommaSeparatedStringTransformerTest {
-    private StringCollectionToCommaSeparatedStringTransformer transformer;
+public class CharacterSeparatedStringToStringListTransformerTest {
+    private CharacterSeparatedStringToStringListTransformer transformer;
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;
@@ -35,29 +36,30 @@ public class StringCollectionToCommaSeparatedStringTransformerTest {
 
     @Before
     public void setUp() {
-        transformer = new StringCollectionToCommaSeparatedStringTransformer();
+        transformer = new CharacterSeparatedStringToStringListTransformer();
     }
 
     @Test
     public void testTransformer() {
-        Collection<String> collection = Lists.newArrayList("Rakim","Lakim Shabazz","2Pac");
+        Collection<String> expectedResult = Lists.newArrayList("Wayne","André","Kanye","Lebron");
 
         transformer.initialize(fieldValueTransformer, configBuilderFactory, ",");
-        String actualResult = transformer.transform(collection);
-        assertThat(actualResult, equalTo("Rakim,Lakim Shabazz,2Pac"));
+        Collection<String> actualResult = transformer.transform("Wayne,André,Kanye,Lebron");
+        assertThat(actualResult,equalTo(expectedResult));
 
         transformer.initialize(fieldValueTransformer, configBuilderFactory, ";");
-        actualResult = transformer.transform(collection);
-        assertThat(actualResult, equalTo("Rakim;Lakim Shabazz;2Pac"));
+        actualResult = transformer.transform("Wayne;André;Kanye;Lebron");
+        assertThat(actualResult,equalTo(expectedResult));
     }
 
     @Test
     public void testIsMatching() throws Exception {
         initializeFactoryAndHelperMocks();
         transformer.initialize(fieldValueTransformer, configBuilderFactory, ",");
-        assertTrue(transformer.isMatching(Set.class, String.class));
-        assertTrue(transformer.isMatching(Collection.class, String.class));
-        assertFalse(transformer.isMatching(Object.class, String.class));
+        assertTrue(transformer.isMatching(String.class, List.class));
+        assertTrue(transformer.isMatching(String.class, Collection.class));
+        assertFalse(transformer.isMatching(String.class, Set.class));
+        assertFalse(transformer.isMatching(Object.class, List.class));
     }
 
     private void initializeFactoryAndHelperMocks(){
@@ -67,6 +69,6 @@ public class StringCollectionToCommaSeparatedStringTransformerTest {
         when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn(String.class);
         when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn(Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn(Object.class);
-        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[0])).thenReturn(Collection.class);
+        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn(List.class);
     }
 }

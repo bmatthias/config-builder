@@ -1,14 +1,14 @@
 package com.tngtech.configbuilder.annotation.valueextractor;
 
-import com.tngtech.configbuilder.configuration.BuilderConfiguration;
+import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 
 import java.lang.annotation.Annotation;
 
 /**
- * Processes SystemPropertyValue annotations, implements IValueExtractorProcessor
+ * Processes SystemPropertyValue annotations, implements ValueExtractorProcessor
  */
-public class SystemPropertyProcessor implements IValueExtractorProcessor {
-    public String getValue(Annotation annotation, BuilderConfiguration builderConfiguration) {
+public class SystemPropertyProcessor implements ValueExtractorProcessor {
+    public String getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory) {
         return System.getProperty(((SystemPropertyValue) annotation).value());
     }
 }

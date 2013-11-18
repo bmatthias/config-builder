@@ -6,11 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassCastingHelper {
+public class GenericsAndCastingHelper {
 
     private final Map<Class, Class> primitiveToWrapperMapping;
     
-    public ClassCastingHelper() {
+    public GenericsAndCastingHelper() {
         primitiveToWrapperMapping = new HashMap<>();
         primitiveToWrapperMapping.put(boolean.class, Boolean.class);
         primitiveToWrapperMapping.put(byte.class, Byte.class);
@@ -22,11 +22,11 @@ public class ClassCastingHelper {
         primitiveToWrapperMapping.put(double.class, Double.class);
     }
 
-    public Class<?> getWrapperClassForPrimitive(Class primitiveClass) {
-        return primitiveToWrapperMapping.get(primitiveClass) == null? primitiveClass : primitiveToWrapperMapping.get(primitiveClass);
+    public Class getWrapperClassIfPrimitive(Class clazz) {
+        return primitiveToWrapperMapping.get(clazz) == null? clazz : primitiveToWrapperMapping.get(clazz);
     }
 
-    public Class<?> castTypeToClass(Type object) {
+    public Class castTypeToClass(Type object) {
         if(object.getClass().equals(Class.class)) {
             return (Class<?>) object;
         } else {
@@ -36,11 +36,11 @@ public class ClassCastingHelper {
 
     public boolean typesMatch(Object sourceValue, Type targetType) {
         if(sourceValue == null) {
-            return !castTypeToClass(targetType).isPrimitive();
+            return true;
         }
-        Class<?> sourceClass = getWrapperClassForPrimitive(sourceValue.getClass());
+        Class<?> sourceClass = getWrapperClassIfPrimitive(sourceValue.getClass());
         if(targetType.getClass().equals(Class.class)) {
-            return getWrapperClassForPrimitive((Class<?>)targetType).isAssignableFrom(sourceClass);
+            return getWrapperClassIfPrimitive((Class<?>) targetType).isAssignableFrom(sourceClass);
         }
         else if(Collection.class.isAssignableFrom((Class<?>)((ParameterizedType)targetType).getRawType())) {
             if(Collection.class.isAssignableFrom(sourceClass)) {
@@ -56,16 +56,10 @@ public class ClassCastingHelper {
                 return false;
             }
         }
-        return ((Class<?>)targetType).isAssignableFrom(sourceClass);
+        return (castTypeToClass(targetType)).isAssignableFrom(sourceClass);
     }
 
     public boolean isPrimitiveOrWrapper(Class targetClass) {
-        if(targetClass.isPrimitive()) {
-            return true;
-        }
-        else if(primitiveToWrapperMapping.containsValue(targetClass)) {
-            return true;
-        }
-        else return false;
+        return primitiveToWrapperMapping.containsKey(targetClass) || primitiveToWrapperMapping.containsValue(targetClass);
     }
 }

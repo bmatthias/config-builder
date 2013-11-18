@@ -5,7 +5,7 @@ import com.tngtech.propertyloader.PropertyLoader;
 
 import java.lang.annotation.Annotation;
 
-public class PropertyLocationsProcessor implements IPropertyLoaderConfigurationProcessor {
+public class PropertyLocationsProcessor implements PropertyLoaderConfigurationProcessor {
 
     public void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader) {
         propertyLoader.getLocations().clear();

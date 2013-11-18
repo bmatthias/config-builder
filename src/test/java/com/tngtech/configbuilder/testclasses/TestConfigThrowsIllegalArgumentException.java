@@ -10,13 +10,8 @@ import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.propertyloader.PropertyLoader;
 
-@PropertyExtension("testproperties")
-@PropertySuffixes(extraSuffixes = {"test"})
-@PropertyLocations(resourcesForClasses = {PropertyLoader.class}, fromClassLoader = true)
-@PropertiesFiles("demoapp-configuration")
-@LoadingOrder(value = {CommandLineValue.class, PropertyValue.class, DefaultValue.class})
 public class TestConfigThrowsIllegalArgumentException {
 
-    @DefaultValue("what")
+    @PropertyValue("propertyThatDoesNotExist")
     private int integer;
 }

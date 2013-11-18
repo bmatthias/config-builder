@@ -5,8 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.ANNOTATION_TYPE)
+@ValueExtractorAnnotation(ImportedValueProcessor.class)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValueExtractorAnnotation {
-    Class<? extends ValueExtractorProcessor> value();
+public @interface ImportedValue {
+    String value();
 }
