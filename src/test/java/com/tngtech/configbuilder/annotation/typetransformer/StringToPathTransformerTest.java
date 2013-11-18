@@ -53,8 +53,8 @@ public class StringToPathTransformerTest {
     private void initializeFactoryAndHelperMocks(){
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn(String.class);
-        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn(Object.class);
-        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn(Path.class);
+        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
+        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
+        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn((Class)Path.class);
     }
 }

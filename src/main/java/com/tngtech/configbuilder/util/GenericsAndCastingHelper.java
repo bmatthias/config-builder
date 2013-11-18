@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class GenericsAndCastingHelper {
 
-    private final Map<Class, Class> primitiveToWrapperMapping;
+    private final Map<Class<?>, Class<?>> primitiveToWrapperMapping;
     
     public GenericsAndCastingHelper() {
         primitiveToWrapperMapping = new HashMap<>();
@@ -22,15 +22,15 @@ public class GenericsAndCastingHelper {
         primitiveToWrapperMapping.put(double.class, Double.class);
     }
 
-    public Class getWrapperClassIfPrimitive(Class clazz) {
+    public Class<?> getWrapperClassIfPrimitive(Class clazz) {
         return primitiveToWrapperMapping.get(clazz) == null? clazz : primitiveToWrapperMapping.get(clazz);
     }
 
-    public Class castTypeToClass(Type object) {
-        if(object.getClass().equals(Class.class)) {
-            return (Class<?>) object;
+    public Class<?> castTypeToClass(Type type) {
+        if(type.getClass().equals(Class.class)) {
+            return (Class<?>) type;
         } else {
-            return (Class<?>) ((ParameterizedType) object).getRawType();
+            return (Class<?>) ((ParameterizedType) type).getRawType();
         }
     }
 
@@ -45,8 +45,8 @@ public class GenericsAndCastingHelper {
         else if(Collection.class.isAssignableFrom((Class<?>)((ParameterizedType)targetType).getRawType())) {
             if(Collection.class.isAssignableFrom(sourceClass)) {
                 Class<?> typeArgument = (Class<?>)((ParameterizedType) targetType).getActualTypeArguments()[0];
-                for(Object object : (Collection)sourceValue) {
-                    if(!typeArgument.isAssignableFrom(object.getClass())) {
+                for(Object item : (Collection)sourceValue) {
+                    if(!typeArgument.isAssignableFrom(item.getClass())) {
                         return false;
                     }
                 }
