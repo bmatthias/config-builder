@@ -24,6 +24,6 @@ public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Obj
 
     @Override
     public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
-        return genericsAndCastingHelper.isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || genericsAndCastingHelper.isPrimitiveOrWrapper(sourceClass));
+        return !targetClass.equals(sourceClass) && genericsAndCastingHelper.isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || genericsAndCastingHelper.isPrimitiveOrWrapper(sourceClass));
     }
 }
