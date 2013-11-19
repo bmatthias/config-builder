@@ -1,11 +1,10 @@
 package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.typetransformer.*;
+import com.tngtech.configbuilder.annotation.valuetransformer.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import com.tngtech.configbuilder.exception.TypeTransformerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +25,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class FieldValueTransformerComponentTest {
     
-    public class TestTransformer extends TypeTransformer<String, Integer> {
+    public class TestTransformer extends ValueTransformer<String, Integer> {
 
         @Override
         public Integer transform(String argument) {
@@ -34,7 +33,7 @@ public class FieldValueTransformerComponentTest {
         }
     }
 
-    public static class AnotherTestTransformer extends TypeTransformer<String, Integer> {
+    public static class AnotherTestTransformer extends ValueTransformer<String, Integer> {
 
         @Override
         public Integer transform(String argument) {
@@ -44,14 +43,14 @@ public class FieldValueTransformerComponentTest {
     
     private class TestConfigClass {
 
-        @TypeTransformers({CharacterSeparatedStringToStringListTransformer.class})
+        @ValueTransformers({CharacterSeparatedStringToStringListTransformer.class})
         private Collection<String> stringCollectionField;
         private int intField;
         private double doubleField;
         private Boolean boolField;
-        @TypeTransformers({TestTransformer.class})
+        @ValueTransformers({TestTransformer.class})
         private int otherIntField;
-        @TypeTransformers({AnotherTestTransformer.class})
+        @ValueTransformers({AnotherTestTransformer.class})
         private Integer integerField;
         private Collection<Path> pathCollectionField;
         private Collection<Integer> integerCollectionField;

@@ -2,8 +2,8 @@ package com.tngtech.configbuilder.util;
 
 import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
-import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
-import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
+import com.tngtech.configbuilder.annotation.valuetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformers;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
@@ -26,7 +26,7 @@ public class AnnotationHelperTest {
 
         @PropertyValue("testField")
         @CommandLineValue(shortOpt = "t", longOpt = "testField")
-        @TypeTransformers({StringCollectionToCommaSeparatedStringTransformer.class})
+        @ValueTransformers({StringCollectionToCommaSeparatedStringTransformer.class})
         private Collection<String> testField;
     }
 
@@ -47,7 +47,7 @@ public class AnnotationHelperTest {
         assertTrue(result.contains(field.getAnnotation(CommandLineValue.class)));
         assertTrue(result.contains(field.getAnnotation(PropertyValue.class)));
 
-        assertFalse(result.contains(field.getAnnotation(TypeTransformers.class)));
+        assertFalse(result.contains(field.getAnnotation(ValueTransformers.class)));
     }
 
 

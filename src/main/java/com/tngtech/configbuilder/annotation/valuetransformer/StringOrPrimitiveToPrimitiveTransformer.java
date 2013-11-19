@@ -1,14 +1,13 @@
-package com.tngtech.configbuilder.annotation.typetransformer;
+package com.tngtech.configbuilder.annotation.valuetransformer;
 
 
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import com.tngtech.configbuilder.exception.TypeTransformerException;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.lang.reflect.Type;
 
-public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Object,Object> {
+public class StringOrPrimitiveToPrimitiveTransformer extends ValueTransformer<Object,Object> {
 
     @Override
     public Object transform(Object argument) {
@@ -23,7 +22,17 @@ public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Obj
     }
 
     @Override
-    public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
+    public boolean isMatching(Object sourceValue, Type targetType) {
+        if(sourceValue == null) {
+            return false;
+        }
+        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
+        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
         return !targetClass.equals(sourceClass) && genericsAndCastingHelper.isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || genericsAndCastingHelper.isPrimitiveOrWrapper(sourceClass));
+    }
+
+    @Override
+    public boolean isContentTransformer() {
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package com.tngtech.configbuilder;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
+import com.tngtech.configbuilder.testclasses.TestConfigThrowsIllegalArgumentException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsPrimitiveParsingException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsInvocationTargetExceptionException;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
@@ -35,7 +36,8 @@ public class ConfigBuilderExceptionTest {
         return Arrays.asList(new Object[][]{
                 {TestConfigWithoutDefaultConstructor.class, NoConstructorFoundException.class, "build()"},
                 {TestConfigThrowsInvocationTargetExceptionException.class, ConfigBuilderException.class, "InvocationTargetException"},
-                {TestConfigThrowsPrimitiveParsingException.class, PrimitiveParsingException.class, "stringValue"}
+                {TestConfigThrowsPrimitiveParsingException.class, PrimitiveParsingException.class, "stringValue"},
+                {TestConfigThrowsIllegalArgumentException.class, ConfigBuilderException.class, "Field"}
         });
     }
 

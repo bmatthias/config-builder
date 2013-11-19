@@ -1,4 +1,4 @@
-package com.tngtech.configbuilder.annotation.typetransformer;
+package com.tngtech.configbuilder.annotation.valuetransformer;
 
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * @param <SourceClass> the type of the parameter before the transformation
  * @param <TargetClass> return type
  */
-public abstract class TypeTransformer<SourceClass, TargetClass> {
+public abstract class ValueTransformer<SourceClass, TargetClass> {
 
     protected Type targetType;
     protected FieldValueTransformer fieldValueTransformer;
@@ -32,7 +32,12 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
         this.additionalOptions = additionalOptions;
     }
 
-    public boolean isMatching(Class<?> sourceClass, Class<?> targetClass) {
+    public boolean isMatching(Object sourceValue, Type targetType) {
+        if(sourceValue == null) {
+            return false;
+        }
+        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
+        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
         Class<?> transformerSourceClass = getTransformerSourceClass();
         Class<?> transformerTargetClass = getTransformerTargetClass();
         if(transformerSourceClass.isAssignableFrom(sourceClass) && targetClass.isAssignableFrom(transformerTargetClass)) {
@@ -41,13 +46,13 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
         return false;
     }
 
-    protected Class<?> getTransformerSourceClass() {
+    public Class<?> getTransformerSourceClass() {
         Type typeOfInterface = this.getClass().getGenericSuperclass();
         Type[] genericTypes = ((ParameterizedType) typeOfInterface).getActualTypeArguments();
         return genericsAndCastingHelper.castTypeToClass(genericTypes[0]);
     }
 
-    protected Class<?> getTransformerTargetClass() {
+    public Class<?> getTransformerTargetClass() {
         Type typeOfInterface = this.getClass().getGenericSuperclass();
         Type[] genericTypes = ((ParameterizedType) typeOfInterface).getActualTypeArguments();
         return genericsAndCastingHelper.castTypeToClass(genericTypes[1]);
@@ -55,5 +60,9 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
 
     public void setTargetType(Type targetType) {
         this.targetType = targetType;
+    }
+
+    public boolean isContentTransformer() {
+        return getTransformerTargetClass().isAssignableFrom(getTransformerSourceClass());
     }
 }

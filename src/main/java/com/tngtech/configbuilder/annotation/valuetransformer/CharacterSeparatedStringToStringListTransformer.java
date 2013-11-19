@@ -1,12 +1,10 @@
-package com.tngtech.configbuilder.annotation.typetransformer;
+package com.tngtech.configbuilder.annotation.valuetransformer;
 
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
-public class CharacterSeparatedStringToStringListTransformer extends TypeTransformer<String, ArrayList<String>> {
+public class CharacterSeparatedStringToStringListTransformer extends ValueTransformer<String, ArrayList<String>> {
 
     @Override
     public ArrayList<String> transform(String argument) {
