@@ -20,6 +20,6 @@ import javax.validation.constraints.NotNull;
 public class TestConfigNotNullViolation {
 
     @NotNull
-    @DefaultValue("what")
+    @DefaultValue("keyThatDoesNotExist")
     private String string;
 }

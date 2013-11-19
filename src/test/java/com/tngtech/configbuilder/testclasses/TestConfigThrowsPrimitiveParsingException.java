@@ -10,8 +10,8 @@ import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.propertyloader.PropertyLoader;
 
-public class TestConfigThrowsIllegalArgumentException {
+public class TestConfigThrowsPrimitiveParsingException {
 
-    @PropertyValue("propertyThatDoesNotExist")
+    @DefaultValue("stringValue")
     private int integer;
 }

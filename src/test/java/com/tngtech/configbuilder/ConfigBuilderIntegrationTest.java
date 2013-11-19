@@ -5,27 +5,41 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 
 @RunWith(Parameterized.class)
 public class ConfigBuilderIntegrationTest {
+
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     private Class configClass;
     private Object configInstance;
 
     @Before
     public void setUp() {
+        System.setOut(new PrintStream(outContent));
+    }
+
+    @After
+    public void tearDown() {
+        System.setOut(null);
     }
 
     @Parameterized.Parameters
@@ -54,6 +68,7 @@ public class ConfigBuilderIntegrationTest {
         String[] args = new String[]{"-u", "--collection", "first entry,second entry"};
         Object result = configBuilder.withCommandLineArgs(args).build();
         assertReflectionEquals(configInstance, result);
+        assertTrue(outContent.toString().contains("config validated"));
     }
 
     @Test
@@ -88,7 +103,9 @@ public class ConfigBuilderIntegrationTest {
 
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
         String[] args = new String[]{"-u", "--collection", "collection,two"};
+
         Object result = configBuilder.withCommandLineArgs(args).withImportedConfiguration(importedTestConfig).build();
         assertReflectionEquals(expectedTestConfig, result);
+        assertTrue(outContent.toString().contains("config validated"));
     }
 }
