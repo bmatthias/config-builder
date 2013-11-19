@@ -99,5 +99,6 @@ public class FieldValueTransformer {
 
     private void reset() {
         typeTransformers = Lists.newArrayList();
+        contentTransformers = Lists.newArrayList();
     }
 }
