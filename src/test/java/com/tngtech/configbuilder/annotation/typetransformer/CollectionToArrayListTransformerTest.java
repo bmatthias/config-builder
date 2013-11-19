@@ -17,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -60,18 +61,21 @@ public class CollectionToArrayListTransformerTest {
         assertEquals(Lists.newArrayList(1.0,2.0,3.0), collectionToArrayListTransformer.transform(input));
     }
 
-    @Ignore
     @Test
     public void testIsMatching() throws Exception {
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         initializeFactoryAndHelper();
 
-        assertTrue(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class));
-        assertFalse(collectionToArrayListTransformer.isMatching(Collection.class, Double.class));
+        assertTrue(collectionToArrayListTransformer.isMatching(Lists.newArrayList("1","2"), ArrayList.class));
+        assertFalse(collectionToArrayListTransformer.isMatching(Lists.newArrayList("1","2"), Double.class));
     }
 
     private void initializeFactoryAndHelper() {
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Double.class)).thenReturn((Class)Double.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Object.class)).thenReturn((Class) Object.class);
+
         when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn((Class)Double.class);

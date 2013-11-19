@@ -1,5 +1,6 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valuetransformer.CollectionToHashSetTransformer;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -58,22 +59,25 @@ public class CollectionToHashSetTransformerTest {
         assertEquals(Sets.newHashSet(1.0, 2.0, 3.0), collectionToHashSetTransformer.transform(input));
     }
 
-    @Ignore
     @Test
     public void testIsMatching() throws Exception {
         collectionToHashSetTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         initializeFactoryAndHelper();
 
-        assertTrue(collectionToHashSetTransformer.isMatching(ArrayList.class, Set.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(ArrayList.class, ArrayList.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(Collection.class, Double.class));
+        assertTrue(collectionToHashSetTransformer.isMatching(Lists.newArrayList("1","2"), Set.class));
+        assertFalse(collectionToHashSetTransformer.isMatching(Lists.newArrayList("1","2"), ArrayList.class));
+        assertFalse(collectionToHashSetTransformer.isMatching(Lists.newArrayList("1","2"), Double.class));
     }
 
     private void initializeFactoryAndHelper() {
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Double.class)).thenReturn((Class)Double.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Set.class)).thenReturn((Class)Set.class);
+
         when(genericsAndCastingHelper.castTypeToClass(Set.class)).thenReturn((Class)Set.class);
         when(genericsAndCastingHelper.castTypeToClass(HashSet.class)).thenReturn((Class)HashSet.class);
+        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn((Class)Double.class);
     }

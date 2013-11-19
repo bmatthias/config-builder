@@ -26,8 +26,8 @@ public class StringOrPrimitiveToPrimitiveTransformer extends ValueTransformer<Ob
         if(sourceValue == null) {
             return false;
         }
-        Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
-        Class<?> targetClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(genericsAndCastingHelper.castTypeToClass(targetType));
+        Class<?> sourceClass = sourceValue.getClass();
+        Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
         return !targetClass.equals(sourceClass) && genericsAndCastingHelper.isPrimitiveOrWrapper(targetClass) && (String.class.equals(sourceClass) || genericsAndCastingHelper.isPrimitiveOrWrapper(sourceClass));
     }
 

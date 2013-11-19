@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -53,20 +54,26 @@ public class CharacterSeparatedStringToStringListTransformerTest {
     }
 
     @Test
-    @Ignore
     public void testIsMatching() throws Exception {
         initializeFactoryAndHelperMocks();
         transformer.initialize(fieldValueTransformer, configBuilderFactory, ",");
-        assertTrue(transformer.isMatching(String.class, List.class));
-        assertTrue(transformer.isMatching(String.class, Collection.class));
-        assertFalse(transformer.isMatching(String.class, Set.class));
-        assertFalse(transformer.isMatching(Object.class, List.class));
+        assertTrue(transformer.isMatching("someString", List.class));
+        assertTrue(transformer.isMatching("someString", Collection.class));
+        assertFalse(transformer.isMatching("someString", Set.class));
+        assertFalse(transformer.isMatching(new Object(), List.class));
     }
 
     private void initializeFactoryAndHelperMocks(){
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
-        when(genericsAndCastingHelper.castTypeToClass(List.class)).thenReturn((Class)List.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(List.class)).thenReturn((Class)List.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Collection.class)).thenReturn((Class)Collection.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Set.class)).thenReturn((Class)Set.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Object.class)).thenReturn((Class) Object.class);
+
+        when(genericsAndCastingHelper.castTypeToClass(Set.class)).thenReturn((Class)Set.class);
+        when(genericsAndCastingHelper.castTypeToClass(List.class)).thenReturn((Class) List.class);
         when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
