@@ -2,7 +2,7 @@ package com.tngtech.configbuilder.util;
 
 
 import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class GenericsAndCastingHelperTest {
     
-    private class TestClass extends TypeTransformer<Collection<String>, Iterable<String>> {
+    private class TestClass extends ValueTransformer<Collection<String>, Iterable<String>> {
 
         @Override
         public Iterable<String> transform(Collection<String> argument) {

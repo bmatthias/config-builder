@@ -1,14 +1,17 @@
 package com.tngtech.configbuilder.testclasses;
 
+import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
-import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
+import com.tngtech.configbuilder.annotation.valuetransformer.CharacterSeparatedStringToStringListTransformer;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformer;
+import com.tngtech.configbuilder.annotation.valuetransformer.ValueTransformers;
 import com.tngtech.propertyloader.PropertyLoader;
 
 import java.nio.file.Path;
@@ -24,11 +27,21 @@ public class TestConfig {
 
     }
 
-    public class TestConfigFactory extends TypeTransformer<String,TestConfig> {
+    public class TestConfigFactory extends ValueTransformer<String,TestConfig> {
         public TestConfig transform(String input) {
             TestConfig testConfig = new TestConfig();
             testConfig.setSomeString(input);
             return testConfig;
+        }
+    }
+
+    public static class ListElementIncrementer extends ValueTransformer<ArrayList<Integer>,ArrayList<Integer>> {
+        public ArrayList<Integer> transform(ArrayList<Integer> input) {
+            ArrayList<Integer> result = Lists.newArrayList();
+            for(Integer element : input) {
+                result.add(element + 1);
+            }
+            return result;
         }
     }
 
@@ -47,7 +60,7 @@ public class TestConfig {
 
     @LoadingOrder(value = {CommandLineValue.class})
     @CommandLineValue(shortOpt = "c", longOpt = "collection", hasArg = true, description = "command line option description")
-    @TypeTransformers({CharacterSeparatedStringToStringListTransformer.class})
+    @ValueTransformers({CharacterSeparatedStringToStringListTransformer.class})
     private Collection<String> stringCollection;
 
     @DefaultValue("/etc,/usr")
@@ -58,10 +71,11 @@ public class TestConfig {
     private Iterable<String> copiedStringCollection;
 
     @Separator(";")
-    @DefaultValue("1;2;3;4;5")
+    @DefaultValue("0;1;2;3;4")
+    @ValueTransformers(ListElementIncrementer.class)
     private List<Integer> integerList;
 
-    @TypeTransformers(TestConfigFactory.class)
+    @ValueTransformers(TestConfigFactory.class)
     private ArrayList<TestConfig> testConfigList;
 
     @EnvironmentVariableValue("HOME")

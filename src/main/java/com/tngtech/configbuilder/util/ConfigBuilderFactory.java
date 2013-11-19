@@ -5,8 +5,8 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Properti
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtensionProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocationsProcessor;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixProcessor;
-import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
+import com.tngtech.configbuilder.annotation.valuetransformer.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.FactoryInstantiationException;
@@ -50,7 +50,7 @@ public class ConfigBuilderFactory {
         singletonMap.put(PropertiesFilesProcessor.class, new PropertiesFilesProcessor());
         singletonMap.put(DefaultValueProcessor.class, new DefaultValueProcessor());
 
-        //TypeTransformers
+        //ValueTransformers
         singletonMap.put(StringOrPrimitiveToPrimitiveTransformer.class, new StringOrPrimitiveToPrimitiveTransformer());
         singletonMap.put(CollectionToArrayListTransformer.class, new CollectionToArrayListTransformer());
         singletonMap.put(CollectionToHashSetTransformer.class, new CollectionToHashSetTransformer());

@@ -1,10 +1,10 @@
-package com.tngtech.configbuilder.annotation.typetransformer;
+package com.tngtech.configbuilder.annotation.valuetransformer;
 
 import com.google.common.base.Joiner;
 
 import java.util.Collection;
 
-public class StringCollectionToCommaSeparatedStringTransformer extends TypeTransformer<Collection<String>, String> {
+public class StringCollectionToCommaSeparatedStringTransformer extends ValueTransformer<Collection<String>, String> {
     
     @Override
     public String transform(Collection<String> argument) {

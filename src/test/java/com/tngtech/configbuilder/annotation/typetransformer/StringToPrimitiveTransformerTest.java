@@ -1,11 +1,13 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
+import com.tngtech.configbuilder.annotation.valuetransformer.StringOrPrimitiveToPrimitiveTransformer;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -76,18 +78,26 @@ public class StringToPrimitiveTransformerTest {
 
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Integer.class));
-        assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(String.class, int.class));
-        assertFalse(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Object.class));
+        assertFalse(stringOrPrimitiveToPrimitiveTransformer.isMatching(3, Integer.class));
+        assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching("someString", int.class));
+        assertFalse(stringOrPrimitiveToPrimitiveTransformer.isMatching(3, Object.class));
     }
 
     private void initializeFactoryAndHelperMocks() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(int.class)).thenReturn((Class) int.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Integer.class)).thenReturn((Class) Integer.class);
+
+        when(genericsAndCastingHelper.castTypeToClass(Integer.class)).thenReturn((Class)Integer.class);
+        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
+        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.castTypeToClass(boolean.class)).thenReturn((Class)boolean.class);
         when(genericsAndCastingHelper.castTypeToClass(double.class)).thenReturn((Class)double.class);
         when(genericsAndCastingHelper.castTypeToClass(int.class)).thenReturn((Class)int.class);
+
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(int.class)).thenReturn(true);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Integer.class)).thenReturn(true);
         when(genericsAndCastingHelper.isPrimitiveOrWrapper(Object.class)).thenReturn(false);

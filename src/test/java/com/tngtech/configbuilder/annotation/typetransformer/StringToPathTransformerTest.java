@@ -1,9 +1,11 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
+import com.tngtech.configbuilder.annotation.valuetransformer.StringToPathTransformer;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -12,8 +14,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -46,15 +46,20 @@ public class StringToPathTransformerTest {
         initializeFactoryAndHelperMocks();
         transformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        assertTrue(transformer.isMatching(String.class, Path.class));
-        assertFalse(transformer.isMatching(Object.class, Path.class));
+        assertTrue(transformer.isMatching("someString", Path.class));
+        assertFalse(transformer.isMatching(new Object(), Path.class));
     }
 
     private void initializeFactoryAndHelperMocks(){
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
 
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Object.class)).thenReturn((Class) Object.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Path.class)).thenReturn((Class) Path.class);
+
         when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
+        when(genericsAndCastingHelper.castTypeToClass(Path.class)).thenReturn((Class)Path.class);
         when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn((Class)Path.class);
     }
 }

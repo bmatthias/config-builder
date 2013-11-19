@@ -2,11 +2,13 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.tngtech.configbuilder.annotation.valuetransformer.CollectionToArrayListTransformer;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -52,9 +55,9 @@ public class CollectionToArrayListTransformerTest {
     public void testTransform() throws Exception {
         Set<Integer> input = Sets.newHashSet(1,2,3);
         when(type.getActualTypeArguments()).thenReturn(new Class[]{Double.class});
-        when(fieldValueTransformer.performNecessaryTransformations(1, Double.class)).thenReturn(1.0);
-        when(fieldValueTransformer.performNecessaryTransformations(2, Double.class)).thenReturn(2.0);
-        when(fieldValueTransformer.performNecessaryTransformations(3, Double.class)).thenReturn(3.0);
+        when(fieldValueTransformer.performApplicableTransformations(1, Double.class)).thenReturn(1.0);
+        when(fieldValueTransformer.performApplicableTransformations(2, Double.class)).thenReturn(2.0);
+        when(fieldValueTransformer.performApplicableTransformations(3, Double.class)).thenReturn(3.0);
         assertEquals(Lists.newArrayList(1.0,2.0,3.0), collectionToArrayListTransformer.transform(input));
     }
 
@@ -64,11 +67,15 @@ public class CollectionToArrayListTransformerTest {
 
         initializeFactoryAndHelper();
 
-        assertTrue(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class));
-        assertFalse(collectionToArrayListTransformer.isMatching(Collection.class, Double.class));
+        assertTrue(collectionToArrayListTransformer.isMatching(Lists.newArrayList("1","2"), ArrayList.class));
+        assertFalse(collectionToArrayListTransformer.isMatching(Lists.newArrayList("1","2"), Double.class));
     }
 
     private void initializeFactoryAndHelper() {
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Double.class)).thenReturn((Class)Double.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
+        when(genericsAndCastingHelper.getWrapperClassIfPrimitive(Object.class)).thenReturn((Class) Object.class);
+
         when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
         when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn((Class)Double.class);
