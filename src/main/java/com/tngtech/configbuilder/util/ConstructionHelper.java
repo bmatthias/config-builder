@@ -24,9 +24,17 @@ public class ConstructionHelper<T> {
             log.info(String.format("found constructor - instantiating %s", configClass.getName()));
             tConstructor.setAccessible(true);
             return tConstructor.newInstance(objects);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e), e);
+        } catch (InstantiationException e) {
+            throw createConfigBuilderException(e);
+        } catch (IllegalAccessException e) {
+            throw createConfigBuilderException(e);
+        } catch (InvocationTargetException e) {
+            throw createConfigBuilderException(e);
         }
+    }
+
+    private ConfigBuilderException createConfigBuilderException(Exception e) {
+        return new ConfigBuilderException(errorMessageSetup.getErrorMessage(e), e);
     }
 
     @SuppressWarnings("unchecked")

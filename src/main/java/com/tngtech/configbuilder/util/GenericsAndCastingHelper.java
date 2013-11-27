@@ -11,7 +11,7 @@ public class GenericsAndCastingHelper {
     private final Map<Class<?>, Class<?>> primitiveToWrapperMapping;
     
     public GenericsAndCastingHelper() {
-        primitiveToWrapperMapping = new HashMap<>();
+        primitiveToWrapperMapping = new HashMap<Class<?>, Class<?>>();
         primitiveToWrapperMapping.put(boolean.class, Boolean.class);
         primitiveToWrapperMapping.put(byte.class, Byte.class);
         primitiveToWrapperMapping.put(short.class, Short.class);

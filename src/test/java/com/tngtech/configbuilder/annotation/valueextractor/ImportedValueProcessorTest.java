@@ -47,7 +47,7 @@ public class ImportedValueProcessorTest {
         when(builderConfiguration.getImportedConfiguration()).thenReturn(importedTestConfig);
         when(importedValue.value()).thenReturn("intField");
         
-        int actualResult = (int) importedValueProcessor.getValue(importedValue, configBuilderFactory);
+        int actualResult = (Integer) importedValueProcessor.getValue(importedValue, configBuilderFactory);
         assertThat(actualResult, equalTo(23));
     }
     
