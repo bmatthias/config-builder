@@ -72,7 +72,7 @@ public class FieldSetterTest {
         when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
         when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class), Matchers.any(String.class), Matchers.any(String.class), Matchers.any(String.class))).thenReturn("IllegalArgumentException");
 
-        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(configBuilderFactory);
+        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<TestConfigForIllegalArgumentException>(configBuilderFactory);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
 
         expectedException.expect(ConfigBuilderException.class);
@@ -86,7 +86,7 @@ public class FieldSetterTest {
         when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
         when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
 
-        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(configBuilderFactory);
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<TestConfig>(configBuilderFactory);
         TestConfig testConfig = new TestConfig();
 
         fieldSetter.setFields(testConfig, builderConfiguration);
@@ -101,7 +101,7 @@ public class FieldSetterTest {
         when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(false);
 
-        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(configBuilderFactory);
+        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<TestConfigWithoutAnnotations>(configBuilderFactory);
         TestConfigWithoutAnnotations testConfigWithoutAnnotations = new TestConfigWithoutAnnotations();
 
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);

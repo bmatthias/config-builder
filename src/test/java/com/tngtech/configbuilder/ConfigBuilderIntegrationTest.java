@@ -73,7 +73,7 @@ public class ConfigBuilderIntegrationTest {
 
     @Test
     public void testConfigBuilderWithConstructorArgument() {
-        ConfigBuilder<TestConfigWithoutDefaultConstructor> configBuilder = new ConfigBuilder<>(TestConfigWithoutDefaultConstructor.class);
+        ConfigBuilder<TestConfigWithoutDefaultConstructor> configBuilder = new ConfigBuilder<TestConfigWithoutDefaultConstructor>(TestConfigWithoutDefaultConstructor.class);
         TestConfigWithoutDefaultConstructor c = configBuilder.build(3);
         assertEquals(3, c.getNumber());
     }

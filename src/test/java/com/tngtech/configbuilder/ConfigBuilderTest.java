@@ -80,7 +80,7 @@ public class ConfigBuilderTest {
         when(propertyLoaderConfigurator.configurePropertyLoader(TestConfig.class)).thenReturn(propertyLoader);
         when(commandLineHelper.getOptions(TestConfig.class)).thenReturn(commandLineOptions);
 
-        configBuilder = new ConfigBuilder<>(TestConfig.class, configBuilderFactory);
+        configBuilder = new ConfigBuilder<TestConfig>(TestConfig.class, configBuilderFactory);
     }
 
     @After

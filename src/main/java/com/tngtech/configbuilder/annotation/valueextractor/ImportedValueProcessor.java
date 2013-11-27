@@ -26,11 +26,17 @@ public class ImportedValueProcessor implements ValueExtractorProcessor {
             Field field = importedConfiguration.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             result = field.get(importedConfiguration);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            ErrorMessageSetup errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
-            throw new ImportedConfigurationException(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class, fieldName));
+        } catch (NoSuchFieldException e) {
+            throw createException(configBuilderFactory, fieldName);
+        } catch (IllegalAccessException e) {
+            throw createException(configBuilderFactory, fieldName);
         }
 
         return result;
+    }
+
+    private ImportedConfigurationException createException(ConfigBuilderFactory configBuilderFactory, String fieldName) {
+        ErrorMessageSetup errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
+        return new ImportedConfigurationException(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class, fieldName));
     }
 }
