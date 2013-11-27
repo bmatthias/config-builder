@@ -4,13 +4,14 @@ import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.apache.commons.cli.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
 public class CommandLineHelper {
 
-    private final static Logger log = Logger.getLogger(CommandLineHelper.class);
+    private final static Logger log = LoggerFactory.getLogger(CommandLineHelper.class);
 
     private final ConfigBuilderFactory configBuilderFactory;
     private final AnnotationHelper annotationHelper;

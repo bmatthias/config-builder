@@ -3,14 +3,15 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class ConstructionHelper<T> {
 
-    private final static Logger log = Logger.getLogger(ConstructionHelper.class);
+    private final static Logger log = LoggerFactory.getLogger(ConstructionHelper.class);
 
     private ErrorMessageSetup errorMessageSetup;
 

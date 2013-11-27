@@ -5,7 +5,8 @@ import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 //TODO: Content transformers (transform even if types already match, allow null as argument)
 public class FieldValueTransformer {
 
-    private final static Logger log = Logger.getLogger(FieldValueTransformer.class);
+    private final static Logger log = LoggerFactory.getLogger(FieldValueTransformer.class);
 
     private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;

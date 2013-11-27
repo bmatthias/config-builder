@@ -4,14 +4,15 @@ import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorProcessor;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class FieldValueExtractor {
 
-    private final static Logger log = Logger.getLogger(FieldValueExtractor.class);
+    private final static Logger log = LoggerFactory.getLogger(FieldValueExtractor.class);
 
     private final AnnotationHelper annotationHelper;
     private final ConfigBuilderFactory configBuilderFactory;

@@ -4,7 +4,8 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ValidatorException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 public class ConfigValidator<T> {
 
-    private final static Logger log = Logger.getLogger(ConfigValidator.class);
+    private final static Logger log = LoggerFactory.getLogger(ConfigValidator.class);
 
     private final ConfigBuilderFactory configBuilderFactory;
     private final ErrorMessageSetup errorMessageSetup;

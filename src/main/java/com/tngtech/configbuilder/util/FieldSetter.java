@@ -4,13 +4,14 @@ import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotat
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
 public class FieldSetter<T> {
 
-    private final static Logger log = Logger.getLogger(FieldSetter.class);
+    private final static Logger log = LoggerFactory.getLogger(FieldSetter.class);
 
     private final FieldValueTransformer fieldValueTransformer;
     private final FieldValueExtractor fieldValueExtractor;
