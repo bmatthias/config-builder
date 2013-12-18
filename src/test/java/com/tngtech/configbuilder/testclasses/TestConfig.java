@@ -4,12 +4,16 @@ import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyFilters;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
 import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.propertyloader.PropertyLoader;
+import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
+import com.tngtech.propertyloader.impl.filters.ValueModifyingFilter;
+import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -17,6 +21,7 @@ import java.util.*;
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
 @PropertyLocations(resourcesForClasses = {PropertyLoader.class})
+@PropertyFilters({VariableResolvingFilter.class, DecryptingFilter.class})
 @PropertiesFiles("demoapp-configuration")
 public class TestConfig {
 
