@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * This annotation is used to specify the filters which the PropertyLoader applies to the properties files.<br>
  * <b>Usage:</b> <code>@PropertyFilters({Config.class})</code>
  */
-@PropertyLoaderConfigurationAnnotation(PropertyLocationsProcessor.class)
+@PropertyLoaderConfigurationAnnotation(PropertyFiltersProcessor.class)
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyFilters {
