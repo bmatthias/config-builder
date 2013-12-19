@@ -7,16 +7,25 @@ import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.Property
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyFilters;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
-import com.tngtech.configbuilder.annotation.typetransformer.*;
+import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringListTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.annotation.validation.Validation;
-import com.tngtech.configbuilder.annotation.valueextractor.*;
+import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
+import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
+import com.tngtech.configbuilder.annotation.valueextractor.EnvironmentVariableValue;
+import com.tngtech.configbuilder.annotation.valueextractor.ImportedValue;
+import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
+import com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
-import com.tngtech.propertyloader.impl.filters.ValueModifyingFilter;
 import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
