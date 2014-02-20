@@ -87,6 +87,10 @@ public class TestConfig {
     public void setSomeNumber(Integer someNumber) {
         this.someNumber = someNumber;
     }
+  
+    public Integer getSomeNumber() {
+      return someNumber;
+    }
 
     public void setSomeString(String someString) {
         this.someString = someString;
@@ -137,7 +141,7 @@ public class TestConfig {
     }
 
     @Validation
-    private void validate() {
+    protected void validate() {
         System.out.println("config validated");
     }
 }

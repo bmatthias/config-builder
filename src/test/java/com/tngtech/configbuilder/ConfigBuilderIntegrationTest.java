@@ -12,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,15 +29,17 @@ public class ConfigBuilderIntegrationTest {
 
     private Class configClass;
     private Object configInstance;
+    private PrintStream originalOutStream;
 
     @Before
     public void setUp() {
+        originalOutStream = new PrintStream(System.out);
         System.setOut(new PrintStream(outContent));
     }
 
     @After
     public void tearDown() {
-        System.setOut(null);
+        System.setOut(originalOutStream);
     }
 
     @Parameterized.Parameters

@@ -32,6 +32,11 @@ public class FieldSetterTest {
         public String testString = "defaultValue";
     }
 
+    private static class ExtendedTestConfig extends TestConfig {
+        @DefaultValue("stringValue")
+        public String extendedTestString;
+    }
+
     private static class TestConfigForIllegalArgumentException {
         @DefaultValue("user")
         public int testInt;
@@ -91,8 +96,8 @@ public class FieldSetterTest {
 
         fieldSetter.setFields(testConfig, builderConfiguration);
 
-        assertEquals("stringValue",testConfig.testString);
-        assertEquals("stringValue",testConfig.emptyTestString);
+        assertEquals("stringValue", testConfig.testString);
+        assertEquals("stringValue", testConfig.emptyTestString);
 
     }
 
@@ -107,5 +112,20 @@ public class FieldSetterTest {
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);
 
         assertEquals("testString", testConfigWithoutAnnotations.testString);
+    }
+
+    @Test
+    public void testSetFieldsInObjectHierarchy() {
+        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
+        
+        ExtendedTestConfig testConfig = new ExtendedTestConfig();
+
+        FieldSetter<ExtendedTestConfig> fieldSetter = new FieldSetter<ExtendedTestConfig>(configBuilderFactory);
+        fieldSetter.setFields(testConfig, builderConfiguration);
+
+        assertEquals("stringValue", testConfig.testString);
+        assertEquals("stringValue", testConfig.emptyTestString);
+        assertEquals("stringValue", testConfig.extendedTestString);
     }
 }

@@ -1,5 +1,7 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -8,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public class FieldSetter<T> {
 
@@ -27,7 +30,7 @@ public class FieldSetter<T> {
 
     public void setFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration) {
 
-        for (Field field : instanceOfConfigClass.getClass().getDeclaredFields()) {
+        for (Field field : getInheritedPrivateFields(instanceOfConfigClass.getClass())) {
             if (annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class)) {
                 Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
                 value = fieldValueTransformer.transformFieldValue(field, value);
@@ -36,6 +39,18 @@ public class FieldSetter<T> {
                 log.debug(String.format("field %s is not annotated with any ValueExtractorAnnotation: skipping field", field.getName()));
             }
         }
+    }
+
+    public static List<Field> getInheritedPrivateFields(Class type) {
+        final ImmutableList.Builder<Field> listBuilder = ImmutableList.builder();
+
+        Class currentType = type;
+        while (currentType != null && currentType != Object.class) {
+            listBuilder.addAll(Lists.newArrayList(currentType.getDeclaredFields()));
+            currentType = currentType.getSuperclass();
+        }
+
+        return listBuilder.build();
     }
 
     private void setField(T instanceOfConfigClass, Field field, Object value) {

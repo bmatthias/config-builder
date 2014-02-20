@@ -64,10 +64,12 @@ public class ConfigBuilderTest {
     private Properties properties;
     @Mock
     private LoadingOrder loadingOrder;
+    private PrintStream originalOutStream;
 
     @Before
     public void setUp() throws Exception {
 
+        originalOutStream = new PrintStream(System.out);
         System.setOut(new PrintStream(outContent));
 
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
@@ -85,7 +87,7 @@ public class ConfigBuilderTest {
 
     @After
     public void tearDown() {
-        System.setOut(null);
+        System.setOut(originalOutStream);
     }
 
     @Test
