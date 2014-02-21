@@ -76,7 +76,7 @@ public class FieldValueTransformer {
         Class<?> sourceClass = genericsAndCastingHelper.getWrapperClassIfPrimitive(sourceValue.getClass());
         Class<?> targetClass = genericsAndCastingHelper.castTypeToClass(targetType);
 
-        log.info(String.format("Searching for a transformer from %s to %s", sourceClass.getSimpleName(), targetClass.getSimpleName()));
+        log.debug("Searching for a transformer from {} to {}", sourceClass.getSimpleName(), targetClass.getSimpleName());
 
         TypeTransformer<Object, ?> transformer = findApplicableTransformer(sourceClass, targetType);
         sourceValue = transformer.transform(sourceValue);

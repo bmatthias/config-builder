@@ -27,7 +27,7 @@ public class ConfigValidator<T> {
     }
 
     public void validate(T instanceOfConfigClass) {
-        log.info(String.format("validating instance of %s", instanceOfConfigClass.getClass()));
+        log.debug("validating instance of {}", instanceOfConfigClass.getClass());
         callValidationMethods(instanceOfConfigClass);
         callJSRValidation(instanceOfConfigClass);
     }

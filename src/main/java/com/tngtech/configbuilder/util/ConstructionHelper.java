@@ -22,7 +22,7 @@ public class ConstructionHelper<T> {
     public T getInstance(Class<T> configClass, Object... objects) {
         try {
             Constructor<T> tConstructor = findSuitableConstructor(configClass, objects);
-            log.info(String.format("found constructor - instantiating %s", configClass.getName()));
+            log.debug("found constructor - instantiating {}", configClass.getName());
             tConstructor.setAccessible(true);
             return tConstructor.newInstance(objects);
         } catch (InstantiationException e) {
@@ -40,7 +40,7 @@ public class ConstructionHelper<T> {
 
     @SuppressWarnings("unchecked")
     private Constructor<T> findSuitableConstructor(Class<T> configClass, Object... objects) {
-        log.debug(String.format("trying to find a constructor for %s matching the arguments of build()", configClass.getName()));
+        log.debug("trying to find a constructor for {} matching the arguments of build()", configClass.getName());
         Constructor[] constructors = configClass.getDeclaredConstructors();
         for (Constructor<T> constructor : constructors) {
             if (constructorIsMatching(constructor, objects)) {

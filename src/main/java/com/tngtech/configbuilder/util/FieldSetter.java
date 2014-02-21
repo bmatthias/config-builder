@@ -33,7 +33,7 @@ public class FieldSetter<T> {
                 value = fieldValueTransformer.transformFieldValue(field, value);
                 setField(instanceOfConfigClass, field, value);
             } else {
-                log.debug(String.format("field %s is not annotated with any ValueExtractorAnnotation: skipping field", field.getName()));
+                log.debug("field {} is not annotated with any ValueExtractorAnnotation: skipping field", field.getName());
             }
         }
     }
@@ -42,11 +42,11 @@ public class FieldSetter<T> {
         try {
             field.setAccessible(true);
             if(value == null && field.getType().isPrimitive()) {
-                log.warn(String.format("no value found for field %s of primitive type %s: field will be initialized to default", field.getName(), field.getType().getName()));
+                log.warn("no value found for field {} of primitive type {}: field will be initialized to default", field.getName(), field.getType().getName());
             }
             else {
                 field.set(instanceOfConfigClass, value);
-                log.info(String.format("set field %s of type %s to a value of type %s", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName()));
+                log.debug("set field {} of type {} to a value of type {}", field.getName(), field.getType().getName(), value == null ? "null" : value.getClass().getName());
             }
         } catch (Exception e) {
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e, field.getName(), field.getType().getName(), value == null ? "null" : value.toString()), e);

@@ -40,7 +40,7 @@ public class CommandLineHelper {
     @SuppressWarnings("AccessStaticViaInstance")
     private Option getOption(Field field) {
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
-        log.debug(String.format("adding command line option %s for field %s", commandLineValue.shortOpt(), field.getName()));
+        log.debug("adding command line option {} for field {}", commandLineValue.shortOpt(), field.getName());
         return OptionBuilder.withLongOpt(commandLineValue.longOpt())
                 .hasArg()
                 .isRequired(commandLineValue.required())
