@@ -28,11 +28,11 @@ public class FieldValueExtractor {
         Class<? extends ValueExtractorProcessor> processor;
        
         for (Annotation annotation : annotationHelper.getAnnotationsInOrder(field, annotationOrderOfField)) {
-            log.debug(String.format("trying to find a value for field %s with %s annotation", field.getName(), annotation.annotationType()));
+            log.debug("trying to find a value for field {} with {} annotation", field.getName(), annotation.annotationType());
             processor = annotation.annotationType().getAnnotation(ValueExtractorAnnotation.class).value();
             value = configBuilderFactory.getInstance(processor).getValue(annotation, configBuilderFactory);
             if (value != null) {
-                log.debug(String.format("found value \"%s\" for field %s from %s annotation", value, field.getName(), annotation.annotationType()));
+                log.debug("found value \"{}\" for field {} from {} annotation", value, field.getName(), annotation.annotationType());
                 break;
             }
         }
