@@ -4,6 +4,9 @@ package com.tngtech.configbuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutAnnotations;
+import com.tngtech.propertyloader.PropertyLoader;
+import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
+import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +38,7 @@ public class ConfigBuilderWithoutAnnotationsIntegrationTest {
 
         expectedConfig = new TestConfigWithoutAnnotations();
         expectedConfig.setSomeString("Hello, Galaxy!");
+        expectedConfig.setOtherString("${a}");
         expectedConfig.setSomeNumber(3);
         expectedConfig.setBoolean(true);
         expectedConfig.setStringCollection(Lists.newArrayList("first entry", "second entry"));
@@ -55,6 +59,8 @@ public class ConfigBuilderWithoutAnnotationsIntegrationTest {
         additionalProperties.put("a", "Hello, Galaxy!");
         String[] args = new String[]{"-u", "--collection", "first entry,second entry"};
         Object result = configBuilder
+                .withPropertyLocations(PropertyLoader.class)
+                .withPropertyFilters(DecryptingFilter.class)
                 .withPropertyExtension("testproperties")
                 .withPropertySuffix("test")
                 .withPropertiesFile("demoapp-configuration")

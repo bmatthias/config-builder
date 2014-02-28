@@ -9,13 +9,19 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
+import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
+import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
 import com.tngtech.propertyloader.impl.DefaultPropertySuffixContainer;
+import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
+import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
+import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -67,6 +73,12 @@ public class ConfigBuilderTest {
     @Mock
     private DefaultPropertySuffixContainer suffixContainer;
     @Mock
+    private DefaultPropertyLocationContainer locationContainer;
+    @Mock
+    private DefaultPropertyFilterContainer filterContainer;
+    @Mock
+    private List<PropertyLoaderFilter> filters;
+    @Mock
     private Options commandLineOptions;
     @Mock
     private CommandLine commandLine;
@@ -92,6 +104,9 @@ public class ConfigBuilderTest {
         when(configBuilderFactory.createInstance(Properties.class)).thenReturn(additionalProperties);
         when(propertyLoaderConfigurator.configurePropertyLoader(TestConfig.class)).thenReturn(propertyLoader);
         when(propertyLoader.getSuffixes()).thenReturn(suffixContainer);
+        when(propertyLoader.getLocations()).thenReturn(locationContainer);
+        when(propertyLoader.getFilters()).thenReturn(filterContainer);
+        when(filterContainer.getFilters()).thenReturn(filters);
         when(commandLineHelper.getOptions(TestConfig.class)).thenReturn(commandLineOptions);
 
         configBuilder = new ConfigBuilder<TestConfig>(TestConfig.class, configBuilderFactory);
@@ -210,7 +225,7 @@ public class ConfigBuilderTest {
         verify(propertyLoader).withBaseNames(Lists.newArrayList(propertyFile));
         verifyNoMoreInteractions(propertyLoader);
     }
-    
+
     @Test
     public void testWithPropertiesFiles() {
         final String propertiesFile1 = "<propertiesFile1>";
@@ -219,5 +234,36 @@ public class ConfigBuilderTest {
 
         verify(propertyLoader).withBaseNames(Lists.newArrayList(propertiesFile1, propertiesFile2));
         verifyNoMoreInteractions(propertyLoader);
+    }
+
+    @Test
+    public void testWithPropertyLocations() {
+        final String propertyLocation1 = "<propertyLocation>";
+        final Class propertyLocation2 = PropertyLoader.class;
+        assertThat(configBuilder.withPropertyLocations(propertyLocation1, propertyLocation2),
+                is(sameInstance(configBuilder)));
+
+        InOrder order = inOrder(propertyLoader, locationContainer);
+        order.verify(propertyLoader).getLocations();
+        order.verify(locationContainer).clear();
+        order.verify(locationContainer).atDirectory(propertyLocation1);
+        order.verify(locationContainer).atRelativeToClass(propertyLocation2);
+        order.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void testWithPropertyFilters() {
+
+        assertThat(configBuilder.withPropertyFilters(
+                VariableResolvingFilter.class, DecryptingFilter.class),
+                is(sameInstance(configBuilder)));
+
+        InOrder order = inOrder(propertyLoader, filterContainer, filters);
+        order.verify(propertyLoader).getFilters();
+        order.verify(filterContainer).getFilters();
+        order.verify(filters).clear();
+        order.verify(filters).add(isA(VariableResolvingFilter.class));
+        order.verify(filters).add(isA(DecryptingFilter.class));
+        order.verifyNoMoreInteractions();
     }
 }

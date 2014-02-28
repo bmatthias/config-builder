@@ -7,9 +7,14 @@ import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
+import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
+import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
 import com.tngtech.propertyloader.impl.DefaultPropertySuffixContainer;
+import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +50,9 @@ import java.util.Properties;
  * @version 0.1-SNAPSHOT
  */
 public class ConfigBuilder<T> {
-
+    private final static Logger LOGGER = LoggerFactory.getLogger(CommandLineHelper.class);
+    public static final Object AT_CONTEXT_CLASS_PATH = new Object();
+    
     private final BuilderConfiguration builderConfiguration;
     private final CommandLineHelper commandLineHelper;
     private final FieldSetter<T> fieldSetter;
@@ -58,6 +65,7 @@ public class ConfigBuilder<T> {
     private PropertyLoader propertyLoader;
     private Properties additionalProperties;
     private String[] commandLineArgs = {};
+    
 
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
 
@@ -184,7 +192,53 @@ public class ConfigBuilder<T> {
     public ConfigBuilder<T> withPropertiesFiles(String ... fileNames) {
         propertyLoader.withBaseNames(Arrays.asList(fileNames));
         return this;
-    }    
+    }
+
+    /**
+     * set property locations
+     * @param propertyLocations lists of property locations which can be 
+     *                          Strings: use as Directory
+     *                          Classes: use as Class Resource Location
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertyLocations(Object ... propertyLocations) {
+        final DefaultPropertyLocationContainer locations = propertyLoader.getLocations();
+        locations.clear();
+        for (Object propertyLocation : propertyLocations) {
+            if (propertyLocation instanceof String) {
+                locations.atDirectory((String)propertyLocation);
+            } else if (propertyLocation instanceof Class) {
+                locations.atRelativeToClass((Class)propertyLocation);
+            } else if (propertyLocation == AT_CONTEXT_CLASS_PATH) {
+                locations.atContextClassPath();
+            } else {
+                LOGGER.warn("unhandled property location '{}'", propertyLocation);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * set property filters in use
+     * @param propertyFilters property filters which should be applied after loading properties
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertyFilters(Class<? extends PropertyLoaderFilter> ... propertyFilters) {
+        final DefaultPropertyFilterContainer filterContainer = propertyLoader.getFilters();
+        final List<PropertyLoaderFilter> filters = filterContainer.getFilters();
+        filters.clear();
+
+        for (Class<? extends PropertyLoaderFilter> propertyFilter : propertyFilters) {
+            try {
+                filters.add(propertyFilter.newInstance());
+            } catch (InstantiationException e) {
+                LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
+            } catch (IllegalAccessException e) {
+                LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
+            }
+        }
+        return this;
+    }
     
     /**
      * Prints a help message for all command line options that are configured in the config class.

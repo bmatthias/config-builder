@@ -18,8 +18,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-@PropertyLocations(resourcesForClasses = {PropertyLoader.class})
-@PropertyFilters({VariableResolvingFilter.class, DecryptingFilter.class})
 public class TestConfigWithoutAnnotations {
 
     public TestConfigWithoutAnnotations() {
@@ -43,6 +41,9 @@ public class TestConfigWithoutAnnotations {
 
     @PropertyValue("a")
     private String someString;
+    
+    @PropertyValue("b")
+    private String otherString;
 
     @CommandLineValue(shortOpt = "u", longOpt = "user")
     private boolean aBoolean;
@@ -83,6 +84,15 @@ public class TestConfigWithoutAnnotations {
     public void setSomeString(String someString) {
         this.someString = someString;
     }
+
+    public String getOtherString() {
+        return otherString;
+    }
+    
+    public void setOtherString(String otherString) {
+        this.otherString = otherString;
+    }
+
 
     public void setBoolean(boolean aBoolean) {
         this.aBoolean = aBoolean;
