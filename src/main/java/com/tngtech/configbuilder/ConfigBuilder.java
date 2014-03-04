@@ -7,10 +7,18 @@ import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
+import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
+import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
+import com.tngtech.propertyloader.impl.DefaultPropertySuffixContainer;
+import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Builds a config object.
@@ -42,7 +50,9 @@ import java.util.List;
  * @version 0.1-SNAPSHOT
  */
 public class ConfigBuilder<T> {
-
+    private final static Logger LOGGER = LoggerFactory.getLogger(CommandLineHelper.class);
+    public static final Object AT_CONTEXT_CLASS_PATH = new Object();
+    
     private final BuilderConfiguration builderConfiguration;
     private final CommandLineHelper commandLineHelper;
     private final FieldSetter<T> fieldSetter;
@@ -53,7 +63,9 @@ public class ConfigBuilder<T> {
     private Class<T> configClass;
     private Options commandLineOptions;
     private PropertyLoader propertyLoader;
+    private Properties additionalProperties;
     private String[] commandLineArgs = {};
+    
 
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
 
@@ -65,6 +77,7 @@ public class ConfigBuilder<T> {
         this.fieldSetter = configBuilderFactory.getInstance(FieldSetter.class);
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.constructionHelper = configBuilderFactory.getInstance(ConstructionHelper.class);
+        this.additionalProperties = configBuilderFactory.createInstance(Properties.class);
 
         propertyLoader = configBuilderFactory.getInstance(PropertyLoaderConfigurator.class).configurePropertyLoader(configClass);
         commandLineOptions = commandLineHelper.getOptions(configClass);
@@ -92,7 +105,7 @@ public class ConfigBuilder<T> {
     /**
      * Imports the values from the given object according to the field names in the annotations
      * @param importedConfiguration
-     * @return
+     * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> withImportedConfiguration(Object importedConfiguration) {
         builderConfiguration.setImportedConfiguration(importedConfiguration);
@@ -103,13 +116,130 @@ public class ConfigBuilder<T> {
      * Configures the Config Builder to load given properties files instead of those specified in the config class.
      *
      * @param baseNames
-     * @return
+     * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> overridePropertiesFiles(List<String> baseNames) {
         propertyLoader.withBaseNames(baseNames);
         return this;
     }
 
+    /**
+     * Provide additional properties which will overwrite the properties retrieved by the property loader
+     * 
+     * @param properties to be added to the properties already present (starting from the result of the property loader)
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> addProperties(Properties properties) {
+        additionalProperties.putAll(properties);
+        return this;
+    }
+
+    /**
+     * set the extension to search for property files
+     * @param propertyExtension property file name extension to use
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertyExtension(String propertyExtension) {
+        propertyLoader.withExtension(propertyExtension);
+        return this;
+    }
+
+    /**
+     * set property suffix to b
+     * @param propertySuffix property file name suffix
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertySuffix(String propertySuffix) {
+        return withPropertySuffixes(propertySuffix);
+    }
+    
+    /**
+     * replace list of possible property suffixes by given elements 
+     * @param suffixArray one or more property file name suffix
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertySuffixes(String ... suffixArray) {
+        final DefaultPropertySuffixContainer suffixes = propertyLoader.getSuffixes();
+        suffixes.clear();
+        suffixes.addSuffixList(Arrays.asList(suffixArray));
+        return this;
+    }
+
+    /**
+     * add more property file suffixes to the list of possible property suffixes
+     * @param suffixArray one or more property file name suffix
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> addPropertySuffixes(String... suffixArray) {
+        propertyLoader.getSuffixes().addSuffixList(Arrays.asList(suffixArray));
+        return this;
+    }
+
+    /**
+     * set file name of property file to read
+     * @param fileName property file name
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertiesFile(String fileName) {
+        return withPropertiesFiles(fileName);
+    }
+
+    /**
+     * set file names of property files to read
+     * @param fileNames one or more property file names
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertiesFiles(String ... fileNames) {
+        propertyLoader.withBaseNames(Arrays.asList(fileNames));
+        return this;
+    }
+
+    /**
+     * set property locations
+     * @param propertyLocations lists of property locations which can be 
+     *                          Strings: use as Directory
+     *                          Classes: use as Class Resource Location
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertyLocations(Object ... propertyLocations) {
+        final DefaultPropertyLocationContainer locations = propertyLoader.getLocations();
+        locations.clear();
+        for (Object propertyLocation : propertyLocations) {
+            if (propertyLocation instanceof String) {
+                locations.atDirectory((String)propertyLocation);
+            } else if (propertyLocation instanceof Class) {
+                locations.atRelativeToClass((Class)propertyLocation);
+            } else if (propertyLocation == AT_CONTEXT_CLASS_PATH) {
+                locations.atContextClassPath();
+            } else {
+                LOGGER.warn("unhandled property location '{}'", propertyLocation);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * set property filters in use
+     * @param propertyFilters property filters which should be applied after loading properties
+     * @return the instance of ConfigBuilder
+     */
+    public ConfigBuilder<T> withPropertyFilters(Class<? extends PropertyLoaderFilter> ... propertyFilters) {
+        final DefaultPropertyFilterContainer filterContainer = propertyLoader.getFilters();
+        final List<PropertyLoaderFilter> filters = filterContainer.getFilters();
+        filters.clear();
+
+        for (Class<? extends PropertyLoaderFilter> propertyFilter : propertyFilters) {
+            try {
+                filters.add(propertyFilter.newInstance());
+            } catch (InstantiationException e) {
+                LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
+            } catch (IllegalAccessException e) {
+                LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
+            }
+        }
+        return this;
+    }
+    
     /**
      * Prints a help message for all command line options that are configured in the config class.
      */
@@ -141,7 +271,11 @@ public class ConfigBuilder<T> {
         if (configClass.isAnnotationPresent(LoadingOrder.class)) {
             builderConfiguration.setAnnotationOrder(configClass.getAnnotation(LoadingOrder.class).value());
         }
-        builderConfiguration.setProperties(propertyLoader.load());
+        
+        final Properties properties = propertyLoader.load();
+        properties.putAll(additionalProperties);
+        builderConfiguration.setProperties(properties);
+        
         builderConfiguration.setCommandLine(commandLineHelper.getCommandLine(configClass, commandLineArgs));
     }
 
