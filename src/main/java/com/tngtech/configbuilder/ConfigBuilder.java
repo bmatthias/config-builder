@@ -87,7 +87,7 @@ public class ConfigBuilder<T> {
      * @param configClass The config class of which an instance shall be built.
      */
     public ConfigBuilder(Class<T> configClass) {
-        this(configClass,new ConfigBuilderFactory());
+        this(configClass, new ConfigBuilderFactory());
     }
 
     /**
@@ -282,5 +282,9 @@ public class ConfigBuilder<T> {
     private void initializeErrorMessageSetup(PropertyLoader propertyLoader) {
         String errorMessageFile = configClass.isAnnotationPresent(ErrorMessageFile.class) ? configClass.getAnnotation(ErrorMessageFile.class).value() : null;
         errorMessageSetup.initialize(errorMessageFile, propertyLoader);
+    }
+
+    public static <T> ConfigBuilder<T> on(Class<T> clazz) {
+        return new ConfigBuilder<T>(clazz);
     }
 }

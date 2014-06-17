@@ -4,9 +4,8 @@ import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
-import com.tngtech.configbuilder.testclasses.TestConfigWithoutAnnotations;
-import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.testclasses.TestConfig;
+import com.tngtech.configbuilder.testclasses.TestConfigWithoutAnnotations;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
@@ -21,7 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -32,12 +30,11 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.isA;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigBuilderTest {
@@ -265,5 +262,12 @@ public class ConfigBuilderTest {
         order.verify(filters).add(isA(VariableResolvingFilter.class));
         order.verify(filters).add(isA(DecryptingFilter.class));
         order.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void testStaticBuilderFactoryMethod() {
+        configBuilder = ConfigBuilder.on(TestConfig.class);
+
+        assertThat(configBuilder, is(not(nullValue())));
     }
 }
