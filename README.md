@@ -178,11 +178,11 @@ public class Config {
     @NotEmpty("username.notEmpty")      // JSR-303 validation (Field should not be empty)
     private String userName;
  
-    @TypeTransformer(StringToPidFixTransformer.class)
+    @TypeTransformers(StringToPidFixTransformer.class)
     @CommandLineValue(shortOpt="pc", longOpt="pidFixCollection", hasArg=true)
     private Collection<PidFix> pidFixCollection;
     
-    @TypeTransformer(StringToPidFixTransformer.class)
+    @TypeTransformers(StringToPidFixTransformer.class)
     @CommandLineValue(shortOpt="p", longOpt="pidFix", hasArg=true)
     private PidFix pidFix;
  
