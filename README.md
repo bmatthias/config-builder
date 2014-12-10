@@ -155,7 +155,7 @@ Say you have a config that looks like this:
 @PropertySuffixes(extraSuffixes = {"tngtech","myname"}, hostNames = true)
 public class Config {
 
-    public static class StringToPidFixTransformer implements TypeTransformer<String,PidFix> {
+    public static class StringToPidFixTransformer extends TypeTransformer<String,PidFix> {
         @Override
         public PidFix transform(String input) {
             <...>
