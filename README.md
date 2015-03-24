@@ -195,7 +195,7 @@ public class Config {
 ```
 To build a configured instance, simply call
 ```java
-Config myConfig = new ConfigBuilder<Config>(Config.class).withCommandLineArgs(args).build();
+Config myConfig = ConfigBuilder.on(Config.class).withCommandLineArgs(args).build();
 ```
 
 Presentation

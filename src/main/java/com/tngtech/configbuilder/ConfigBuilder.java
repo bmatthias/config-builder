@@ -284,6 +284,12 @@ public class ConfigBuilder<T> {
         errorMessageSetup.initialize(errorMessageFile, propertyLoader);
     }
 
+    /**
+     * Gets an instance of the ConfigBuilder for a given config class
+     *
+     * @param clazz config class for which the config builder is instantiated.
+     * @return ConfigBuilder instance for config class
+     */
     public static <T> ConfigBuilder<T> on(Class<T> clazz) {
         return new ConfigBuilder<T>(clazz);
     }
