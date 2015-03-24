@@ -15,10 +15,10 @@ public class ImportedValueProcessor implements ValueExtractorProcessor {
         BuilderConfiguration builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);
         Object importedConfiguration = builderConfiguration.getImportedConfiguration();
 
-        if(importedConfiguration == null) {
+        if (importedConfiguration == null) {
             return null;
         }
-        
+
         String fieldName = ((ImportedValue) annotation).value();
         Object result;
 

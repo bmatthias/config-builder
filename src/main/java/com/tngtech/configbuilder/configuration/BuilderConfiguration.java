@@ -15,6 +15,7 @@ public class BuilderConfiguration {
     private CommandLine commandLine;
     private Object importedConfiguration;
     private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, ImportedValue.class, DefaultValue.class};
+    private String[] propertyNamePrefixes = new String[]{""};
 
     public BuilderConfiguration() {
         properties = new Properties();
@@ -52,5 +53,13 @@ public class BuilderConfiguration {
 
     public Class<? extends Annotation>[] getAnnotationOrder() {
         return annotationOrder;
+    }
+
+    public void setPropertyNamePrefixes(String[] propertyNamePrefixes) {
+        this.propertyNamePrefixes = propertyNamePrefixes;
+    }
+
+    public String[] getPropertyNamePrefixes() {
+        return propertyNamePrefixes;
     }
 }
