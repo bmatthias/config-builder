@@ -2,9 +2,7 @@ package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
-import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
-import com.tngtech.propertyloader.impl.filters.ValueModifyingFilter;
-import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
+import com.tngtech.propertyloader.impl.filters.*;
 import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import junit.framework.TestCase;
 import org.junit.Before;
@@ -67,7 +65,13 @@ public class PropertyFiltersProcessorTest extends TestCase {
 
   @Test
   public void testAnnotationWithSomeValues() {
-    @SuppressWarnings("unchecked") Class<? extends PropertyLoaderFilter>[] classes = new Class[]{VariableResolvingFilter.class, DecryptingFilter.class};
+    @SuppressWarnings("unchecked") Class<? extends PropertyLoaderFilter>[] classes = new Class[]{
+            VariableResolvingFilter.class,
+            DecryptingFilter.class,
+            EnvironmentResolvingFilter.class,
+            WarnOnSurroundingWhitespace.class,
+            ThrowIfPropertyHasToBeDefined.class
+    };
     when(propertyFilters.value()).thenReturn(classes);
 
     propertyFiltersProcessor.configurePropertyLoader( propertyFilters, propertyLoader );
@@ -76,6 +80,10 @@ public class PropertyFiltersProcessorTest extends TestCase {
     order.verify(filterContainer).clear();
     order.verify(filterContainer).withVariableResolvingFilter();
     order.verify(filterContainer).withDecryptingFilter();
+    order.verify(filterContainer).withEnvironmentResolvingFilter();
+    order.verify(filterContainer).withWarnOnSurroundingWhitespace();
+    order.verify(filterContainer).withWarnIfPropertyHasToBeDefined();
+    order.verifyNoMoreInteractions();
   }
   
   @Test
