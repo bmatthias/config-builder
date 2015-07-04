@@ -68,7 +68,7 @@ public class StringToPrimitiveTransformerTest {
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true"));
+        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform("true "));
         assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true "));
         assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true"));
 
