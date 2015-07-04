@@ -62,6 +62,22 @@ public class StringToPrimitiveTransformerTest {
         assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform(1.0));
     }
 
+    @Test
+    public void testThatSurroundingWhiteSpaceIsIgnored() throws Exception {
+        initializeFactoryAndHelperMocks();
+        stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
+
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
+        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true"));
+        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true "));
+        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true"));
+
+        stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
+        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform("1 "));
+        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(" 1 "));
+        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(" 1"));
+    }
+
     @Test(expected = PrimitiveParsingException.class)
     public void testTransformThrowsException() throws Exception {
         initializeFactoryAndHelperMocks();
