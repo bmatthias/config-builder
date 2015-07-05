@@ -14,7 +14,7 @@ public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Obj
     public Object transform(Object argument) {
         PropertyEditor editor = PropertyEditorManager.findEditor(genericsAndCastingHelper.castTypeToClass(targetType));
         try {
-            editor.setAsText(String.valueOf(argument));
+            editor.setAsText(String.valueOf(argument).trim());
             return editor.getValue();
         }
         catch(IllegalArgumentException e) {
