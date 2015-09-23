@@ -32,6 +32,9 @@ public class CommandLineHelper {
     public Options getOptions(Class configClass) {
         Options options = configBuilderFactory.createInstance(Options.class);
         for (Field field : annotationHelper.getFieldsAnnotatedWith(configClass, CommandLineValue.class)) {
+            if (field.isSynthetic()) {
+                continue;
+            }
             options.addOption(getOption(field));
         }
         return options;

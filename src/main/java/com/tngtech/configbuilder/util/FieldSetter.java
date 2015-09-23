@@ -31,6 +31,10 @@ public class FieldSetter<T> {
     public void setFields(T instanceOfConfigClass, BuilderConfiguration builderConfiguration) {
 
         for (Field field : getInheritedPrivateFields(instanceOfConfigClass.getClass())) {
+            if (field.isSynthetic()) {
+                continue;
+            }
+
             if (annotationHelper.fieldHasAnnotationAnnotatedWith(field, ValueExtractorAnnotation.class)) {
                 Object value = fieldValueExtractor.extractValue(field, builderConfiguration);
                 value = fieldValueTransformer.transformFieldValue(field, value);

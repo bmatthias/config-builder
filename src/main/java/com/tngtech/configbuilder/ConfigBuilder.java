@@ -24,26 +24,26 @@ import java.util.Properties;
  * Builds a config object.
  * ConfigBuilder instantiates a class and sets fields of the instance by parsing annotations and
  * loading values from properties files or the command line. It validates the instance by parsing JSR303 constraint annotations.<p>
- * <p/>
+ *
  * Fields of the config class can have the following annotations:<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.DefaultValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.PropertyValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue}<br>
  * {@link com.tngtech.configbuilder.annotation.valueextractor.EnvironmentVariableValue}<br>
- * {@link LoadingOrder}<p>
- * <p/>
+ * {@link LoadingOrder}<br>
+ *
  * Properties files are loaded with a PropertyLoader using its default config. In order to change settings for the PropertyLoader, the config class may be annotated with<br>
  * {@link com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertiesFiles}<br>
  * {@link com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations}<br>
  * {@link com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes}<br>
- * {@link com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension}<p>
- * <p/>
+ * {@link com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyExtension}<br>
+ *
  * To specify a global order for parsing {@link com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation} annotations, annotate the class with <br>
- * {@link LoadingOrder}<p>
- * <p/>
+ * {@link LoadingOrder}<br>
+ *
  * To specify your own error messages file (which is loaded by the PropertyLoader with the same settings as other the properties files), annotate the class with <br>
- * {@link ErrorMessageFile}<p>
+ * {@link ErrorMessageFile}<br>
  *
  * @param <T> The type of the config class which shall be instantiated.
  * @author Matthias Bollwein
