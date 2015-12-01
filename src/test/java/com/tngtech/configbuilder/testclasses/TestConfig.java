@@ -22,10 +22,7 @@ import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
 import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})
@@ -66,7 +63,7 @@ public class TestConfig {
 
     @DefaultValue("/etc,/usr")
     @ImportedValue("stringCollection")
-    private HashSet<Path> pathCollection;
+    private Set<Path> pathCollection;
 
     @ImportedValue("stringCollection")
     private Iterable<String> copiedStringCollection;
@@ -116,7 +113,7 @@ public class TestConfig {
         return pathCollection;
     }
 
-    public void setPathCollection(HashSet<Path> pathCollection) {
+    public void setPathCollection(Set<Path> pathCollection) {
         this.pathCollection = pathCollection;
     }
 

@@ -43,7 +43,6 @@ public class FieldSetterTest {
     }
 
     private static class TestConfigWithoutAnnotations {
-
         public String testString = "testString";
     }
 
