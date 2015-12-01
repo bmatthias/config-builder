@@ -1,4 +1,4 @@
-Java Config-Builder  [![Build Status](https://travis-ci.org/TNG/config-builder.svg?branch=coveralls_support)](https://travis-ci.org/TNG/config-builder) [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master)
+Java Config-Builder  [![Build Status](https://travis-ci.org/TNG/config-builder.svg?branch=master)](https://travis-ci.org/TNG/config-builder) [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master)
 ==================
 
 #### Table of Contents
