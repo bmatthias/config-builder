@@ -1,5 +1,8 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -15,7 +18,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -69,10 +75,24 @@ public class CommandLineHelperTest {
         assertEquals(commandLine, commandLineHelper.getCommandLine(TestConfig.class, args));
         verify(options, times(2)).addOption(captor.capture());
         verify(parser).parse(options, args);
-        Option option = captor.getValue();
-        assertEquals("user", option.getLongOpt());
-        assertEquals("u", option.getOpt());
-        assertEquals(true, option.isRequired());
+        List<Option> options = captor.getAllValues();
+
+        assertEquals(2, options.size());
+
+        final ImmutableList<Option> sortedOptions = FluentIterable.from(options).toSortedList(new Comparator<Option>() {
+            @Override
+            public int compare(Option o1, Option o2) {
+                return o1.getLongOpt().compareTo(o2.getLongOpt());
+            }
+        });
+
+        assertEquals("user", sortedOptions.get(0).getLongOpt());
+        assertEquals("u", sortedOptions.get(0).getOpt());
+        assertEquals(true, sortedOptions.get(0).isRequired());
+
+        assertEquals("vir", sortedOptions.get(1).getLongOpt());
+        assertEquals("v", sortedOptions.get(1).getOpt());
+        assertEquals(false, sortedOptions.get(1).isRequired());
     }
 
     @Test(expected = ConfigBuilderException.class)
