@@ -191,6 +191,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+           <groupId>javax.el</groupId>
+           <artifactId>javax.el-api</artifactId>
+           <version>${el.version}</version>
+           <scope>test</scope>
+        </dependency>
+        <dependency>
+           <groupId>org.glassfish.web</groupId>
+           <artifactId>javax.el</artifactId>
+           <version>${el.version}</version>
+           <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -205,7 +217,8 @@
 
     <properties>
         <slf4j.version>1.7.18</slf4j.version>
-        <hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
+        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <el.version>2.2.4</el.version>
     </properties>
     
 </project>
