@@ -1,6 +1,7 @@
 package com.tngtech.configbuilder;
 
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
+import com.tngtech.configbuilder.annotation.configuration.PropertyNamePrefix;
 import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.ErrorMessageFile;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
@@ -270,6 +271,10 @@ public class ConfigBuilder<T> {
     private void setupBuilderConfiguration(PropertyLoader propertyLoader) {
         if (configClass.isAnnotationPresent(LoadingOrder.class)) {
             builderConfiguration.setAnnotationOrder(configClass.getAnnotation(LoadingOrder.class).value());
+        }
+
+        if (configClass.isAnnotationPresent(PropertyNamePrefix.class)) {
+            builderConfiguration.setPropertyNamePrefixes(configClass.getAnnotation(PropertyNamePrefix.class).value());
         }
         
         final Properties properties = propertyLoader.load();

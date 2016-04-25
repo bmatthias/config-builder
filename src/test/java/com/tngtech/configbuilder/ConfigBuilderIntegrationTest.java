@@ -5,7 +5,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.testclasses.TestConfig;
-import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.unitils.reflectionassert.ReflectionAssert.assertReflectionEquals;
 import static org.unitils.reflectionassert.ReflectionAssert.assertLenientEquals;
@@ -52,8 +50,8 @@ public class ConfigBuilderIntegrationTest {
         testConfig.setSomeString("Hello, World!");
         testConfig.setSomeNumber(3);
         testConfig.setBoolean(true);
-        testConfig.setStringCollection(Lists.newArrayList("first entry","second entry"));
-        testConfig.setIntegerList(Lists.newArrayList(1,2,3,4,5));
+        testConfig.setStringCollection(Lists.newArrayList("first entry", "second entry"));
+        testConfig.setIntegerList(Lists.newArrayList(1, 2, 3, 4, 5));
         testConfig.setPathCollection(Sets.newHashSet(Paths.get("/etc"), Paths.get("/usr")));
         testConfig.setHomeDir(Paths.get(System.getenv("HOME")));
         testConfig.setSystemProperty(System.getProperty("user.language"));
@@ -73,13 +71,6 @@ public class ConfigBuilderIntegrationTest {
         Object result = configBuilder.withCommandLineArgs(args).build();
         assertReflectionEquals(configInstance, result);
         assertTrue(outContent.toString().contains("config validated"));
-    }
-
-    @Test
-    public void testConfigBuilderWithConstructorArgument() {
-        ConfigBuilder<TestConfigWithoutDefaultConstructor> configBuilder = new ConfigBuilder<TestConfigWithoutDefaultConstructor>(TestConfigWithoutDefaultConstructor.class);
-        TestConfigWithoutDefaultConstructor c = configBuilder.build(3);
-        assertEquals(3, c.getNumber());
     }
 
     @Test
