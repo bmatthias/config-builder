@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class PropertyFiltersProcessor implements PropertyLoaderConfigurationProcessor {
 
-  private static interface Action {
+  private interface Action {
     void execute();
   }
 

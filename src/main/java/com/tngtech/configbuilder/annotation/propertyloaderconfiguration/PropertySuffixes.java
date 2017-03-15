@@ -13,8 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertySuffixes {
-    public String[] extraSuffixes() default {};
+    String[] extraSuffixes() default {};
 
-    public boolean hostNames() default false;
-
+    boolean hostNames() default false;
 }

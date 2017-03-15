@@ -9,6 +9,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyNamePrefix {
-    public String[] value() default {""};
-
+    String[] value() default {""};
 }

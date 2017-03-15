@@ -15,5 +15,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyFilters {
-    public Class<? extends PropertyLoaderFilter>[] value() default {};
+    Class<? extends PropertyLoaderFilter>[] value() default {};
 }
