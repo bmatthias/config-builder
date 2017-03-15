@@ -4,10 +4,8 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 import com.google.common.collect.Lists;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class CollectionToArrayListTransformer extends TypeTransformer<Collection,ArrayList> {
 
@@ -19,6 +17,4 @@ public class CollectionToArrayListTransformer extends TypeTransformer<Collection
         }
         return result;
     }
-
-
 }

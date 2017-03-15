@@ -1,6 +1,5 @@
 package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
-import com.tngtech.propertyloader.impl.interfaces.PropertyFilterContainer;
 import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 
 import java.lang.annotation.ElementType;

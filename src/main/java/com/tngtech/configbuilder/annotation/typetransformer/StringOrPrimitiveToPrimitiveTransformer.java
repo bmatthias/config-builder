@@ -1,14 +1,11 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
-
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import com.tngtech.configbuilder.exception.TypeTransformerException;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import java.lang.reflect.Type;
 
-public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Object,Object> {
+public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Object, Object> {
 
     @Override
     public Object transform(Object argument) {
@@ -16,8 +13,7 @@ public class StringOrPrimitiveToPrimitiveTransformer extends TypeTransformer<Obj
         try {
             editor.setAsText(String.valueOf(argument).trim());
             return editor.getValue();
-        }
-        catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new PrimitiveParsingException(errorMessageSetup.getErrorMessage(PrimitiveParsingException.class, String.valueOf(argument), targetType.toString()));
         }
     }
