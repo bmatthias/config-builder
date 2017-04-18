@@ -1,9 +1,7 @@
 package com.tngtech.configbuilder.util;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
@@ -18,13 +16,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,16 +51,14 @@ public class CommandLineHelperTest {
     @Mock
     private ErrorMessageSetup errorMessageSetup;
 
-
     @Before
     public void setUp() throws Exception {
-
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
 
         commandLineHelper = new CommandLineHelper(configBuilderFactory);
 
-        Set<Field> fields = Sets.newHashSet(TestConfig.class.getDeclaredFields());
+        Set<Field> fields = newHashSet(TestConfig.class.getDeclaredFields());
         when(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, CommandLineValue.class)).thenReturn(fields);
         when(parser.parse(options, args)).thenReturn(commandLine);
     }
@@ -72,12 +68,12 @@ public class CommandLineHelperTest {
         when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(parser);
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(options);
         ArgumentCaptor<Option> captor = ArgumentCaptor.forClass(Option.class);
-        assertEquals(commandLine, commandLineHelper.getCommandLine(TestConfig.class, args));
+        assertThat(commandLineHelper.getCommandLine(TestConfig.class, args)).isSameAs(commandLine);
         verify(options, times(2)).addOption(captor.capture());
         verify(parser).parse(options, args);
         List<Option> options = captor.getAllValues();
 
-        assertEquals(2, options.size());
+        assertThat(options).hasSize(2);
 
         final ImmutableList<Option> sortedOptions = FluentIterable.from(options).toSortedList(new Comparator<Option>() {
             @Override
@@ -86,17 +82,17 @@ public class CommandLineHelperTest {
             }
         });
 
-        assertEquals("user", sortedOptions.get(0).getLongOpt());
-        assertEquals("u", sortedOptions.get(0).getOpt());
-        assertEquals(true, sortedOptions.get(0).isRequired());
+        assertThat(sortedOptions.get(0).getLongOpt()).isEqualTo("user");
+        assertThat(sortedOptions.get(0).getOpt()).isEqualTo("u");
+        assertThat(sortedOptions.get(0).isRequired()).isEqualTo(true);
 
-        assertEquals("vir", sortedOptions.get(1).getLongOpt());
-        assertEquals("v", sortedOptions.get(1).getOpt());
-        assertEquals(false, sortedOptions.get(1).isRequired());
+        assertThat(sortedOptions.get(1).getLongOpt()).isEqualTo("vir");
+        assertThat(sortedOptions.get(1).getOpt()).isEqualTo("v");
+        assertThat(sortedOptions.get(1).isRequired()).isEqualTo(false);
     }
 
     @Test(expected = ConfigBuilderException.class)
-    public void testGetCommandLineThrowsException() throws Exception {
+    public void testGetCommandLineThrowsException() {
         when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(new GnuParser());
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(new Options());
         args = new String[]{"nd", "notDefined"};
@@ -104,11 +100,11 @@ public class CommandLineHelperTest {
     }
 
     @Test
-    public void testGetOptions() throws Exception {
+    public void testGetOptions() {
         Options options1 = new Options();
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(options1);
-        assertEquals(options1, commandLineHelper.getOptions(TestConfig.class));
-        assertEquals("user", options1.getOption("user").getLongOpt());
-        assertEquals("v", options1.getOption("vir").getOpt());
+        assertThat(commandLineHelper.getOptions(TestConfig.class)).isEqualTo(options1);
+        assertThat(options1.getOption("user").getLongOpt()).isEqualTo("user");
+        assertThat(options1.getOption("vir").getOpt()).isEqualTo("v");
     }
 }

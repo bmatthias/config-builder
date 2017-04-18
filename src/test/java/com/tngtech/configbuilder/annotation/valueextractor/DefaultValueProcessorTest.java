@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,6 +29,6 @@ public class DefaultValueProcessorTest {
     public void testDefaultValueProcessor() {
 
         when(defaultValue.value()).thenReturn("value");
-        assertEquals("value", defaultValueProcessor.getValue(defaultValue, configBuilderFactory).toString());
+        assertThat(defaultValueProcessor.getValue(defaultValue, configBuilderFactory)).isEqualTo("value");
     }
 }

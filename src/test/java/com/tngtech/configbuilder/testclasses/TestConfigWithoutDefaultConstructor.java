@@ -23,7 +23,6 @@ public class TestConfigWithoutDefaultConstructor {
         this.number = i;
     }
 
-
     public int getNumber() {
         return number;
     }

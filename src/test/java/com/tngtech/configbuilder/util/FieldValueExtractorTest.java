@@ -1,8 +1,7 @@
 package com.tngtech.configbuilder.util;
 
-import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
+import com.tngtech.configbuilder.annotation.configuration.Separator;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import org.junit.Before;
@@ -10,7 +9,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -19,7 +17,8 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -67,9 +66,8 @@ public class FieldValueExtractorTest {
     private Field field;
     Class<? extends Annotation>[] order = new Class[]{PropertyValue.class, CommandLineValue.class};
 
-
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(builderConfiguration.getAnnotationOrder()).thenReturn(order);
 
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
@@ -77,8 +75,8 @@ public class FieldValueExtractorTest {
         when(configBuilderFactory.getInstance(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
         when(configBuilderFactory.getInstance(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
 
-        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn("propertyValue");
-        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn("commandLineValue");   
+        when(propertyValueProcessor.getValue(any(PropertyValue.class), any(ConfigBuilderFactory.class))).thenReturn("propertyValue");
+        when(commandLineValueProcessor.getValue(any(CommandLineValue.class), any(ConfigBuilderFactory.class))).thenReturn("commandLineValue");
         
         fieldValueExtractor = new FieldValueExtractor(configBuilderFactory);
     }
@@ -90,12 +88,12 @@ public class FieldValueExtractorTest {
         PropertyValue propertyValue = field.getAnnotation(PropertyValue.class);
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
 
-        List<Annotation> orderList = Lists.newArrayList(propertyValue, commandLineValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
+        List<Annotation> orderList = newArrayList(propertyValue, commandLineValue);
+        when(annotationHelper.getAnnotationsInOrder(any(Field.class), any(Class[].class))).thenReturn(orderList);
 
         String result = (String) fieldValueExtractor.extractValue(field, builderConfiguration);
         verify(annotationHelper).getAnnotationsInOrder(field, order);
-        assertEquals("propertyValue", result);
+        assertThat(result).isEqualTo("propertyValue");
     }
 
     @Test
@@ -105,14 +103,14 @@ public class FieldValueExtractorTest {
         PropertyValue propertyValue = field.getAnnotation(PropertyValue.class);
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
 
-        List<Annotation> orderList = Lists.newArrayList(commandLineValue, propertyValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
+        List<Annotation> orderList = newArrayList(commandLineValue, propertyValue);
+        when(annotationHelper.getAnnotationsInOrder(any(Field.class), any(Class[].class))).thenReturn(orderList);
 
         order = new Class[]{CommandLineValue.class, PropertyValue.class};
 
         String result = (String) fieldValueExtractor.extractValue(field, builderConfiguration);
         verify(annotationHelper).getAnnotationsInOrder(field, order);
-        assertEquals("commandLineValue", result);
+        assertThat(result).isEqualTo("commandLineValue");
     }
 
     @Test
@@ -121,13 +119,13 @@ public class FieldValueExtractorTest {
 
         PropertyValue propertyValue = field.getAnnotation(PropertyValue.class);
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
-        List<Annotation> orderList = Lists.newArrayList(propertyValue, commandLineValue);
-        when(annotationHelper.getAnnotationsInOrder(Matchers.any(Field.class), Matchers.any(Class[].class))).thenReturn(orderList);
+        List<Annotation> orderList = newArrayList(propertyValue, commandLineValue);
+        when(annotationHelper.getAnnotationsInOrder(any(Field.class), any(Class[].class))).thenReturn(orderList);
 
-        when(propertyValueProcessor.getValue(Matchers.any(PropertyValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn(null);
-        when(commandLineValueProcessor.getValue(Matchers.any(CommandLineValue.class), Matchers.any(ConfigBuilderFactory.class))).thenReturn(null);
+        when(propertyValueProcessor.getValue(any(PropertyValue.class), any(ConfigBuilderFactory.class))).thenReturn(null);
+        when(commandLineValueProcessor.getValue(any(CommandLineValue.class), any(ConfigBuilderFactory.class))).thenReturn(null);
 
         Object result = fieldValueExtractor.extractValue(field, builderConfiguration);
-        assertEquals(null, result);
+        assertThat(result).isNull();
     }
 }

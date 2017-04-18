@@ -2,7 +2,6 @@ package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -14,26 +13,19 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyLocationsProcessorTest {
 
-    private PropertyLocationsProcessor propertyLocationsProcessor;
+    private PropertyLocationsProcessor propertyLocationsProcessor = new PropertyLocationsProcessor();
 
     @Mock
     private PropertyLocations propertyLocations;
     @Mock
-    DefaultPropertyLocationContainer propertyLocation;
+    private DefaultPropertyLocationContainer propertyLocation;
     @Mock
-    PropertyLoader propertyLoader;
-
-    @Before
-    public void setUp() throws Exception {
-        propertyLocationsProcessor = new PropertyLocationsProcessor();
-    }
+    private PropertyLoader propertyLoader;
 
     @Test
     public void testPropertyLocationsProcessor() {
-
-        String[] dirs = new String[]{"dir1", "dir2"};
-        Class[] classes = new Class[]{this.getClass(), Object.class};
-
+        String[] dirs = {"dir1", "dir2"};
+        Class[] classes = {this.getClass(), Object.class};
         when(propertyLoader.getLocations()).thenReturn(propertyLocation);
         when(propertyLocations.directories()).thenReturn(dirs);
         when(propertyLocations.resourcesForClasses()).thenReturn(classes);
@@ -50,7 +42,6 @@ public class PropertyLocationsProcessorTest {
 
     @Test
     public void testPropertyLocationsProcessorWithClassLoader() {
-
         when(propertyLoader.getLocations()).thenReturn(propertyLocation);
         when(propertyLocations.directories()).thenReturn(new String[]{});
         when(propertyLocations.resourcesForClasses()).thenReturn(new Class[]{});

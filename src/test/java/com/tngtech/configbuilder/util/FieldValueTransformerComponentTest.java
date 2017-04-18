@@ -1,11 +1,9 @@
 package com.tngtech.configbuilder.util;
 
-import com.google.common.collect.Lists;
 import com.tngtech.configbuilder.annotation.typetransformer.*;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import com.tngtech.configbuilder.exception.TypeTransformerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,19 +13,17 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FieldValueTransformerComponentTest {
-    
-    public class TestTransformer extends TypeTransformer<String, Integer> {
 
+    public class TestTransformer extends TypeTransformer<String, Integer> {
         @Override
         public Integer transform(String argument) {
             return 1472;
@@ -35,13 +31,12 @@ public class FieldValueTransformerComponentTest {
     }
 
     public static class AnotherTestTransformer extends TypeTransformer<String, Integer> {
-
         @Override
         public Integer transform(String argument) {
             return 1472;
         }
     }
-    
+
     private class TestConfigClass {
 
         @TypeTransformers({CharacterSeparatedStringToStringListTransformer.class})
@@ -60,16 +55,13 @@ public class FieldValueTransformerComponentTest {
 
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
-    
     @Mock
     private FieldValueExtractor fieldValueExtractor;
-    
     @Mock
     private ErrorMessageSetup errorMessageSetup;
-    
     @Mock
     private BuilderConfiguration builderConfiguration;
-    
+
     private Field stringCollectionField;
     private Field intField;
     private Field doubleField;
@@ -79,13 +71,11 @@ public class FieldValueTransformerComponentTest {
     private Field pathCollectionField;
     private Field integerCollectionField;
     private Field objectCollectionField;
-    
+
     private FieldValueTransformer fieldValueTransformer;
-    
+
     @Before
     public void setUp() throws Exception {
-
-
         when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
@@ -98,7 +88,7 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.getInstance(CollectionToHashSetTransformer.class)).thenReturn(new CollectionToHashSetTransformer());
         when(configBuilderFactory.getInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
         when(configBuilderFactory.getInstance(TestTransformer.class)).thenReturn(new TestTransformer());
-        
+
         stringCollectionField = TestConfigClass.class.getDeclaredField("stringCollectionField");
         intField = TestConfigClass.class.getDeclaredField("intField");
         boolField = TestConfigClass.class.getDeclaredField("boolField");
@@ -108,27 +98,26 @@ public class FieldValueTransformerComponentTest {
         integerCollectionField = TestConfigClass.class.getDeclaredField("integerCollectionField");
         doubleField = TestConfigClass.class.getDeclaredField("doubleField");
         objectCollectionField = TestConfigClass.class.getDeclaredField("objectCollectionField");
-        
+
         this.fieldValueTransformer = new FieldValueTransformer(configBuilderFactory);
     }
 
     @Test
     public void testTransformingStringToStringCollection() {
-        ArrayList<String> actualResult = (ArrayList<String>)fieldValueTransformer.transformFieldValue(stringCollectionField, "Alpha,Beta,Gamma");
-        assertEquals(Lists.newArrayList("Alpha","Beta","Gamma"), actualResult);
+        List<String> actualResult = (List<String>) fieldValueTransformer.transformFieldValue(stringCollectionField, "Alpha,Beta,Gamma");
+        assertThat(actualResult).containsExactly("Alpha", "Beta", "Gamma");
     }
 
     @Test
     public void testTransformingStringToInt() {
         Object actualResult = fieldValueTransformer.transformFieldValue(intField, "17");
-
-        assertEquals(17, actualResult);
+        assertThat(actualResult).isEqualTo(17);
     }
 
     @Test
     public void testTransformingIntegerToDouble() {
         Object actualResult = fieldValueTransformer.transformFieldValue(doubleField, 17);
-        assertEquals(17.0, actualResult);
+        assertThat(actualResult).isEqualTo(17.0);
     }
 
     @Test(expected = PrimitiveParsingException.class)
@@ -139,36 +128,36 @@ public class FieldValueTransformerComponentTest {
     @Test
     public void testWhenNoTransformerNecessary() {
         Object actualResult = fieldValueTransformer.transformFieldValue(intField, 197);
-        assertEquals(197, actualResult);
+        assertThat(actualResult).isEqualTo(197);
     }
 
     @Test
     public void testThatTransformersInAnnotationArePrioritized() {
         Object actualResult = fieldValueTransformer.transformFieldValue(otherIntField, "2");
-        assertEquals(1472, actualResult);
+        assertThat(actualResult).isEqualTo(1472);
     }
 
     @Test
     public void testTransformingStringToPathCollection() {
-        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, "/etc,/usr");
-        assertEquals(Lists.newArrayList(Paths.get("/etc"),Paths.get("/usr")), actualResult);
+        Collection<Path> actualResult = (Collection<Path>) fieldValueTransformer.transformFieldValue(pathCollectionField, "/etc,/usr");
+        assertThat(actualResult).isEqualTo(newArrayList(Paths.get("/etc"), Paths.get("/usr")));
     }
 
     @Test
     public void testTransformingStringToIntegerCollection() {
-        Collection<Integer> actualResult = (Collection<Integer>)fieldValueTransformer.transformFieldValue(integerCollectionField, "3,4");
-        assertEquals(Lists.newArrayList(3,4), actualResult);
+        Collection<Integer> actualResult = (Collection<Integer>) fieldValueTransformer.transformFieldValue(integerCollectionField, "3,4");
+        assertThat(actualResult).isEqualTo(newArrayList(3, 4));
     }
 
     @Test
     public void testTransformingStringToObjectCollection() {
-        Collection<Object> actualResult = (Collection<Object>)fieldValueTransformer.transformFieldValue(objectCollectionField, "someString,anotherString");
-        assertEquals(Lists.newArrayList("someString","anotherString"), actualResult);
+        Collection<Object> actualResult = (Collection<Object>) fieldValueTransformer.transformFieldValue(objectCollectionField, "someString,anotherString");
+        assertThat(actualResult).isEqualTo(newArrayList("someString", "anotherString"));
     }
 
     @Test
     public void testThatValueTransformerIgnoresNull() {
-        Collection<Path> actualResult = (Collection<Path>)fieldValueTransformer.transformFieldValue(pathCollectionField, null);
-        assertEquals(null, actualResult);
+        Collection<Path> actualResult = (Collection<Path>) fieldValueTransformer.transformFieldValue(pathCollectionField, null);
+        assertThat(actualResult).isNull();
     }
 }

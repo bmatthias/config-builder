@@ -1,7 +1,5 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
@@ -17,15 +15,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CollectionToArrayListTransformerTest {
 
-    private CollectionToArrayListTransformer collectionToArrayListTransformer;
+    private CollectionToArrayListTransformer collectionToArrayListTransformer = new CollectionToArrayListTransformer();
 
     @Mock
     private ParameterizedType type;
@@ -39,33 +36,31 @@ public class CollectionToArrayListTransformerTest {
     private GenericsAndCastingHelper genericsAndCastingHelper;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
-
-        collectionToArrayListTransformer = new CollectionToArrayListTransformer();
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
         collectionToArrayListTransformer.setTargetType(type);
     }
 
     @Test
-    public void testTransform() throws Exception {
-        Set<Integer> input = Sets.newHashSet(1,2,3);
+    public void testTransform() {
+        Set<Integer> input = newHashSet(1, 2, 3);
         when(type.getActualTypeArguments()).thenReturn(new Class[]{Double.class});
         when(fieldValueTransformer.performNecessaryTransformations(1, Double.class)).thenReturn(1.0);
         when(fieldValueTransformer.performNecessaryTransformations(2, Double.class)).thenReturn(2.0);
         when(fieldValueTransformer.performNecessaryTransformations(3, Double.class)).thenReturn(3.0);
-        assertEquals(Lists.newArrayList(1.0,2.0,3.0), collectionToArrayListTransformer.transform(input));
+        assertThat(collectionToArrayListTransformer.transform(input)).containsExactly(1.0, 2.0, 3.0);
     }
 
     @Test
-    public void testIsMatching() throws Exception {
+    public void testIsMatching() {
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         initializeFactoryAndHelper();
 
-        assertTrue(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class));
-        assertFalse(collectionToArrayListTransformer.isMatching(Collection.class, Double.class));
+        assertThat(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class)).isTrue();
+        assertThat(collectionToArrayListTransformer.isMatching(Collection.class, Double.class)).isFalse();
     }
 
     private void initializeFactoryAndHelper() {

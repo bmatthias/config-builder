@@ -9,13 +9,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,26 +26,25 @@ public class FieldSetterTest {
 
     private static class TestConfig {
         @DefaultValue("stringValue")
-        public String emptyTestString;
+        String emptyTestString;
 
         @DefaultValue("stringValue")
-        public String testString = "defaultValue";
+        String testString = "defaultValue";
     }
 
     private static class ExtendedTestConfig extends TestConfig {
         @DefaultValue("stringValue")
-        public String extendedTestString;
+        String extendedTestString;
     }
 
     private static class TestConfigForIllegalArgumentException {
         @DefaultValue("user")
-        public int testInt;
+        int testInt;
     }
 
     private static class TestConfigWithoutAnnotations {
-        public String testString = "testString";
+        String testString = "testString";
     }
-
 
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -60,21 +59,20 @@ public class FieldSetterTest {
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
 
-
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(configBuilderFactory.getInstance(FieldValueTransformer.class)).thenReturn(fieldValueTransformer);
         when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(true);
+        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(true);
     }
 
     @Test
-    public void testSetFieldsThrowsIllegalArgumentException() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
-        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
-        when(errorMessageSetup.getErrorMessage(Matchers.any(IllegalArgumentException.class), Matchers.any(String.class), Matchers.any(String.class), Matchers.any(String.class))).thenReturn("IllegalArgumentException");
+    public void testSetFieldsThrowsIllegalArgumentException() {
+        when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
+        when(errorMessageSetup.getErrorMessage(any(IllegalArgumentException.class), any(String.class), any(String.class), any(String.class))).thenReturn("IllegalArgumentException");
 
         FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<TestConfigForIllegalArgumentException>(configBuilderFactory);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
@@ -86,45 +84,44 @@ public class FieldSetterTest {
     }
 
     @Test
-    public void testSetFields() throws Exception {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
-        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
+    public void testSetFields() {
+        when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
 
         FieldSetter<TestConfig> fieldSetter = new FieldSetter<TestConfig>(configBuilderFactory);
         TestConfig testConfig = new TestConfig();
 
         fieldSetter.setFields(testConfig, builderConfiguration);
 
-        assertEquals("stringValue", testConfig.testString);
-        assertEquals("stringValue", testConfig.emptyTestString);
-
+        assertThat(testConfig.testString).isEqualTo("stringValue");
+        assertThat(testConfig.emptyTestString).isEqualTo("stringValue");
     }
 
     @Test
-    public void testSetFieldsForFieldWithoutValueExtractorAnnotation() throws Exception {
-        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn(null);
-        when(annotationHelper.fieldHasAnnotationAnnotatedWith(Matchers.any(Field.class), Matchers.any(Class.class))).thenReturn(false);
+    public void testSetFieldsForFieldWithoutValueExtractorAnnotation() {
+        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn(null);
+        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(false);
 
         FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<TestConfigWithoutAnnotations>(configBuilderFactory);
         TestConfigWithoutAnnotations testConfigWithoutAnnotations = new TestConfigWithoutAnnotations();
 
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);
 
-        assertEquals("testString", testConfigWithoutAnnotations.testString);
+        assertThat(testConfigWithoutAnnotations.testString).isEqualTo("testString");
     }
 
     @Test
     public void testSetFieldsInObjectHierarchy() {
-        when(fieldValueExtractor.extractValue(Matchers.any(Field.class), Matchers.any(BuilderConfiguration.class))).thenReturn("stringValue");
-        when(fieldValueTransformer.transformFieldValue(Matchers.any(Field.class), Matchers.any(String.class))).thenReturn("stringValue");
-        
+        when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
+        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
+
         ExtendedTestConfig testConfig = new ExtendedTestConfig();
 
         FieldSetter<ExtendedTestConfig> fieldSetter = new FieldSetter<ExtendedTestConfig>(configBuilderFactory);
         fieldSetter.setFields(testConfig, builderConfiguration);
 
-        assertEquals("stringValue", testConfig.testString);
-        assertEquals("stringValue", testConfig.emptyTestString);
-        assertEquals("stringValue", testConfig.extendedTestString);
+        assertThat(testConfig.testString).isEqualTo("stringValue");
+        assertThat(testConfig.emptyTestString).isEqualTo("stringValue");
+        assertThat(testConfig.extendedTestString).isEqualTo("stringValue");
     }
 }

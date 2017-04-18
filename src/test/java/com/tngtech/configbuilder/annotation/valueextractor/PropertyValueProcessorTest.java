@@ -12,13 +12,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyValueProcessorTest {
 
-    private PropertyValueProcessor propertyValueProcessor;
+    private PropertyValueProcessor propertyValueProcessor = new PropertyValueProcessor();
 
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -30,11 +29,9 @@ public class PropertyValueProcessorTest {
     PropertyValue propertyValue;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
         when(builderConfiguration.getProperties()).thenReturn(properties);
-
-        propertyValueProcessor = new PropertyValueProcessor();
     }
 
     @Test

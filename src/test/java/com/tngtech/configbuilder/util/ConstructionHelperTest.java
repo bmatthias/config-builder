@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,21 +48,21 @@ public class ConstructionHelperTest {
     private ErrorMessageSetup errorMessageSetup;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(errorMessageSetup.getErrorMessage(NoConstructorFoundException.class)).thenReturn("NoConstructorFoundException");
     }
 
     @Test
-    public void testGetInstance() throws Exception {
+    public void testGetInstance() {
         ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<TestConfig>(configBuilderFactory);
         TestConfig testConfig = constructionHelper.getInstance(TestConfig.class, "string", 3);
-        assertEquals("string", testConfig.getString());
-        assertEquals(3, (long) testConfig.getInteger());
+        assertThat(testConfig.getString()).isEqualTo("string");
+        assertThat(testConfig.getInteger()).isEqualTo(3);
     }
 
     @Test
-    public void testGetInstanceThrowsException() throws Exception {
+    public void testGetInstanceThrowsException() {
         expectedException.expect(NoConstructorFoundException.class);
         expectedException.expectMessage("NoConstructorFoundException");
         ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<TestConfigForException>(configBuilderFactory);

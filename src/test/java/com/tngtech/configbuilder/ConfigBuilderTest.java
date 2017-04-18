@@ -1,11 +1,9 @@
 package com.tngtech.configbuilder;
 
-import com.google.common.collect.Lists;
-import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.testclasses.TestConfig;
-import com.tngtech.configbuilder.testclasses.TestConfigWithoutAnnotations;
+import com.tngtech.configbuilder.testutil.SystemOutRule;
 import com.tngtech.configbuilder.util.*;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
@@ -16,34 +14,28 @@ import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.*;
+import static com.google.common.collect.Lists.newArrayList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.isA;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigBuilderTest {
 
+    @Rule
+    public SystemOutRule systemOut = new SystemOutRule();
+
     private ConfigBuilder<TestConfig> configBuilder;
-
-    private ConfigBuilder<TestConfigWithoutAnnotations> configBuilderWithoutAnnotations;
-
-    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
@@ -61,10 +53,8 @@ public class ConfigBuilderTest {
     private ConstructionHelper<TestConfig> constructionHelper;
     @Mock
     private Properties additionalProperties;
-
     @Mock
     private PropertyLoaderConfigurator propertyLoaderConfigurator;
-
     @Mock
     private PropertyLoader propertyLoader;
     @Mock
@@ -81,16 +71,9 @@ public class ConfigBuilderTest {
     private CommandLine commandLine;
     @Mock
     private Properties properties;
-    @Mock
-    private LoadingOrder loadingOrder;
-    private PrintStream originalOutStream;
 
     @Before
-    public void setUp() throws Exception {
-
-        originalOutStream = new PrintStream(System.out);
-        System.setOut(new PrintStream(outContent));
-
+    public void setUp() {
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
         when(configBuilderFactory.getInstance(CommandLineHelper.class)).thenReturn(commandLineHelper);
         when(configBuilderFactory.getInstance(ConfigValidator.class)).thenReturn(configValidator);
@@ -107,48 +90,41 @@ public class ConfigBuilderTest {
         when(commandLineHelper.getOptions(TestConfig.class)).thenReturn(commandLineOptions);
 
         configBuilder = new ConfigBuilder<TestConfig>(TestConfig.class, configBuilderFactory);
-        configBuilderWithoutAnnotations = new ConfigBuilder<TestConfigWithoutAnnotations>(TestConfigWithoutAnnotations.class, configBuilderFactory);
-    }
-
-    @After
-    public void tearDown() {
-        System.setOut(originalOutStream);
     }
 
     @Test
-    public void testWithCommandLineArgs() throws Exception {
+    public void testWithCommandLineArgs() {
         when(commandLineHelper.getCommandLine(TestConfig.class, new String[]{})).thenReturn(commandLine);
-        assertEquals(configBuilder, configBuilder.withCommandLineArgs(new String[]{}));
+        assertThat(configBuilder.withCommandLineArgs(new String[]{})).isSameAs(configBuilder);
     }
 
     @Test
-    public void testOverridePropertiesFiles() throws Exception {
-        List<String> baseNames = Lists.newArrayList("file");
+    public void testOverridePropertiesFiles() {
+        List<String> baseNames = newArrayList("file");
         configBuilder.overridePropertiesFiles(baseNames);
         verify(propertyLoader).withBaseNames(baseNames);
     }
 
     @Test
-    public void testPrintCommandLineHelp() throws Exception {
+    public void testPrintCommandLineHelp() {
         configBuilder.printCommandLineHelp();
-        assertTrue(outContent.toString().contains("Command Line Options for class TestConfig"));
+        assertThat(systemOut.getLog()).contains("Command Line Options for class TestConfig");
     }
 
     @Test
-    public void testBuild() throws Exception {
+    public void testBuild() {
         when(propertyLoader.load()).thenReturn(properties);
         configBuilder.build();
         verify(propertyLoader).load();
         verify(builderConfiguration).setProperties(properties);
         verify(errorMessageSetup).initialize(null, propertyLoader);
 
-        verify(fieldSetter).setFields(Matchers.any(TestConfig.class), Matchers.any(BuilderConfiguration.class));
-        verify(configValidator).validate(Matchers.any(TestConfig.class));
+        verify(fieldSetter).setFields(any(TestConfig.class), any(BuilderConfiguration.class));
+        verify(configValidator).validate(any(TestConfig.class));
     }
 
-    //    @Test
-//    This test does not work. It needs to be fixed. Urgently. Please do it. Only you can save us!
-    public void testMerge() throws Exception {
+    @Test
+    public void testMerge() {
         TestConfig importedConfig = new TestConfig();
         when(propertyLoader.load()).thenReturn(properties);
 
@@ -162,7 +138,7 @@ public class ConfigBuilderTest {
     @Test
     public void testAddProperties() {
         Properties properties = mock(Properties.class);
-        assertThat(configBuilder.addProperties(properties), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.addProperties(properties)).isSameAs(configBuilder);
 
         verify(additionalProperties).putAll(properties);
         verifyNoMoreInteractions(propertyLoader);
@@ -171,7 +147,7 @@ public class ConfigBuilderTest {
     @Test
     public void testWithExtension() {
         final String propertyExtension = "<propertyExtension>";
-        assertThat(configBuilder.withPropertyExtension(propertyExtension), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertyExtension(propertyExtension)).isSameAs(configBuilder);
 
         verify(propertyLoader).withExtension(propertyExtension);
         verifyNoMoreInteractions(propertyLoader);
@@ -180,12 +156,12 @@ public class ConfigBuilderTest {
     @Test
     public void testWithPropertySuffix() {
         final String propertySuffix = "<propertySuffix>";
-        assertThat(configBuilder.withPropertySuffix(propertySuffix), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertySuffix(propertySuffix)).isSameAs(configBuilder);
 
         InOrder order = inOrder(propertyLoader, suffixContainer);
         order.verify(propertyLoader).getSuffixes();
         order.verify(suffixContainer).clear();
-        order.verify(suffixContainer).addSuffixList(Lists.newArrayList(propertySuffix));
+        order.verify(suffixContainer).addSuffixList(newArrayList(propertySuffix));
         order.verifyNoMoreInteractions();
     }
 
@@ -193,12 +169,12 @@ public class ConfigBuilderTest {
     public void testWithPropertySuffixes() {
         final String propertySuffix1 = "<propertySuffix1>";
         final String propertySuffix2 = "<propertySuffix2>";
-        assertThat(configBuilder.withPropertySuffixes(propertySuffix1, propertySuffix2), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertySuffixes(propertySuffix1, propertySuffix2)).isSameAs(configBuilder);
 
         InOrder order = inOrder(propertyLoader, suffixContainer);
         order.verify(propertyLoader).getSuffixes();
         order.verify(suffixContainer).clear();
-        order.verify(suffixContainer).addSuffixList(Lists.newArrayList(propertySuffix1, propertySuffix2));
+        order.verify(suffixContainer).addSuffixList(newArrayList(propertySuffix1, propertySuffix2));
         order.verifyNoMoreInteractions();
     }
 
@@ -206,20 +182,20 @@ public class ConfigBuilderTest {
     public void testAddPropertySuffixes() {
         final String propertySuffix1 = "<propertySuffix1>";
         final String propertySuffix2 = "<propertySuffix2>";
-        assertThat(configBuilder.addPropertySuffixes(propertySuffix1, propertySuffix2), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.addPropertySuffixes(propertySuffix1, propertySuffix2)).isSameAs(configBuilder);
 
         InOrder order = inOrder(propertyLoader, suffixContainer);
         order.verify(propertyLoader).getSuffixes();
-        order.verify(suffixContainer).addSuffixList(Lists.newArrayList(propertySuffix1, propertySuffix2));
+        order.verify(suffixContainer).addSuffixList(newArrayList(propertySuffix1, propertySuffix2));
         order.verifyNoMoreInteractions();
     }
 
     @Test
     public void testWithPropertiesFile() {
         final String propertyFile = "<propertyFile>";
-        assertThat(configBuilder.withPropertiesFile(propertyFile), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertiesFile(propertyFile)).isSameAs(configBuilder);
 
-        verify(propertyLoader).withBaseNames(Lists.newArrayList(propertyFile));
+        verify(propertyLoader).withBaseNames(newArrayList(propertyFile));
         verifyNoMoreInteractions(propertyLoader);
     }
 
@@ -227,9 +203,9 @@ public class ConfigBuilderTest {
     public void testWithPropertiesFiles() {
         final String propertiesFile1 = "<propertiesFile1>";
         final String propertiesFile2 = "<propertiesFile2>";
-        assertThat(configBuilder.withPropertiesFiles(propertiesFile1, propertiesFile2), is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertiesFiles(propertiesFile1, propertiesFile2)).isSameAs(configBuilder);
 
-        verify(propertyLoader).withBaseNames(Lists.newArrayList(propertiesFile1, propertiesFile2));
+        verify(propertyLoader).withBaseNames(newArrayList(propertiesFile1, propertiesFile2));
         verifyNoMoreInteractions(propertyLoader);
     }
 
@@ -237,8 +213,7 @@ public class ConfigBuilderTest {
     public void testWithPropertyLocations() {
         final String propertyLocation1 = "<propertyLocation>";
         final Class propertyLocation2 = PropertyLoader.class;
-        assertThat(configBuilder.withPropertyLocations(propertyLocation1, propertyLocation2),
-                is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertyLocations(propertyLocation1, propertyLocation2)).isSameAs(configBuilder);
 
         InOrder order = inOrder(propertyLoader, locationContainer);
         order.verify(propertyLoader).getLocations();
@@ -250,10 +225,7 @@ public class ConfigBuilderTest {
 
     @Test
     public void testWithPropertyFilters() {
-
-        assertThat(configBuilder.withPropertyFilters(
-                VariableResolvingFilter.class, DecryptingFilter.class),
-                is(sameInstance(configBuilder)));
+        assertThat(configBuilder.withPropertyFilters(VariableResolvingFilter.class, DecryptingFilter.class)).isSameAs(configBuilder);
 
         InOrder order = inOrder(propertyLoader, filterContainer, filters);
         order.verify(propertyLoader).getFilters();
@@ -268,6 +240,6 @@ public class ConfigBuilderTest {
     public void testStaticBuilderFactoryMethod() {
         configBuilder = ConfigBuilder.on(TestConfig.class);
 
-        assertThat(configBuilder, is(not(nullValue())));
+        assertThat(configBuilder).isNotNull();
     }
 }

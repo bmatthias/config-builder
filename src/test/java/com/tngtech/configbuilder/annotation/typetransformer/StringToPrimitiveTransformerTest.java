@@ -5,21 +5,18 @@ import com.tngtech.configbuilder.exception.PrimitiveParsingException;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StringToPrimitiveTransformerTest {
 
-    private StringOrPrimitiveToPrimitiveTransformer stringOrPrimitiveToPrimitiveTransformer;
+    private StringOrPrimitiveToPrimitiveTransformer stringOrPrimitiveToPrimitiveTransformer = new StringOrPrimitiveToPrimitiveTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;
@@ -30,71 +27,66 @@ public class StringToPrimitiveTransformerTest {
     @Mock
     private GenericsAndCastingHelper genericsAndCastingHelper;
 
-    @Before
-    public void setUp() throws Exception {
-        stringOrPrimitiveToPrimitiveTransformer = new StringOrPrimitiveToPrimitiveTransformer();
-    }
-
     @Test
-    public void testTransform() throws Exception {
+    public void testTransform() {
         initializeFactoryAndHelperMocks();
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform("true"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("true")).isEqualTo(true);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
-        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform("1"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("1")).isEqualTo(1);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
-        assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform("1"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("1")).isEqualTo(1.0);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
-        assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform("1.0"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("1.0")).isEqualTo(1.0);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(true));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(true)).isEqualTo(true);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
-        assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform(1));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(1)).isEqualTo(1.0);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(double.class);
-        assertEquals(1.0, stringOrPrimitiveToPrimitiveTransformer.transform(1.0));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(1.0)).isEqualTo(1.0);
     }
 
     @Test
-    public void testThatSurroundingWhiteSpaceIsIgnored() throws Exception {
+    public void testThatSurroundingWhiteSpaceIsIgnored() {
         initializeFactoryAndHelperMocks();
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(boolean.class);
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform("true "));
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true "));
-        assertEquals(true, stringOrPrimitiveToPrimitiveTransformer.transform(" true"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("true ")).isEqualTo(true);
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(" true ")).isEqualTo(true);
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(" true")).isEqualTo(true);
 
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
-        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform("1 "));
-        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(" 1 "));
-        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(" 1"));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform("1 ")).isEqualTo(1);
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(" 1 ")).isEqualTo(1);
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(" 1")).isEqualTo(1);
     }
 
     @Test(expected = PrimitiveParsingException.class)
-    public void testTransformThrowsException() throws Exception {
+    public void testTransformThrowsException() {
         initializeFactoryAndHelperMocks();
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
         stringOrPrimitiveToPrimitiveTransformer.setTargetType(int.class);
-        assertEquals(1, stringOrPrimitiveToPrimitiveTransformer.transform(1.0));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.transform(1.0)).isEqualTo(1);
     }
 
     @Test
-    public void testIsMatching() throws Exception {
+    public void testIsMatching() {
         initializeFactoryAndHelperMocks();
 
         stringOrPrimitiveToPrimitiveTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Integer.class));
-        assertTrue(stringOrPrimitiveToPrimitiveTransformer.isMatching(String.class, int.class));
-        assertFalse(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Object.class));
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Integer.class)).isTrue();
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.isMatching(String.class, int.class)).isTrue();
+        assertThat(stringOrPrimitiveToPrimitiveTransformer.isMatching(int.class, Object.class)).isFalse();
     }
 
     private void initializeFactoryAndHelperMocks() {

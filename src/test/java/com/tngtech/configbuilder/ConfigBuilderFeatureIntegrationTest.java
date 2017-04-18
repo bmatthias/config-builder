@@ -14,7 +14,6 @@ public class ConfigBuilderFeatureIntegrationTest {
         assertThat(c.getNumber()).isEqualTo(3);
     }
 
-
     @Test
     public void testConfigBuilderWithPropertyNamePrefix() {
         TestConfigPropertyNamePrefix config = ConfigBuilder.on(TestConfigPropertyNamePrefix.class).build();

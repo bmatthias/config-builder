@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -12,13 +11,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.io.File;
 import java.lang.reflect.ParameterizedType;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StringToFileTransformerTest {
 
-    private StringToFileTransformer transformer;
+    private StringToFileTransformer transformer = new StringToFileTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;
@@ -27,23 +26,18 @@ public class StringToFileTransformerTest {
     @Mock
     private GenericsAndCastingHelper genericsAndCastingHelper;
 
-    @Before
-    public void setUp() throws Exception {
-        transformer = new StringToFileTransformer();
+    @Test
+    public void testTransform() {
+        assertThat(transformer.transform(".")).isEqualTo(new File("."));
     }
 
     @Test
-    public void testTransform() throws Exception {
-        assertEquals(new File("."), transformer.transform("."));
-    }
-
-    @Test
-    public void testIsMatching() throws Exception {
+    public void testIsMatching() {
         initializeFactoryAndHelperMocks();
         transformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        assertTrue(transformer.isMatching(String.class, File.class));
-        assertFalse(transformer.isMatching(Object.class, File.class));
+        assertThat(transformer.isMatching(String.class, File.class)).isTrue();
+        assertThat(transformer.isMatching(Object.class, File.class)).isFalse();
     }
 
     private void initializeFactoryAndHelperMocks(){

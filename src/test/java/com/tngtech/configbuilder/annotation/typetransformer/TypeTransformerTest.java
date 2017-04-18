@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,7 +54,6 @@ public class TypeTransformerTest {
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;
-
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
 
@@ -92,7 +91,7 @@ public class TypeTransformerTest {
         final TypeTransformer typeTransformer = createSimpleTypeTransformer();
 
         //noinspection unchecked
-        assertTrue(typeTransformer.isMatching(String.class, Integer.class));
+        assertThat(typeTransformer.isMatching(String.class, Integer.class)).isTrue();
     }
 
     @Test
@@ -100,7 +99,7 @@ public class TypeTransformerTest {
         final TypeTransformer typeTransformer = createInheritedTypeTransformer();
 
         //noinspection unchecked
-        assertTrue(typeTransformer.isMatching(String.class, Integer.class));
+        assertThat(typeTransformer.isMatching(String.class, Integer.class)).isTrue();
     }
 
     @Test
@@ -108,14 +107,14 @@ public class TypeTransformerTest {
         final TypeTransformer typeTransformer = createUntypedInheritedTypeTransformer();
 
         //noinspection unchecked
-        assertTrue(typeTransformer.isMatching(String.class, Integer.class));
+        assertThat(typeTransformer.isMatching(String.class, Integer.class)).isTrue();
     }
 
     @Test
     public void testUntypedRevertedInheritedTypeTransformerMatch() {
         final TypeTransformer typeTransformer = createUntypedRevertedInheritedTypeTransformer();
 
-        //noinspection unchecked
-        assertTrue(typeTransformer.isMatching(String.class, Integer.class));
+        //noinspection uncheckedy
+        assertThat(typeTransformer.isMatching(String.class, Integer.class)).isTrue();
     }
 }
