@@ -99,6 +99,10 @@ If you need more complex transformers, you can also implement your own by extend
 Finally, the original value may not always be a String. To support this case, the annotation takes a list of possible transformers, and the one with the right
 source and target types is automatically detected and used.
 
+##### 3.3 Prevent sensitive data from being logged
+Resolved values are usually logged at debug level.
+If this is not desired, just add the `@DoNotLogValue` annotation to the field containing your sensitive data.
+
 #### 4. Add JSR validation annotations and/or define a custom validation method
 After an instance of your config is built, it is automatically validated. You can either use JSR validation annotations
 (`@NotNull`, ...) or define a custom validation method:
