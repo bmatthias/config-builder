@@ -1,7 +1,6 @@
 package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -13,22 +12,15 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PropertyExtensionProcessorTest {
 
-    private PropertyExtensionProcessor propertyExtensionProcessor;
+    private PropertyExtensionProcessor propertyExtensionProcessor = new PropertyExtensionProcessor();
 
     @Mock
     private PropertyExtension propertyExtension;
     @Mock
-    PropertyLoader propertyLoader;
-
-    @Before
-    public void setUp() throws Exception {
-        propertyExtensionProcessor = new PropertyExtensionProcessor();
-    }
+    private PropertyLoader propertyLoader;
 
     @Test
     public void testPropertyExtensionProcessor() {
-
-
         when(propertyExtension.value()).thenReturn("extension");
 
         propertyExtensionProcessor.configurePropertyLoader(propertyExtension, propertyLoader);

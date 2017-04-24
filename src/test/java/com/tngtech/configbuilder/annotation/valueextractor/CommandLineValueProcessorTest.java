@@ -9,13 +9,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CommandLineValueProcessorTest {
 
-    private CommandLineValueProcessor commandLineValueProcessor;
+    private CommandLineValueProcessor commandLineValueProcessor = new CommandLineValueProcessor();
 
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -23,29 +23,58 @@ public class CommandLineValueProcessorTest {
     private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private CommandLine commandLine;
-    @Mock
-    private CommandLineValue commandLineValue;
 
     @Before
-    public void setUp() throws Exception {
-        commandLineValueProcessor = new CommandLineValueProcessor();
+    public void setUpMocks() {
+        when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
+        when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
     }
 
     @Test
-    public void testCommandLineValueProcessor() {
-        when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
-        when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
-        when(commandLineValue.shortOpt()).thenReturn("value");
-        assertEquals("false", commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory).toString());
+    public void testCommandLineValueProcessorOptionNotPresent() {
+        CommandLineValue commandLineValue = TestConfig.getAnnotation("value");
+        assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("false");
     }
 
     @Test
-    public void testCommandLineValueProcessorWithArg() {
-        when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
-        when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
-        when(commandLineValue.shortOpt()).thenReturn("value");
-        when(commandLineValue.hasArg()).thenReturn(true);
+    public void testCommandLineValueProcessorShortOptionPresent() {
+        CommandLineValue commandLineValue = TestConfig.getAnnotation("value");
+        when(commandLine.hasOption("value")).thenReturn(true);
+        assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("true");
+    }
+
+    @Test
+    public void testCommandLineValueProcessorLongOptionPresent() {
+        CommandLineValue commandLineValue = TestConfig.getAnnotation("value");
+        when(commandLine.hasOption("longOption")).thenReturn(true);
+        assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("true");
+    }
+
+    @Test
+    public void testCommandLineValueProcessorWithArgValueOptionNotPresent()  {
+        CommandLineValue commandLineValue = TestConfig.getAnnotation("valueWithArg");
+        assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isNull();
+    }
+
+    @Test
+    public void testCommandLineValueProcessorWithArg()  {
+        CommandLineValue commandLineValue = TestConfig.getAnnotation("valueWithArg");
         when(commandLine.getOptionValue("value")).thenReturn("passed");
-        assertEquals("passed", commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory));
+        assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("passed");
+    }
+
+    static class TestConfig {
+        @CommandLineValue(shortOpt = "value", longOpt = "longOption")
+        String value;
+        @CommandLineValue(shortOpt = "value", longOpt = "longOption", hasArg = true)
+        String valueWithArg;
+
+        static CommandLineValue getAnnotation(String fieldName) {
+            try {
+                return TestConfig.class.getDeclaredField(fieldName).getAnnotation(CommandLineValue.class);
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

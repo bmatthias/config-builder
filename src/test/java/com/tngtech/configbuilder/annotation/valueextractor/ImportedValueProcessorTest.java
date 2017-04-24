@@ -10,8 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,9 +45,9 @@ public class ImportedValueProcessorTest {
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
         when(builderConfiguration.getImportedConfiguration()).thenReturn(importedTestConfig);
         when(importedValue.value()).thenReturn("intField");
-        
+
         int actualResult = (Integer) importedValueProcessor.getValue(importedValue, configBuilderFactory);
-        assertThat(actualResult, equalTo(23));
+        assertThat(actualResult).isEqualTo(23);
     }
     
     @Test
@@ -58,7 +57,7 @@ public class ImportedValueProcessorTest {
         when(importedValue.value()).thenReturn("stringField");
 
         String actualResult = (String) importedValueProcessor.getValue(importedValue, configBuilderFactory);
-        assertThat(actualResult, equalTo("Foo"));
+        assertThat(actualResult).isEqualTo("Foo");
     }
 
     @Test
@@ -67,7 +66,7 @@ public class ImportedValueProcessorTest {
         when(builderConfiguration.getImportedConfiguration()).thenReturn(null);
 
         String actualResult = (String) importedValueProcessor.getValue(importedValue, configBuilderFactory);
-        assertThat(actualResult, equalTo(null));
+        assertThat(actualResult).isNull();
     }
     
     @Test(expected = ImportedConfigurationException.class)

@@ -2,15 +2,11 @@ package com.tngtech.configbuilder.testclasses;
 
 import com.tngtech.configbuilder.annotation.configuration.LoadingOrder;
 import com.tngtech.configbuilder.annotation.configuration.Separator;
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.*;
 import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringListTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.annotation.valueextractor.*;
-import com.tngtech.propertyloader.PropertyLoader;
-import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
-import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,10 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class TestConfigWithoutAnnotations {
-
-    public TestConfigWithoutAnnotations() {
-
-    }
 
     public class TestConfigFactory extends TypeTransformer<String,TestConfigWithoutAnnotations> {
         public TestConfigWithoutAnnotations transform(String input) {

@@ -10,14 +10,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StringToEnumTypeTransformerTest {
 
-    private StringToTestEnumTransformer transformer;
+    private StringToTestEnumTransformer transformer = new StringToTestEnumTransformer();
 
     enum TestEnum {
         ONE
@@ -35,7 +34,6 @@ public class StringToEnumTypeTransformerTest {
     @Before
     public void setUp() {
         initializeFactoryMocks();
-        transformer = new StringToTestEnumTransformer();
         transformer.initialize(new FieldValueTransformer(configBuilderFactory), configBuilderFactory);
     }
 
@@ -45,14 +43,14 @@ public class StringToEnumTypeTransformerTest {
     }
 
     @Test
-    public void testTransform() throws Exception {
-        assertThat(transformer.transform(TestEnum.ONE.name()), is(TestEnum.ONE));
+    public void testTransform() {
+        assertThat(transformer.transform(TestEnum.ONE.name())).isSameAs(TestEnum.ONE);
     }
 
     @Test
-    public void testIsMatching() throws Exception {
-        assertTrue(transformer.isMatching(String.class, TestEnum.class));
-        assertFalse(transformer.isMatching(String.class, Integer.class));
-        assertTrue(transformer.isMatching(String.class, Enum.class));
+    public void testIsMatching() {
+        assertThat(transformer.isMatching(String.class, TestEnum.class)).isTrue();
+        assertThat(transformer.isMatching(String.class, Integer.class)).isFalse();
+        assertThat(transformer.isMatching(String.class, Enum.class)).isTrue();
     }
 }

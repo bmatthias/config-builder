@@ -5,5 +5,5 @@ import com.tngtech.propertyloader.PropertyLoader;
 import java.lang.annotation.Annotation;
 
 public interface PropertyLoaderConfigurationProcessor {
-    public void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader);
+    void configurePropertyLoader(Annotation annotation, PropertyLoader propertyLoader);
 }

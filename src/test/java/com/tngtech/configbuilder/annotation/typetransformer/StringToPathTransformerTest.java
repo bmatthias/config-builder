@@ -3,7 +3,6 @@ package com.tngtech.configbuilder.annotation.typetransformer;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -12,17 +11,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StringToPathTransformerTest {
-    private StringToPathTransformer transformer;
+    private StringToPathTransformer transformer = new StringToPathTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;
@@ -31,23 +26,18 @@ public class StringToPathTransformerTest {
     @Mock
     private GenericsAndCastingHelper genericsAndCastingHelper;
 
-    @Before
-    public void setUp() throws Exception {
-        transformer = new StringToPathTransformer();
+    @Test
+    public void testTransform() {
+        assertThat(transformer.transform("/usr")).isEqualTo(Paths.get("/usr"));
     }
 
     @Test
-    public void testTransform() throws Exception {
-        assertEquals(Paths.get("/usr"), transformer.transform("/usr"));
-    }
-
-    @Test
-    public void testIsMatching() throws Exception {
+    public void testIsMatching() {
         initializeFactoryAndHelperMocks();
         transformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        assertTrue(transformer.isMatching(String.class, Path.class));
-        assertFalse(transformer.isMatching(Object.class, Path.class));
+        assertThat(transformer.isMatching(String.class, Path.class)).isTrue();
+        assertThat(transformer.isMatching(Object.class, Path.class)).isFalse();
     }
 
     private void initializeFactoryAndHelperMocks(){

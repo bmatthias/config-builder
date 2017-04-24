@@ -31,11 +31,7 @@ import java.util.*;
 @PropertiesFiles("demoapp-configuration")
 public class TestConfig {
 
-    public TestConfig() {
-
-    }
-
-    public class TestConfigFactory extends TypeTransformer<String,TestConfig> {
+    public static class TestConfigFactory extends TypeTransformer<String,TestConfig> {
         public TestConfig transform(String input) {
             TestConfig testConfig = new TestConfig();
             testConfig.setSomeString(input);

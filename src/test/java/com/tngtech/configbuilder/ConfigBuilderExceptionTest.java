@@ -3,10 +3,9 @@ package com.tngtech.configbuilder;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import com.tngtech.configbuilder.testclasses.TestConfigThrowsPrimitiveParsingException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsInvocationTargetExceptionException;
+import com.tngtech.configbuilder.testclasses.TestConfigThrowsPrimitiveParsingException;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -25,10 +24,6 @@ public class ConfigBuilderExceptionTest {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
-    @Before
-    public void setUp() {
-    }
 
     @Parameterized.Parameters
     public static Collection configs() {

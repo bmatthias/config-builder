@@ -1,9 +1,5 @@
 package com.tngtech.configbuilder.annotation.configuration;
 
-import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
-import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
-import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
-
 import java.lang.annotation.*;
 
 /**
@@ -13,6 +9,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PropertyNamePrefix {
-    public String[] value() default {""};
-
+    String[] value() default {""};
 }

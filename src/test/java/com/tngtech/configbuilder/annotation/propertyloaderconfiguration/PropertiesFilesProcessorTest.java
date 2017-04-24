@@ -1,13 +1,12 @@
 package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
-import com.google.common.collect.Lists;
 import com.tngtech.propertyloader.PropertyLoader;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,24 +16,17 @@ public class PropertiesFilesProcessorTest {
     @Mock
     private PropertiesFiles propertiesFiles;
     @Mock
-    PropertyLoader propertyLoader;
+    private PropertyLoader propertyLoader;
 
-    private PropertiesFilesProcessor propertiesFilesProcessor;
-
-    @Before
-    public void setUp() throws Exception {
-        propertiesFilesProcessor = new PropertiesFilesProcessor();
-    }
+    private PropertiesFilesProcessor propertiesFilesProcessor = new PropertiesFilesProcessor();
 
     @Test
     public void testPropertiesFilesProcessor() {
-
-        String[] fileNames = new String[]{"file1", "file2"};
-
+        String[] fileNames = {"file1", "file2"};
         when(propertiesFiles.value()).thenReturn(fileNames);
 
         propertiesFilesProcessor.configurePropertyLoader(propertiesFiles, propertyLoader);
 
-        verify(propertyLoader).withBaseNames(Lists.newArrayList(fileNames));
+        verify(propertyLoader).withBaseNames(newArrayList(fileNames));
     }
 }

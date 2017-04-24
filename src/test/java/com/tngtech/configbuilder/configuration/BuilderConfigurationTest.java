@@ -1,49 +1,22 @@
 package com.tngtech.configbuilder.configuration;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BuilderConfigurationTest {
 
-    private BuilderConfiguration builderConfiguration;
+    private BuilderConfiguration builderConfiguration = new BuilderConfiguration();
 
-    @Before
-    public void setUp() throws Exception {
-        builderConfiguration = new BuilderConfiguration();
+    @Test
+    public void testGetCommandLineArgs() {
+        assertThat(builderConfiguration.getCommandLine()).isNull();
     }
 
     @Test
-    public void testGetCommandLineArgs() throws Exception {
-        assertEquals(null, builderConfiguration.getCommandLine());
-    }
-
-    @Test
-    public void testGetProperties() throws Exception {
-        assertEquals(new Properties(), builderConfiguration.getProperties());
-    }
-
-    @Test
-    public void testSetProperties() throws Exception {
-
-    }
-
-    @Test
-    public void testSetCommandLineArgs() throws Exception {
-
-    }
-
-    @Test
-    public void testSetAnnotationOrder() throws Exception {
-
-    }
-
-    @Test
-    public void testGetAnnotationOrder() throws Exception {
-
+    public void testGetProperties() {
+        assertThat(builderConfiguration.getProperties()).isEqualTo(new Properties());
     }
 }

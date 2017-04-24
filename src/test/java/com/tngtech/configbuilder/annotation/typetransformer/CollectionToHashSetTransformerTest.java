@@ -1,7 +1,5 @@
 package com.tngtech.configbuilder.annotation.typetransformer;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
@@ -18,13 +16,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CollectionToHashSetTransformerTest {
 
-    private CollectionToHashSetTransformer collectionToHashSetTransformer;
+    private CollectionToHashSetTransformer collectionToHashSetTransformer = new CollectionToHashSetTransformer();
 
     @Mock
     private ParameterizedType type;
@@ -38,34 +37,32 @@ public class CollectionToHashSetTransformerTest {
     private GenericsAndCastingHelper genericsAndCastingHelper;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
-
-        collectionToHashSetTransformer = new CollectionToHashSetTransformer();
         collectionToHashSetTransformer.initialize(fieldValueTransformer, configBuilderFactory);
         collectionToHashSetTransformer.setTargetType(type);
     }
 
     @Test
-    public void testTransform() throws Exception {
-        Set<Integer> input = Sets.newHashSet(1,2,3);
+    public void testTransform() {
+        Set<Integer> input = newHashSet(1, 2, 3);
         when(type.getActualTypeArguments()).thenReturn(new Class[]{Double.class});
         when(fieldValueTransformer.performNecessaryTransformations(1, Double.class)).thenReturn(1.0);
         when(fieldValueTransformer.performNecessaryTransformations(2, Double.class)).thenReturn(2.0);
         when(fieldValueTransformer.performNecessaryTransformations(3, Double.class)).thenReturn(3.0);
-        assertEquals(Sets.newHashSet(1.0, 2.0, 3.0), collectionToHashSetTransformer.transform(input));
+        assertThat(collectionToHashSetTransformer.transform(input)).containsExactly(1.0, 2.0, 3.0);
     }
 
     @Test
-    public void testIsMatching() throws Exception {
+    public void testIsMatching() {
         collectionToHashSetTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
         initializeFactoryAndHelper();
 
-        assertTrue(collectionToHashSetTransformer.isMatching(ArrayList.class, Set.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(ArrayList.class, ArrayList.class));
-        assertFalse(collectionToHashSetTransformer.isMatching(Collection.class, Double.class));
+        assertThat(collectionToHashSetTransformer.isMatching(ArrayList.class, Set.class)).isTrue();
+        assertThat(collectionToHashSetTransformer.isMatching(ArrayList.class, ArrayList.class)).isFalse();
+        assertThat(collectionToHashSetTransformer.isMatching(Collection.class, Double.class)).isFalse();
     }
 
     private void initializeFactoryAndHelper() {
