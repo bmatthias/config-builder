@@ -112,6 +112,11 @@
     <profiles>
         <profile>
             <id>signing</id>
+            <activation>
+                <property>
+                    <name>gpg.passphrase</name>
+                </property>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
