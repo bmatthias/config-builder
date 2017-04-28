@@ -1,13 +1,11 @@
 package com.tngtech.configbuilder.testutil;
 
-import org.apache.log4j.*;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.Logger;
+import org.apache.log4j.SimpleLayout;
+import org.apache.log4j.WriterAppender;
 import org.junit.rules.ExternalResource;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 public class LoggerRule extends ExternalResource {
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
