@@ -3,7 +3,7 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
