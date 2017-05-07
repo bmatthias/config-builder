@@ -94,7 +94,6 @@ public class ConfigBuilderTest {
 
     @Test
     public void testWithCommandLineArgs() {
-        when(commandLineHelper.getCommandLine(TestConfig.class, new String[]{})).thenReturn(commandLine);
         assertThat(configBuilder.withCommandLineArgs(new String[]{})).isSameAs(configBuilder);
     }
 

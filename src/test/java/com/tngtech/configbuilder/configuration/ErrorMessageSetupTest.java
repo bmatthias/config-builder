@@ -24,7 +24,6 @@ public class ErrorMessageSetupTest {
 
     @Before
     public void setUp() {
-        when(propertyLoader.withExtension("properties")).thenReturn(propertyLoader);
         when(propertyLoader.load("errors")).thenReturn(new Properties());
     }
 

@@ -123,6 +123,5 @@ public class FieldValueTransformerTest {
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(field.getGenericType())).thenReturn((Class)ArrayList.class);
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
     }
 }

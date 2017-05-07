@@ -74,7 +74,7 @@ public class PropertyValueProcessorTest {
     public void testPropertyValueProcessorPropertyNotFound() {
         when(builderConfiguration.getPropertyNamePrefixes()).thenReturn(new String[]{""});
         when(propertyValue.value()).thenReturn("test");
-        when(properties.contains("test")).thenReturn(false);
+        when(properties.containsKey("test")).thenReturn(false);
 
         assertThat(propertyValueProcessor.getValue(propertyValue, configBuilderFactory)).isNull();
 

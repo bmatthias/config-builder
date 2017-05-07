@@ -56,8 +56,6 @@ public class FieldValueTransformerComponentTest {
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
     @Mock
-    private FieldValueExtractor fieldValueExtractor;
-    @Mock
     private ErrorMessageSetup errorMessageSetup;
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -76,7 +74,6 @@ public class FieldValueTransformerComponentTest {
 
     @Before
     public void setUp() throws Exception {
-        when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
 

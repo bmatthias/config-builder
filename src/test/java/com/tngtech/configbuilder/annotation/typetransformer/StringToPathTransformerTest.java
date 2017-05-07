@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.ParameterizedType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -23,8 +22,6 @@ public class StringToPathTransformerTest {
     private FieldValueTransformer fieldValueTransformer;
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
-    @Mock
-    private GenericsAndCastingHelper genericsAndCastingHelper;
 
     @Test
     public void testTransform() {
@@ -41,10 +38,6 @@ public class StringToPathTransformerTest {
     }
 
     private void initializeFactoryAndHelperMocks(){
-        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
-
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
-        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class)Object.class);
-        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType)(transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn((Class)Path.class);
+        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
     }
 }

@@ -99,7 +99,6 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() {
-        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(false);
 
         FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<TestConfigWithoutAnnotations>(configBuilderFactory);

@@ -75,7 +75,7 @@ public class ImportedValueProcessorTest {
         when(builderConfiguration.getImportedConfiguration()).thenReturn(importedTestConfig);
         when(importedValue.value()).thenReturn("notAField");
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class)).thenReturn("Just a message");
+        when(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class, "notAField")).thenReturn("Just a message");
 
         importedValueProcessor.getValue(importedValue, configBuilderFactory);
     }

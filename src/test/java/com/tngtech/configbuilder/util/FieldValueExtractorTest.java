@@ -59,12 +59,10 @@ public class FieldValueExtractorTest {
     private PropertyValueProcessor propertyValueProcessor;
     @Mock
     private CommandLineValueProcessor commandLineValueProcessor;
-    @Mock
-    private DefaultValueProcessor defaultValueProcessor;
 
     private FieldValueExtractor fieldValueExtractor;
     private Field field;
-    Class<? extends Annotation>[] order = new Class[]{PropertyValue.class, CommandLineValue.class};
+    private Class<? extends Annotation>[] order = new Class[]{PropertyValue.class, CommandLineValue.class};
 
     @Before
     public void setUp() {
@@ -73,7 +71,6 @@ public class FieldValueExtractorTest {
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(PropertyValueProcessor.class)).thenReturn(propertyValueProcessor);
         when(configBuilderFactory.getInstance(CommandLineValueProcessor.class)).thenReturn(commandLineValueProcessor);
-        when(configBuilderFactory.getInstance(DefaultValueProcessor.class)).thenReturn(defaultValueProcessor);
 
         when(propertyValueProcessor.getValue(any(PropertyValue.class), any(ConfigBuilderFactory.class))).thenReturn("propertyValue");
         when(commandLineValueProcessor.getValue(any(CommandLineValue.class), any(ConfigBuilderFactory.class))).thenReturn("commandLineValue");
