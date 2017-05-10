@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -75,7 +75,7 @@ public class ImportedValueProcessorTest {
         when(builderConfiguration.getImportedConfiguration()).thenReturn(importedTestConfig);
         when(importedValue.value()).thenReturn("notAField");
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class)).thenReturn("Just a message");
+        when(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class, "notAField")).thenReturn("Just a message");
 
         importedValueProcessor.getValue(importedValue, configBuilderFactory);
     }

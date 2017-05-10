@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
@@ -56,8 +56,6 @@ public class FieldValueTransformerComponentTest {
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
     @Mock
-    private FieldValueExtractor fieldValueExtractor;
-    @Mock
     private ErrorMessageSetup errorMessageSetup;
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -76,7 +74,6 @@ public class FieldValueTransformerComponentTest {
 
     @Before
     public void setUp() throws Exception {
-        when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
 

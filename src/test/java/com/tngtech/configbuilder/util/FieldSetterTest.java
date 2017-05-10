@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 
@@ -99,7 +99,6 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() {
-        when(fieldValueTransformer.transformFieldValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn(null);
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(false);
 
         FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<TestConfigWithoutAnnotations>(configBuilderFactory);

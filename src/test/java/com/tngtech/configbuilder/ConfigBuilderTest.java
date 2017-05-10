@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
 import java.util.Properties;
@@ -94,7 +94,6 @@ public class ConfigBuilderTest {
 
     @Test
     public void testWithCommandLineArgs() {
-        when(commandLineHelper.getCommandLine(TestConfig.class, new String[]{})).thenReturn(commandLine);
         assertThat(configBuilder.withCommandLineArgs(new String[]{})).isSameAs(configBuilder);
     }
 
@@ -114,13 +113,16 @@ public class ConfigBuilderTest {
     @Test
     public void testBuild() {
         when(propertyLoader.load()).thenReturn(properties);
+        TestConfig testConfig = new TestConfig();
+        when(constructionHelper.getInstance(TestConfig.class)).thenReturn(testConfig);
+
         configBuilder.build();
+
         verify(propertyLoader).load();
         verify(builderConfiguration).setProperties(properties);
         verify(errorMessageSetup).initialize(null, propertyLoader);
-
-        verify(fieldSetter).setFields(any(TestConfig.class), any(BuilderConfiguration.class));
-        verify(configValidator).validate(any(TestConfig.class));
+        verify(fieldSetter).setFields(same(testConfig), any(BuilderConfiguration.class));
+        verify(configValidator).validate(same(testConfig));
     }
 
     @Test

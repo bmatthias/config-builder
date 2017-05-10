@@ -4,7 +4,7 @@ import com.tngtech.propertyloader.PropertyLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.Mockito.verify;

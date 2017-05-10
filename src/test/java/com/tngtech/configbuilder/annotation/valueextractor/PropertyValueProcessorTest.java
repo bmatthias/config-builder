@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Properties;
 
@@ -74,7 +74,7 @@ public class PropertyValueProcessorTest {
     public void testPropertyValueProcessorPropertyNotFound() {
         when(builderConfiguration.getPropertyNamePrefixes()).thenReturn(new String[]{""});
         when(propertyValue.value()).thenReturn("test");
-        when(properties.contains("test")).thenReturn(false);
+        when(properties.containsKey("test")).thenReturn(false);
 
         assertThat(propertyValueProcessor.getValue(propertyValue, configBuilderFactory)).isNull();
 

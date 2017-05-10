@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -32,13 +32,11 @@ public class CollectionToArrayListTransformerTest {
     private ConfigBuilderFactory configBuilderFactory;
     @Mock
     private ErrorMessageSetup errorMessageSetup;
-    @Mock
-    private GenericsAndCastingHelper genericsAndCastingHelper;
 
     @Before
     public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
+        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
         collectionToArrayListTransformer.setTargetType(type);
     }
@@ -57,15 +55,7 @@ public class CollectionToArrayListTransformerTest {
     public void testIsMatching() {
         collectionToArrayListTransformer.initialize(fieldValueTransformer, configBuilderFactory);
 
-        initializeFactoryAndHelper();
-
         assertThat(collectionToArrayListTransformer.isMatching(Collection.class, ArrayList.class)).isTrue();
         assertThat(collectionToArrayListTransformer.isMatching(Collection.class, Double.class)).isFalse();
-    }
-
-    private void initializeFactoryAndHelper() {
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class)Collection.class);
-        when(genericsAndCastingHelper.castTypeToClass(ArrayList.class)).thenReturn((Class)ArrayList.class);
-        when(genericsAndCastingHelper.castTypeToClass(Double.class)).thenReturn((Class)Double.class);
     }
 }

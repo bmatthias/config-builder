@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -123,6 +123,5 @@ public class FieldValueTransformerTest {
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(field.getGenericType())).thenReturn((Class)ArrayList.class);
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class)String.class);
     }
 }

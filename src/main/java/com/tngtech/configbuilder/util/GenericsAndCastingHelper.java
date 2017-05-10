@@ -1,26 +1,24 @@
 package com.tngtech.configbuilder.util;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class GenericsAndCastingHelper {
 
-    private final Map<Class<?>, Class<?>> primitiveToWrapperMapping;
-    
-    public GenericsAndCastingHelper() {
-        primitiveToWrapperMapping = new HashMap<Class<?>, Class<?>>();
-        primitiveToWrapperMapping.put(boolean.class, Boolean.class);
-        primitiveToWrapperMapping.put(byte.class, Byte.class);
-        primitiveToWrapperMapping.put(short.class, Short.class);
-        primitiveToWrapperMapping.put(char.class, Character.class);
-        primitiveToWrapperMapping.put(int.class, Integer.class);
-        primitiveToWrapperMapping.put(long.class, Long.class);
-        primitiveToWrapperMapping.put(float.class, Float.class);
-        primitiveToWrapperMapping.put(double.class, Double.class);
-    }
+    private final Map<Class<?>, Class<?>> primitiveToWrapperMapping = ImmutableMap.<Class<?>, Class<?>>builder()
+            .put(boolean.class, Boolean.class)
+            .put(byte.class, Byte.class)
+            .put(short.class, Short.class)
+            .put(char.class, Character.class)
+            .put(int.class, Integer.class)
+            .put(long.class, Long.class)
+            .put(float.class, Float.class)
+            .put(double.class, Double.class)
+            .build();
 
     public Class<?> getWrapperClassIfPrimitive(Class clazz) {
         return primitiveToWrapperMapping.get(clazz) == null? clazz : primitiveToWrapperMapping.get(clazz);

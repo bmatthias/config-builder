@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Locale;
 import java.util.Properties;
@@ -24,7 +24,6 @@ public class ErrorMessageSetupTest {
 
     @Before
     public void setUp() {
-        when(propertyLoader.withExtension("properties")).thenReturn(propertyLoader);
         when(propertyLoader.load("errors")).thenReturn(new Properties());
     }
 

@@ -1,4 +1,9 @@
-Java Config-Builder  [![Build Status](https://travis-ci.org/TNG/config-builder.svg?branch=master)](https://travis-ci.org/TNG/config-builder) [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master) [![Dependency Status](https://www.versioneye.com/user/projects/56989a13af789b002e000b72/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56989a13af789b002e000b72) [![MavenCentral](https://img.shields.io/maven-central/v/com.tngtech.java/config-builder.svg)](http://search.maven.org/#artifactdetails|com.tngtech.java|config-builder|1.3.1|jar) [![Stories in Ready](https://badge.waffle.io/TNG/config-builder.png?label=ready&title=Ready)](http://waffle.io/TNG/config-builder)
+Java Config-Builder
+ [![Build Status](https://travis-ci.org/TNG/config-builder.svg?branch=master)](https://travis-ci.org/TNG/config-builder)
+ [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master)
+ [![Dependency Status](https://www.versioneye.com/user/projects/56989a13af789b002e000b72/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56989a13af789b002e000b72)
+ [![MavenCentral](https://img.shields.io/maven-central/v/com.tngtech.java/config-builder.svg)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.tngtech.java%22%20AND%20a%3A%22config-builder%22)
+ [![Stories in Ready](https://badge.waffle.io/TNG/config-builder.png?label=ready&title=Ready)](http://waffle.io/TNG/config-builder)
 ===================
 
 #### Table of Contents

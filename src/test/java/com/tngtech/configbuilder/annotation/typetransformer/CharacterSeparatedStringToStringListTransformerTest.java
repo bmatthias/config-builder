@@ -6,9 +6,8 @@ import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +24,6 @@ public class CharacterSeparatedStringToStringListTransformerTest {
     private FieldValueTransformer fieldValueTransformer;
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
-    @Mock
-    private GenericsAndCastingHelper genericsAndCastingHelper;
 
     @Test
     public void testTransformer() {
@@ -52,12 +49,6 @@ public class CharacterSeparatedStringToStringListTransformerTest {
     }
 
     private void initializeFactoryAndHelperMocks() {
-        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
-
-        when(genericsAndCastingHelper.castTypeToClass(List.class)).thenReturn((Class) List.class);
-        when(genericsAndCastingHelper.castTypeToClass(String.class)).thenReturn((Class) String.class);
-        when(genericsAndCastingHelper.castTypeToClass(Collection.class)).thenReturn((Class) Collection.class);
-        when(genericsAndCastingHelper.castTypeToClass(Object.class)).thenReturn((Class) Object.class);
-        when(genericsAndCastingHelper.castTypeToClass(((ParameterizedType) (transformer.getClass().getGenericSuperclass())).getActualTypeArguments()[1])).thenReturn((Class) List.class);
+        when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
     }
 }
