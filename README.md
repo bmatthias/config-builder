@@ -24,7 +24,7 @@ Its features include
 2. configuring of not only String values, but fields of arbitrary types  
 3. configuring of collection fields  
 4. merging configs  
-5. JSR303 validation of the instances it builds.  
+5. [JSR380](https://www.jcp.org/en/jsr/detail?id=380) validation of the instances it builds.
 
 Motivation
 ----------
