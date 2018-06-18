@@ -55,7 +55,7 @@ public class ConstructionHelperTest {
 
     @Test
     public void testGetInstance() {
-        ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<TestConfig>(configBuilderFactory);
+        ConstructionHelper<TestConfig> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
         TestConfig testConfig = constructionHelper.getInstance(TestConfig.class, "string", 3);
         assertThat(testConfig.getString()).isEqualTo("string");
         assertThat(testConfig.getInteger()).isEqualTo(3);
@@ -65,7 +65,7 @@ public class ConstructionHelperTest {
     public void testGetInstanceThrowsException() {
         expectedException.expect(NoConstructorFoundException.class);
         expectedException.expectMessage("NoConstructorFoundException");
-        ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<TestConfigForException>(configBuilderFactory);
+        ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
         constructionHelper.getInstance(TestConfigForException.class, "string", 3);
     }
 }

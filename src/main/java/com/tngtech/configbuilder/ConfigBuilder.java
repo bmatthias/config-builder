@@ -223,7 +223,8 @@ public class ConfigBuilder<T> {
      * @param propertyFilters property filters which should be applied after loading properties
      * @return the instance of ConfigBuilder
      */
-    public ConfigBuilder<T> withPropertyFilters(Class<? extends PropertyLoaderFilter> ... propertyFilters) {
+    @SafeVarargs
+    public final ConfigBuilder<T> withPropertyFilters(Class<? extends PropertyLoaderFilter>... propertyFilters) {
         final DefaultPropertyFilterContainer filterContainer = propertyLoader.getFilters();
         final List<PropertyLoaderFilter> filters = filterContainer.getFilters();
         filters.clear();
@@ -231,9 +232,7 @@ public class ConfigBuilder<T> {
         for (Class<? extends PropertyLoaderFilter> propertyFilter : propertyFilters) {
             try {
                 filters.add(propertyFilter.newInstance());
-            } catch (InstantiationException e) {
-                LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
-            } catch (IllegalAccessException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.error("could not create filter '{}'", propertyFilter.getSimpleName(), e);
             }
         }
@@ -295,6 +294,6 @@ public class ConfigBuilder<T> {
      * @return ConfigBuilder instance for config class
      */
     public static <T> ConfigBuilder<T> on(Class<T> clazz) {
-        return new ConfigBuilder<T>(clazz);
+        return new ConfigBuilder<>(clazz);
     }
 }

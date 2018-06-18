@@ -13,12 +13,7 @@ public class ValidatorException extends RuntimeException {
 
     public <T> ValidatorException(String message, Set<ConstraintViolation<T>> constraintViolations) {
         super(message);
-        this.constraintViolations = Sets.newHashSet(Iterables.transform(constraintViolations, new Function<ConstraintViolation<T>, ConstraintViolation>() {
-            @Override
-            public ConstraintViolation apply(ConstraintViolation<T> constraintViolation) {
-                return constraintViolation;
-            }
-        }));
+        this.constraintViolations = Sets.newHashSet(Iterables.transform(constraintViolations, (Function<ConstraintViolation<T>, ConstraintViolation>) constraintViolation -> constraintViolation));
     }
 
     public ValidatorException(String message, Throwable e) {

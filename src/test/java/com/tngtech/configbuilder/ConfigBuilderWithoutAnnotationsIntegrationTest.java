@@ -20,7 +20,7 @@ public class ConfigBuilderWithoutAnnotationsIntegrationTest {
     @Rule
     public SystemOutRule systemOut = new SystemOutRule();
 
-    private ConfigBuilder<TestConfigWithoutAnnotations> configBuilder = new ConfigBuilder<TestConfigWithoutAnnotations>(TestConfigWithoutAnnotations.class);
+    private ConfigBuilder<TestConfigWithoutAnnotations> configBuilder = new ConfigBuilder<>(TestConfigWithoutAnnotations.class);
 
     @Test
     public void testConfigBuilderWithParameters() {

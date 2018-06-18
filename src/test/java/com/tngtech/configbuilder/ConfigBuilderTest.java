@@ -89,7 +89,7 @@ public class ConfigBuilderTest {
         when(filterContainer.getFilters()).thenReturn(filters);
         when(commandLineHelper.getOptions(TestConfig.class)).thenReturn(commandLineOptions);
 
-        configBuilder = new ConfigBuilder<TestConfig>(TestConfig.class, configBuilderFactory);
+        configBuilder = new ConfigBuilder<>(TestConfig.class, configBuilderFactory);
     }
 
     @Test

@@ -23,7 +23,7 @@ public class FieldValueTransformer {
     private Object[] additionalOptions;
 
     //Order is important: Prefer List over Set if both apply!
-    private final ArrayList<Class<? extends TypeTransformer>> defaultTransformers = Lists.<Class<? extends TypeTransformer>>newArrayList(
+    private final ArrayList<Class<? extends TypeTransformer>> defaultTransformers = Lists.newArrayList(
             StringOrPrimitiveToPrimitiveTransformer.class,
             CharacterSeparatedStringToStringListTransformer.class,
             CharacterSeparatedStringToStringSetTransformer.class,

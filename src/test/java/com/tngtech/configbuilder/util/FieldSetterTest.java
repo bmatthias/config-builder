@@ -74,7 +74,7 @@ public class FieldSetterTest {
         when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
         when(errorMessageSetup.getErrorMessage(any(IllegalArgumentException.class), any(String.class), any(String.class), any(String.class))).thenReturn("IllegalArgumentException");
 
-        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<TestConfigForIllegalArgumentException>(configBuilderFactory);
+        FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
 
         expectedException.expect(ConfigBuilderException.class);
@@ -88,7 +88,7 @@ public class FieldSetterTest {
         when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
         when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
 
-        FieldSetter<TestConfig> fieldSetter = new FieldSetter<TestConfig>(configBuilderFactory);
+        FieldSetter<TestConfig> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfig testConfig = new TestConfig();
 
         fieldSetter.setFields(testConfig, builderConfiguration);
@@ -101,7 +101,7 @@ public class FieldSetterTest {
     public void testSetFieldsForFieldWithoutValueExtractorAnnotation() {
         when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(false);
 
-        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<TestConfigWithoutAnnotations>(configBuilderFactory);
+        FieldSetter<TestConfigWithoutAnnotations> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfigWithoutAnnotations testConfigWithoutAnnotations = new TestConfigWithoutAnnotations();
 
         fieldSetter.setFields(testConfigWithoutAnnotations, builderConfiguration);
@@ -116,7 +116,7 @@ public class FieldSetterTest {
 
         ExtendedTestConfig testConfig = new ExtendedTestConfig();
 
-        FieldSetter<ExtendedTestConfig> fieldSetter = new FieldSetter<ExtendedTestConfig>(configBuilderFactory);
+        FieldSetter<ExtendedTestConfig> fieldSetter = new FieldSetter<>(configBuilderFactory);
         fieldSetter.setFields(testConfig, builderConfiguration);
 
         assertThat(testConfig.testString).isEqualTo("stringValue");
