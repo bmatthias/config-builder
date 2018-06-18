@@ -166,11 +166,11 @@ public class Config {
         }
     }
 
-    @DefaultValue("false")      // values are automatically be converted to primitive types
+    // default false, true if the option is present
     @CommandLineValue(shortOpt="t", longOpt="test", hasArg=false)     // this is a flag argument
     private boolean runInTestMode;
 
-    @DefaultValue("3")
+    @DefaultValue("3") // values are automatically be converted to primitive types
     @CommandLineValue(shortOpt="rl", longOpt="runLevel", hasArg=true)
     private int runLevel;
 
