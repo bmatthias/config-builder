@@ -25,11 +25,7 @@ public class ConstructionHelper<T> {
             log.debug("found constructor - instantiating {}", configClass.getName());
             tConstructor.setAccessible(true);
             return tConstructor.newInstance(objects);
-        } catch (InstantiationException e) {
-            throw createConfigBuilderException(e);
-        } catch (IllegalAccessException e) {
-            throw createConfigBuilderException(e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             throw createConfigBuilderException(e);
         }
     }

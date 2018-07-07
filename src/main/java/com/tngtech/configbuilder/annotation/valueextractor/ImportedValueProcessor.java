@@ -26,9 +26,7 @@ public class ImportedValueProcessor implements ValueExtractorProcessor {
             Field field = importedConfiguration.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             result = field.get(importedConfiguration);
-        } catch (NoSuchFieldException e) {
-            throw createException(configBuilderFactory, fieldName);
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             throw createException(configBuilderFactory, fieldName);
         }
 

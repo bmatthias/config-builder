@@ -44,18 +44,19 @@ public class CommandLineHelper {
     private Option getOption(Field field) {
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
         log.debug("adding command line option {} for field {}", commandLineValue.shortOpt(), field.getName());
-        return OptionBuilder.withLongOpt(commandLineValue.longOpt())
+        return Option.builder(commandLineValue.shortOpt())
+                .longOpt(commandLineValue.longOpt())
                 .hasArg()
-                .isRequired(commandLineValue.required())
-                .withDescription(commandLineValue.description())
+                .required(commandLineValue.required())
+                .desc(commandLineValue.description())
                 .hasArg(commandLineValue.hasArg())
-                .create(commandLineValue.shortOpt());
+                .build();
     }
 
     private CommandLine parseCommandLine(String[] args, Options options) {
         CommandLine commandLine;
         try {
-            commandLine = configBuilderFactory.createInstance(GnuParser.class).parse(options, args);
+            commandLine = configBuilderFactory.createInstance(DefaultParser.class).parse(options, args);
         } catch (ParseException e) {
             throw new ConfigBuilderException(errorMessageSetup.getErrorMessage(e.getClass().getSuperclass()), e);
         }

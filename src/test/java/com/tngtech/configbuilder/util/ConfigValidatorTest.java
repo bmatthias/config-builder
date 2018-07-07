@@ -8,6 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -16,7 +17,7 @@ import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -56,7 +57,7 @@ public class ConfigValidatorTest {
         when(configBuilderFactory.getInstance(ValidatorFactory.class)).thenReturn(validatorFactory);
         when(validatorFactory.getValidator()).thenReturn(validator);
 
-        configValidator = new ConfigValidator<TestConfig>(configBuilderFactory);
+        configValidator = new ConfigValidator<>(configBuilderFactory);
     }
 
     @Test

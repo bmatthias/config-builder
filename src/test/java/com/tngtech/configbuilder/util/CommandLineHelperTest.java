@@ -5,10 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
+import org.apache.commons.cli.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +38,7 @@ public class CommandLineHelperTest {
     @Mock
     private Options options;
     @Mock
-    private GnuParser parser;
+    private DefaultParser parser;
     @Mock
     private CommandLine commandLine;
     @Mock
@@ -65,7 +62,7 @@ public class CommandLineHelperTest {
 
     @Test
     public void testGetCommandLine() throws Exception {
-        when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(parser);
+        when(configBuilderFactory.createInstance(DefaultParser.class)).thenReturn(parser);
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(options);
         ArgumentCaptor<Option> captor = ArgumentCaptor.forClass(Option.class);
         assertThat(commandLineHelper.getCommandLine(TestConfig.class, args)).isSameAs(commandLine);
@@ -75,12 +72,7 @@ public class CommandLineHelperTest {
 
         assertThat(options).hasSize(2);
 
-        final ImmutableList<Option> sortedOptions = FluentIterable.from(options).toSortedList(new Comparator<Option>() {
-            @Override
-            public int compare(Option o1, Option o2) {
-                return o1.getLongOpt().compareTo(o2.getLongOpt());
-            }
-        });
+        final ImmutableList<Option> sortedOptions = FluentIterable.from(options).toSortedList((o1, o2) -> o1.getLongOpt().compareTo(o2.getLongOpt()));
 
         assertThat(sortedOptions.get(0).getLongOpt()).isEqualTo("user");
         assertThat(sortedOptions.get(0).getOpt()).isEqualTo("u");
@@ -93,7 +85,7 @@ public class CommandLineHelperTest {
 
     @Test(expected = ConfigBuilderException.class)
     public void testGetCommandLineThrowsException() {
-        when(configBuilderFactory.createInstance(GnuParser.class)).thenReturn(new GnuParser());
+        when(configBuilderFactory.createInstance(DefaultParser.class)).thenReturn(new DefaultParser());
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(new Options());
         args = new String[]{"nd", "notDefined"};
         commandLineHelper.getCommandLine(TestConfig.class, args);

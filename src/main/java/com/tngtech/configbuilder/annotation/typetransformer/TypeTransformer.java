@@ -68,7 +68,7 @@ public abstract class TypeTransformer<SourceClass, TargetClass> {
     }
 
     private Map<TypeVariable, Type> buildTypeNameMap(Type[] typeArguments, TypeVariable[] typeParameters) {
-        Map<TypeVariable, Type> typeVariableMap = new HashMap<TypeVariable, Type>();
+        Map<TypeVariable, Type> typeVariableMap = new HashMap<>();
         for (int i = 0; i < typeParameters.length; i++) {
             typeVariableMap.put(typeParameters[i], typeArguments[i]);
         }

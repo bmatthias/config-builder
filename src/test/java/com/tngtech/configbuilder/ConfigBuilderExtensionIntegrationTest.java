@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigBuilderExtensionIntegrationTest {
 
-    private ExtendedTestConfig config = new ConfigBuilder<ExtendedTestConfig>(ExtendedTestConfig.class).build();
+    private ExtendedTestConfig config = new ConfigBuilder<>(ExtendedTestConfig.class).build();
 
     @Test
     public void testGetValuePresentInSuperClassAndCurrentClass() {

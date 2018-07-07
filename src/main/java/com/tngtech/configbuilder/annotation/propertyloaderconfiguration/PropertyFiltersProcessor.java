@@ -38,40 +38,15 @@ public class PropertyFiltersProcessor implements PropertyLoaderConfigurationProc
                                                                                   filterContainer ) {
     Map<Class<? extends PropertyLoaderFilter>, Action> actionMap = Maps.newHashMap();
 
-    actionMap.put( VariableResolvingFilter.class, new Action() {
-      @Override
-      public void execute() {
-        filterContainer.withVariableResolvingFilter();
-      }
-    } );
+    actionMap.put( VariableResolvingFilter.class, () -> filterContainer.withVariableResolvingFilter());
 
-    actionMap.put( DecryptingFilter.class, new Action() {
-      @Override
-      public void execute() {
-        filterContainer.withDecryptingFilter();
-      }
-    } );
+    actionMap.put( DecryptingFilter.class, () -> filterContainer.withDecryptingFilter());
 
-    actionMap.put( EnvironmentResolvingFilter.class, new Action() {
-      @Override
-      public void execute() {
-        filterContainer.withEnvironmentResolvingFilter();
-      }
-    } );
+    actionMap.put( EnvironmentResolvingFilter.class, () -> filterContainer.withEnvironmentResolvingFilter());
 
-    actionMap.put( WarnOnSurroundingWhitespace.class, new Action() {
-      @Override
-      public void execute() {
-        filterContainer.withWarnOnSurroundingWhitespace();
-      }
-    } );
+    actionMap.put( WarnOnSurroundingWhitespace.class, () -> filterContainer.withWarnOnSurroundingWhitespace());
 
-    actionMap.put( ThrowIfPropertyHasToBeDefined.class, new Action() {
-      @Override
-      public void execute() {
-        filterContainer.withWarnIfPropertyHasToBeDefined();
-      }
-    } );
+    actionMap.put( ThrowIfPropertyHasToBeDefined.class, () -> filterContainer.withWarnIfPropertyHasToBeDefined());
 
     return actionMap;
   }
