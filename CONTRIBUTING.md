@@ -2,6 +2,17 @@
 
 Contributions are very welcome. The following will provide some helpful guidelines.
 
+## How to contribute
+
+We love pull requests. Here is a quick guide:
+
+2. Fork the repo.
+3. Create a new branch from master.
+5. Add your change together with necessary tests.
+6. Run `mvn clean build` and ensure all tests are passing.
+7. Commit and push to your fork/branch and submit a pull request. Don't forget to sign-off your commit (see next section).
+8. Create a pull request.
+
 ##  Sign your work - the Developer's Certificate of Origin
 The sign-off is a simple line at the end of the explanation for the patch, which certifies that you wrote it or otherwise have the right to pass it on as an open-source patch. The rules are pretty simple: if you can certify the below (from developercertificate.org):
  
