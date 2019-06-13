@@ -1,20 +1,23 @@
 # Contributing
 
-Contributions are very welcome. The following will provide some helpful guidelines.
+Contributions are very welcome!
 
 ## How to contribute
 
 We love pull requests. Here is a quick guide:
 
-2. Fork the repo.
-3. Create a new branch from master.
-5. Add your change together with necessary tests.
-6. Run `mvn clean build` and ensure all tests are passing.
-7. Commit and push to your fork/branch and submit a pull request. Don't forget to sign-off your commit (see next section).
-8. Create a pull request.
+1. Fork the repo.
+2. Create a new branch from `master`.
+3. Add your change together with necessary tests.
+4. Run `mvn clean build` and ensure all tests are passing.
+5. Commit with a DCO sign-off message (see next section) and push to your fork/branch.
+6. Create a pull request.
 
-##  Sign your work - the Developer's Certificate of Origin
-The sign-off is a simple line at the end of the explanation for the patch, which certifies that you wrote it or otherwise have the right to pass it on as an open-source patch. The rules are pretty simple: if you can certify the below (from developercertificate.org):
+##  Sign your work – the Developer's Certificate of Origin
+The sign-off is a simple line at the end of the explanation for the patch,
+which certifies that you wrote it or otherwise have the right to pass it on as an open-source patch.
+The rules are pretty simple:
+You need to certify the below (from [developercertificate.org](https://developercertificate.org/)):
  
 > Developer's Certificate of Origin 1.1
 >
@@ -46,11 +49,16 @@ The sign-off is a simple line at the end of the explanation for the patch, which
  
 The DCO requires a sign-off message in the following format appear on each commit in the pull request:
  
-> Signed-off-by: Random J Developer <random@developer.example.org>
+    Signed-off-by: Random J Developer <random@developer.example.org>
  
 using your real name (sorry, no pseudonyms or anonymous contributions.)
  
-The DCO text can either be manually added to your commit body, or you can add either **-s** or **--signoff** to your usual git commit commands. If you forget to add the sign-off you can also amend a previous commit with the sign-off by running **git commit --amend -s**. If you've pushed your changes to Github already you'll need to force push your branch after this with **git push -f**.
+The DCO text can either be manually added to your commit body,
+or you can add either **`-s`** or **`--signoff`** to your usual **`git commit`** commands.
+If you forget to add the sign-off you can also amend a previous commit with the sign-off
+by running **`git commit --amend -s`**.
+If you've pushed your changes to Github already
+you'll need to force push your branch after this with **`git push -f`**.
 
 #### Alternative Sign-Off Methods in rare cases
  
