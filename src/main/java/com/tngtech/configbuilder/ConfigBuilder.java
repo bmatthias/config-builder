@@ -66,9 +66,7 @@ public class ConfigBuilder<T> {
     private Properties additionalProperties;
     private String[] commandLineArgs = {};
     
-
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
-
         configBuilderFactory.<T>initialize();
         this.configClass = configClass;
         this.builderConfiguration = configBuilderFactory.getInstance(BuilderConfiguration.class);
@@ -104,7 +102,7 @@ public class ConfigBuilder<T> {
 
     /**
      * Imports the values from the given object according to the field names in the annotations
-     * @param importedConfiguration
+     * @param importedConfiguration configuration object to be imported
      * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> withImportedConfiguration(Object importedConfiguration) {
@@ -113,9 +111,9 @@ public class ConfigBuilder<T> {
     }
 
     /**
-     * Configures the Config Builder to load given properties files instead of those specified in the config class.
+     * Configures the Config Builder to load given property files instead of those specified in the config class.
      *
-     * @param baseNames
+     * @param baseNames base names of the property files to be loaded
      * @return the instance of ConfigBuilder
      */
     public ConfigBuilder<T> overridePropertiesFiles(List<String> baseNames) {
@@ -291,6 +289,7 @@ public class ConfigBuilder<T> {
      * Gets an instance of the ConfigBuilder for a given config class
      *
      * @param clazz config class for which the config builder is instantiated.
+     * @param <T> generic type of the config class
      * @return ConfigBuilder instance for config class
      */
     public static <T> ConfigBuilder<T> on(Class<T> clazz) {
