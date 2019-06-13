@@ -5,7 +5,7 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes DefaultValue annotations, implements ValueExtractorProcessor
+ * Processes {@link DefaultValue} annotations
  */
 public class DefaultValueProcessor implements ValueExtractorProcessor {
 

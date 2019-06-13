@@ -5,7 +5,7 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes EnvironmentVariableValue annotations, implements ValueExtractorProcessor
+ * Processes {@link EnvironmentVariableValue} annotations
  */
 public class EnvironmentVariableProcessor implements ValueExtractorProcessor {
     public String getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory) {

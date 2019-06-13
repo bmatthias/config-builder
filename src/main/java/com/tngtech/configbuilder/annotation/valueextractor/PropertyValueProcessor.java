@@ -7,7 +7,7 @@ import java.lang.annotation.Annotation;
 import java.util.Properties;
 
 /**
- * Processes PropertyValue annotations, implements ValueExtractorProcessor
+ * Processes {@link PropertyValue} annotations
  */
 public class PropertyValueProcessor implements ValueExtractorProcessor {
 
