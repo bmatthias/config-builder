@@ -5,7 +5,7 @@ import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes SystemPropertyValue annotations, implements ValueExtractorProcessor
+ * Processes {@link SystemPropertyValue} annotations
  */
 public class SystemPropertyProcessor implements ValueExtractorProcessor {
     public String getValue(Annotation annotation, ConfigBuilderFactory configBuilderFactory) {

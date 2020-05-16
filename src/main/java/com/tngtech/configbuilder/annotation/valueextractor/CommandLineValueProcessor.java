@@ -7,7 +7,7 @@ import org.apache.commons.cli.CommandLine;
 import java.lang.annotation.Annotation;
 
 /**
- * Processes CommandLineValue annotations, implements ValueExtractorProcessor
+ * Processes {@link CommandLineValue} annotations
  */
 public class CommandLineValueProcessor implements ValueExtractorProcessor {
 

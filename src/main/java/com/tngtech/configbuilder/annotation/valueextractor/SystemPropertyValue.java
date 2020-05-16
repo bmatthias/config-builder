@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is used to specify system properties.<br>
- * <b>Usage:</b> <code>@EnvironmentVariableValue("property.key")</code>
+ * <b>Usage:</b> <code>@SystemPropertyValue("property.key")</code>
  */
 @ValueExtractorAnnotation(SystemPropertyProcessor.class)
 @Target(ElementType.FIELD)
