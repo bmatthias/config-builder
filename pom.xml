@@ -67,8 +67,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -107,6 +107,9 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <source>${java.version}</source>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -238,7 +241,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.6</java.version>
+        <java.version>1.8</java.version>
         <slf4j.version>1.7.25</slf4j.version>
     </properties>
 
