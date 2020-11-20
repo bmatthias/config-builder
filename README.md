@@ -1,7 +1,6 @@
 Java Config-Builder
  [![Build Status](https://travis-ci.org/TNG/config-builder.svg?branch=master)](https://travis-ci.org/TNG/config-builder)
  [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master)
- [![Stories in Ready](https://badge.waffle.io/TNG/config-builder.png?label=ready&title=Ready)](http://waffle.io/TNG/config-builder)
 ===================
 
 #### Table of Contents
