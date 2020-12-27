@@ -34,20 +34,13 @@ public class PropertyFiltersProcessor implements PropertyLoaderConfigurationProc
     }
   }
 
-  private Map<Class<? extends PropertyLoaderFilter>, Action> createFilterMap( final DefaultPropertyFilterContainer
-                                                                                  filterContainer ) {
+  private Map<Class<? extends PropertyLoaderFilter>, Action> createFilterMap(DefaultPropertyFilterContainer filterContainer ) {
     Map<Class<? extends PropertyLoaderFilter>, Action> actionMap = Maps.newHashMap();
-
-    actionMap.put( VariableResolvingFilter.class, () -> filterContainer.withVariableResolvingFilter());
-
-    actionMap.put( DecryptingFilter.class, () -> filterContainer.withDecryptingFilter());
-
-    actionMap.put( EnvironmentResolvingFilter.class, () -> filterContainer.withEnvironmentResolvingFilter());
-
-    actionMap.put( WarnOnSurroundingWhitespace.class, () -> filterContainer.withWarnOnSurroundingWhitespace());
-
-    actionMap.put( ThrowIfPropertyHasToBeDefined.class, () -> filterContainer.withWarnIfPropertyHasToBeDefined());
-
+    actionMap.put(VariableResolvingFilter.class, filterContainer::withVariableResolvingFilter);
+    actionMap.put(DecryptingFilter.class, filterContainer::withDecryptingFilter);
+    actionMap.put(EnvironmentResolvingFilter.class, filterContainer::withEnvironmentResolvingFilter);
+    actionMap.put(WarnOnSurroundingWhitespace.class, filterContainer::withWarnOnSurroundingWhitespace);
+    actionMap.put(ThrowIfPropertyHasToBeDefined.class, filterContainer::withWarnIfPropertyHasToBeDefined);
     return actionMap;
   }
 }

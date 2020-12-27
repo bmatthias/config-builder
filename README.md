@@ -29,7 +29,7 @@ Many Java projects include one or more classes that store configuration values a
 properties files, system properties and environment variables or command line arguments, which requires the developer
 to implement the finding and loading of files, parsing the values etc. for every new project.
 
-This is is a time-consuming process, so why not spare this time and get started much faster? Although there are libraries
+This is a time-consuming process, so why not spare this time and get started much faster? Although there are libraries
 that implement the loading of properties files and some possibilities of building configured objects e.g. in Spring,
 there hasn't been a really easy-yet-powerful solution so far.
 

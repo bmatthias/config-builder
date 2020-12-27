@@ -54,7 +54,7 @@ public class AnnotationHelperTest {
 
     @Test
     public void testGetFieldsAnnotatedWith() {
-        assertThat(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, PropertyValue.class).contains(field)).isTrue();
+        assertThat(annotationHelper.getFieldsAnnotatedWith(TestConfig.class, PropertyValue.class)).contains(field);
     }
 
     @Test

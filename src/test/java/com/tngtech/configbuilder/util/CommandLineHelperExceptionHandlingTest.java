@@ -11,13 +11,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class CommandLineHelperExceptionHandlingTest {
 
     private static class TestConfig {
-
         @CommandLineValue(shortOpt = "u", longOpt = "user", required = true)
         public String user;
     }
 
     private static class TestConfigWithInvalidCommandLineValueDescriptor {
-
         @CommandLineValue(shortOpt = "u", longOpt = "user")
         public String user;
 
@@ -26,24 +24,23 @@ public class CommandLineHelperExceptionHandlingTest {
     }
 
     private static class TestConfigWithMultipleCommandLineValueDescriptors {
-
         @CommandLineValue(shortOpt = "u", longOpt = "user")
         public String user;
 
         @CommandLineValueDescriptor
-        private static String description1() {
+        private static String description1(String longOpt) {
             return "";
         }
 
         @CommandLineValueDescriptor
-        private static String description2() {
+        private static String description2(String longOpt) {
             return "";
         }
     }
 
     @Test
     public void testUndefinedCommandLineOption() {
-        String[]  args = new String[]{"nd", "notDefined"};
+        String[] args = {"nd", "notDefined"};
         assertThatThrownBy(() -> ConfigBuilder.on(TestConfig.class).withCommandLineArgs(args).build())
                 .isInstanceOf(ConfigBuilderException.class)
                 .hasMessageContaining("unable to parse command line arguments");

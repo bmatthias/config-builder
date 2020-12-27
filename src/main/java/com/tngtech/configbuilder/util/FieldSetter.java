@@ -45,10 +45,10 @@ public class FieldSetter<T> {
         }
     }
 
-    public static List<Field> getInheritedPrivateFields(Class type) {
+    public static List<Field> getInheritedPrivateFields(Class<?> type) {
         final ImmutableList.Builder<Field> listBuilder = ImmutableList.builder();
 
-        Class currentType = type;
+        Class<?> currentType = type;
         while (currentType != null && currentType != Object.class) {
             listBuilder.addAll(Lists.newArrayList(currentType.getDeclaredFields()));
             currentType = currentType.getSuperclass();

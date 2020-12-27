@@ -13,7 +13,7 @@ public class ConstructionHelper<T> {
 
     private final static Logger log = LoggerFactory.getLogger(ConstructionHelper.class);
 
-    private ErrorMessageSetup errorMessageSetup;
+    private final ErrorMessageSetup errorMessageSetup;
 
     public ConstructionHelper(ConfigBuilderFactory configBuilderFactory) {
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);

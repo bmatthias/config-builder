@@ -20,7 +20,7 @@ public class GenericsAndCastingHelper {
             .put(double.class, Double.class)
             .build();
 
-    public Class<?> getWrapperClassIfPrimitive(Class clazz) {
+    public Class<?> getWrapperClassIfPrimitive(Class<?> clazz) {
         return primitiveToWrapperMapping.get(clazz) == null? clazz : primitiveToWrapperMapping.get(clazz);
     }
 
@@ -43,7 +43,7 @@ public class GenericsAndCastingHelper {
         else if(Collection.class.isAssignableFrom((Class<?>)((ParameterizedType)targetType).getRawType())) {
             if(Collection.class.isAssignableFrom(sourceClass)) {
                 Class<?> typeArgument = (Class<?>)((ParameterizedType) targetType).getActualTypeArguments()[0];
-                for(Object item : (Collection)sourceValue) {
+                for(Object item : (Collection<?>)sourceValue) {
                     if(!typeArgument.isAssignableFrom(item.getClass())) {
                         return false;
                     }
@@ -57,7 +57,7 @@ public class GenericsAndCastingHelper {
         return (castTypeToClass(targetType)).isAssignableFrom(sourceClass);
     }
 
-    public boolean isPrimitiveOrWrapper(Class targetClass) {
+    public boolean isPrimitiveOrWrapper(Class<?> targetClass) {
         return primitiveToWrapperMapping.containsKey(targetClass) || primitiveToWrapperMapping.containsValue(targetClass);
     }
 }

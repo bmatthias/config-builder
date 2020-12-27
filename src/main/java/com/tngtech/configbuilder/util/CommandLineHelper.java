@@ -29,13 +29,13 @@ public class CommandLineHelper {
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
     }
 
-    public CommandLine getCommandLine(Class configClass, String[] args) {
+    public CommandLine getCommandLine(Class<?> configClass, String[] args) {
         log.info("getting command line options from fields and parsing command line arguments");
         Options options = getOptions(configClass);
         return parseCommandLine(args, options);
     }
 
-    public Options getOptions(Class configClass) {
+    public Options getOptions(Class<?> configClass) {
         Options options = configBuilderFactory.createInstance(Options.class);
         for (Field field : annotationHelper.getFieldsAnnotatedWith(configClass, CommandLineValue.class)) {
             if (!field.isSynthetic()) {
@@ -45,7 +45,7 @@ public class CommandLineHelper {
         return options;
     }
 
-    private Option getOption(Field field, Class configClass) {
+    private Option getOption(Field field, Class<?> configClass) {
         CommandLineValue commandLineValue = field.getAnnotation(CommandLineValue.class);
         log.debug("adding command line option {} for field {}", commandLineValue.shortOpt(), field.getName());
         return Option.builder(commandLineValue.shortOpt())
@@ -57,7 +57,7 @@ public class CommandLineHelper {
                 .build();
     }
 
-    private String extractDescriptionString(CommandLineValue commandLineValue, Class configClass) {
+    private String extractDescriptionString(CommandLineValue commandLineValue, Class<?> configClass) {
         if (!commandLineValue.description().isEmpty()) {
             return commandLineValue.description();
         }

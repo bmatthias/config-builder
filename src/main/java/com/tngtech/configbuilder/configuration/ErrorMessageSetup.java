@@ -43,7 +43,7 @@ public class ErrorMessageSetup {
         return message == null ? String.format(errorMessages.getProperty("standardMessage"), e.getClass().getName()) : String.format(message, variables);
     }
 
-    public String getErrorMessage(Class exceptionClass, String... variables) {
+    public String getErrorMessage(Class<?> exceptionClass, String... variables) {
         String message = errorMessages.getProperty(exceptionClass.getName());
         return message == null ? String.format(errorMessages.getProperty("standardMessage"), exceptionClass.getName()) : String.format(message, variables);
     }

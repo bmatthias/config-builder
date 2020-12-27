@@ -49,7 +49,7 @@ public class ConfigValidator<T> {
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
         if (!constraintViolations.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder(errorMessageSetup.getErrorMessage(ValidatorException.class) + "\n");
-            for (ConstraintViolation constraintViolation : constraintViolations) {
+            for (ConstraintViolation<T> constraintViolation : constraintViolations) {
                 stringBuilder.append(constraintViolation.getMessage());
             }
             throw new ValidatorException(stringBuilder.toString(), constraintViolations);

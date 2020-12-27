@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 public class CommandLineHelperTest {
 
     private static class TestConfig {
-
         @CommandLineValue(shortOpt = "u", longOpt = "user", required = true, description = "some static description string")
         public String aString;
         @CommandLineValue(shortOpt = "v", longOpt = "vir", required = false)
@@ -82,11 +81,11 @@ public class CommandLineHelperTest {
 
         assertThat(sortedOptions.get(0).getLongOpt()).isEqualTo("user");
         assertThat(sortedOptions.get(0).getOpt()).isEqualTo("u");
-        assertThat(sortedOptions.get(0).isRequired()).isEqualTo(true);
+        assertThat(sortedOptions.get(0).isRequired()).isTrue();
 
         assertThat(sortedOptions.get(1).getLongOpt()).isEqualTo("vir");
         assertThat(sortedOptions.get(1).getOpt()).isEqualTo("v");
-        assertThat(sortedOptions.get(1).isRequired()).isEqualTo(false);
+        assertThat(sortedOptions.get(1).isRequired()).isFalse();
     }
 
     @Test

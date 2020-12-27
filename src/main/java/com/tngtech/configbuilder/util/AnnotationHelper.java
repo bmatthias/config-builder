@@ -33,11 +33,11 @@ public class AnnotationHelper {
         return result;
     }
 
-    public Set<Field> getFieldsAnnotatedWith(Class clazz, Class<? extends Annotation> annotationClass) {
+    public Set<Field> getFieldsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         return getAllFields(clazz, withAnnotation(annotationClass));
     }
 
-    public Set<Method> getMethodsAnnotatedWith(Class clazz, Class<? extends Annotation> annotationClass) {
+    public Set<Method> getMethodsAnnotatedWith(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         return getAllMethods(clazz, withAnnotation(annotationClass));
     }
 

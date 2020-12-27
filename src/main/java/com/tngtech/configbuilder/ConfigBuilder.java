@@ -58,10 +58,9 @@ public class ConfigBuilder<T> {
     private final ConfigValidator<T> configValidator;
     private final ErrorMessageSetup errorMessageSetup;
     private final ConstructionHelper<T> constructionHelper;
-
-    private Class<T> configClass;
-    private PropertyLoader propertyLoader;
-    private Properties additionalProperties;
+    private final Class<T> configClass;
+    private final PropertyLoader propertyLoader;
+    private final Properties additionalProperties;
     private String[] commandLineArgs = {};
     
     protected ConfigBuilder(Class<T> configClass, ConfigBuilderFactory configBuilderFactory) {
@@ -74,7 +73,6 @@ public class ConfigBuilder<T> {
         this.errorMessageSetup = configBuilderFactory.getInstance(ErrorMessageSetup.class);
         this.constructionHelper = configBuilderFactory.getInstance(ConstructionHelper.class);
         this.additionalProperties = configBuilderFactory.createInstance(Properties.class);
-
         this.propertyLoader = configBuilderFactory.getInstance(PropertyLoaderConfigurator.class).configurePropertyLoader(configClass);
     }
 
@@ -203,7 +201,7 @@ public class ConfigBuilder<T> {
             if (propertyLocation instanceof String) {
                 locations.atDirectory((String)propertyLocation);
             } else if (propertyLocation instanceof Class) {
-                locations.atRelativeToClass((Class)propertyLocation);
+                locations.atRelativeToClass((Class<?>)propertyLocation);
             } else if (propertyLocation == AT_CONTEXT_CLASS_PATH) {
                 locations.atContextClassPath();
             } else {

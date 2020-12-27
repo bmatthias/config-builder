@@ -15,7 +15,7 @@ public class BuilderConfiguration {
     private CommandLine commandLine = null;
     private Object importedConfiguration = null;
     private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class, EnvironmentVariableValue.class, SystemPropertyValue.class, ImportedValue.class, DefaultValue.class};
-    private String[] propertyNamePrefixes = new String[]{""};
+    private String[] propertyNamePrefixes = {""};
 
     public CommandLine getCommandLine() {
         return commandLine;

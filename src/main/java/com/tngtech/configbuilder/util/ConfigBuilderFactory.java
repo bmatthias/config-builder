@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class ConfigBuilderFactory {
 
-    private Map<Class,Object> singletonMap = Maps.newHashMap();
+    private final Map<Class<?>, Object> singletonMap = Maps.newHashMap();
 
     public <T> void initialize() {
 
@@ -86,7 +86,7 @@ public class ConfigBuilderFactory {
 
     //TODO: exception message
     private <K> K createInstanceOfInnerClass(Class<K> clazz) {
-        Class superClass = clazz.getDeclaringClass();
+        Class<?> superClass = clazz.getDeclaringClass();
         try {
             Object superInstance = superClass.newInstance();
             Constructor<K> constructor = clazz.getConstructor(superClass);

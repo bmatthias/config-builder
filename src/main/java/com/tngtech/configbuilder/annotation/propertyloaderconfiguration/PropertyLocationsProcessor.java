@@ -14,7 +14,7 @@ public class PropertyLocationsProcessor implements PropertyLoaderConfigurationPr
             propertyLoader.atDirectory(location);
         }
         Class[] classes = ((PropertyLocations) annotation).resourcesForClasses();
-        for (Class clazz : classes) {
+        for (Class<?> clazz : classes) {
             propertyLoader.atRelativeToClass(clazz);
         }
         if (((PropertyLocations) annotation).fromClassLoader()) {
