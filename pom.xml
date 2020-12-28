@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tngtech.java</groupId>
     <artifactId>config-builder</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Config-Builder</name>
     <description>The Config Builder creates fully configured instances of config classes, using values from various sources like properties files, command line arguments etc.</description>
@@ -20,7 +20,7 @@
         <url>git@github.com:TNG/config-builder.git</url>
         <connection>scm:git:git@github.com:TNG/config-builder.git</connection>
         <developerConnection>scm:git:git@github.com:TNG/config-builder.git</developerConnection>
-        <tag>config-builder-1.7.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <developers>
         <developer>
