@@ -1,6 +1,6 @@
 Java Config-Builder
- [![Build Status](https://travis-ci.com/TNG/config-builder.svg?branch=master)](https://travis-ci.com/TNG/config-builder)
- [![Coverage Status](https://coveralls.io/repos/TNG/config-builder/badge.svg?branch=master&service=github)](https://coveralls.io/github/TNG/config-builder?branch=master)
+ [![Build Status](https://github.com/TNG/config-builder/actions/workflows/build.yml/badge.svg)](https://github.com/TNG/config-builder/actions/workflows/build.yml?query=branch%3Amaster)
+ [![Coverage Status](https://codecov.io/gh/TNG/config-builder/branch/master/graphs/badge.svg)](https://app.codecov.io/gh/TNG/config-builder)
  [![Apache License 2.0](https://img.shields.io/badge/license-apache2-red.svg?style=flat-square)](http://opensource.org/licenses/Apache-2.0)
  [![Maven Central](https://img.shields.io/maven-central/v/com.tngtech.java/config-builder.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/com.tngtech.java/config-builder)
  [![Javadocs](https://javadoc.io/badge/com.tngtech.java/config-builder.svg?color=brightgreen)](https://javadoc.io/doc/com.tngtech.java/config-builder)
