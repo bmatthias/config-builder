@@ -6,11 +6,11 @@ import com.tngtech.configbuilder.exception.ValidatorException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
@@ -36,7 +36,7 @@ public class ConfigValidatorTest {
     @Mock
     private ValidatorFactory validatorFactory;
     @Mock
-    private javax.validation.Validator validator;
+    private Validator validator;
     @Mock
     private TestConfig testConfig;
     @Mock
@@ -67,7 +67,7 @@ public class ConfigValidatorTest {
     }
 
     @Test
-    public void testCallValidadionMethods() throws Exception {
+    public void testCallValidationMethods() throws Exception {
         when(errorMessageSetup.getErrorMessage(any(Throwable.class))).thenReturn("InvocationTargetException");
         when(annotationHelper.getMethodsAnnotatedWith(TestConfig.class, Validation.class)).thenReturn(newHashSet(TestConfig.class.getDeclaredMethod("validate")));
 

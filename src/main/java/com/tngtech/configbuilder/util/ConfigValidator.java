@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class ConfigValidator<T> {
 
     private void callJSRValidation(T instanceOfConfigClass) {
         ValidatorFactory factory = configBuilderFactory.getInstance(ValidatorFactory.class);
-        javax.validation.Validator validator = factory.getValidator();
+        Validator validator = factory.getValidator();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(instanceOfConfigClass);
         if (!constraintViolations.isEmpty()) {
             StringBuilder stringBuilder = new StringBuilder(errorMessageSetup.getErrorMessage(ValidatorException.class) + "\n");
