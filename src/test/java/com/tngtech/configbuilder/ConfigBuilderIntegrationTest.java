@@ -13,7 +13,6 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigBuilderIntegrationTest {
@@ -38,7 +37,7 @@ public class ConfigBuilderIntegrationTest {
         String[] args = {"-u", "--collection", "first entry,second entry"};
         Object result = configBuilder.withCommandLineArgs(args).build();
 
-        assertThat(result).isEqualToComparingFieldByField(expectedTestConfig);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedTestConfig);
         assertThat(systemOut.getLog()).contains("config validated");
     }
 
@@ -55,7 +54,7 @@ public class ConfigBuilderIntegrationTest {
         TestConfig expectedTestConfig = new TestConfig();
         expectedTestConfig.setSomeNumber(5);
         List<Path> paths = Arrays.asList(Paths.get("/mnt"), Paths.get("/home"));
-        expectedTestConfig.setPathCollection(newLinkedHashSet(paths));
+        expectedTestConfig.setPathCollection(newHashSet(paths));
         expectedTestConfig.setCopiedStringCollection(importedTestConfig.getStringCollection());
         expectedTestConfig.setSomeString("Hello, World!");
         expectedTestConfig.setBoolean(true);
@@ -68,7 +67,7 @@ public class ConfigBuilderIntegrationTest {
         String[] args = {"-u", "--collection", "collection,two"};
         Object result = configBuilder.withCommandLineArgs(args).withImportedConfiguration(importedTestConfig).build();
 
-        assertThat(result).isEqualToComparingFieldByField(expectedTestConfig);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedTestConfig);
         assertThat(systemOut.getLog()).contains("config validated");
     }
 }
