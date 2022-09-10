@@ -10,7 +10,7 @@ public class SystemOutRule extends ExternalResource {
     private PrintStream originalOutStream;
 
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
         originalOutStream = new PrintStream(System.out);
         System.setOut(new PrintStream(content));
     }

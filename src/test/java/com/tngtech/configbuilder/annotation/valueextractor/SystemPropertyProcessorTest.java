@@ -20,7 +20,7 @@ public class SystemPropertyProcessorTest {
     private ConfigBuilderFactory configBuilderFactory;
 
     @Test
-    public void testGetValue() throws Exception {
+    public void testGetValue() {
         when(systemPropertyValue.value()).thenReturn("user.language");
         assertThat(systemPropertyProcessor.getValue(systemPropertyValue, configBuilderFactory)).isEqualTo(System.getProperty("user.language"));
     }

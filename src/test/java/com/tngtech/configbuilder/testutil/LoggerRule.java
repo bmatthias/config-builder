@@ -11,7 +11,7 @@ public class LoggerRule extends ExternalResource {
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
 
     @Override
-    protected void before() throws Throwable {
+    protected void before() {
         Logger.getRootLogger().removeAllAppenders();
         Logger.getRootLogger().addAppender(new WriterAppender(new SimpleLayout(), content));
     }
