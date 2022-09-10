@@ -5,9 +5,7 @@ import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -15,14 +13,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.lang.reflect.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FieldSetterTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     private static class TestConfig {
         @DefaultValue("stringValue")
@@ -77,10 +73,9 @@ public class FieldSetterTest {
         FieldSetter<TestConfigForIllegalArgumentException> fieldSetter = new FieldSetter<>(configBuilderFactory);
         TestConfigForIllegalArgumentException testConfigForIllegalArgumentException = new TestConfigForIllegalArgumentException();
 
-        expectedException.expect(ConfigBuilderException.class);
-        expectedException.expectMessage("IllegalArgumentException");
-
-        fieldSetter.setFields(testConfigForIllegalArgumentException, builderConfiguration);
+        assertThatThrownBy(() -> fieldSetter.setFields(testConfigForIllegalArgumentException, builderConfiguration))
+                .isInstanceOf(ConfigBuilderException.class)
+                .hasMessage("IllegalArgumentException");
     }
 
     @Test

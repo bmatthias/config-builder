@@ -5,9 +5,7 @@ import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
 import com.tngtech.propertyloader.impl.filters.*;
 import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -15,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Properties;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,9 +25,6 @@ public class PropertyFiltersProcessorTest {
             return null;
         }
     }
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Mock
     private PropertyFilters propertyFilters;
@@ -82,8 +78,8 @@ public class PropertyFiltersProcessorTest {
         @SuppressWarnings("unchecked") Class<? extends PropertyLoaderFilter>[] classes = new Class[]{TestPropertyFilter.class};
         when(propertyFilters.value()).thenReturn(classes);
 
-        expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage("unhandled filter class TestPropertyFilter");
-        propertyFiltersProcessor.configurePropertyLoader(propertyFilters, propertyLoader);
+        assertThatThrownBy(() -> propertyFiltersProcessor.configurePropertyLoader(propertyFilters, propertyLoader))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("unhandled filter class TestPropertyFilter");
     }
 }
