@@ -3,14 +3,13 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,9 +38,6 @@ public class ConstructionHelperTest {
         }
     }
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
     @Mock
@@ -63,9 +59,9 @@ public class ConstructionHelperTest {
 
     @Test
     public void testGetInstanceThrowsException() {
-        expectedException.expect(NoConstructorFoundException.class);
-        expectedException.expectMessage("NoConstructorFoundException");
         ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
-        constructionHelper.getInstance(TestConfigForException.class, "string", 3);
+        assertThatThrownBy(() -> constructionHelper.getInstance(TestConfigForException.class, "string", 3))
+                .isInstanceOf(NoConstructorFoundException.class)
+                .hasMessage("NoConstructorFoundException");
     }
 }

@@ -6,14 +6,14 @@ import com.tngtech.configbuilder.exception.PrimitiveParsingException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsInvocationTargetExceptionException;
 import com.tngtech.configbuilder.testclasses.TestConfigThrowsPrimitiveParsingException;
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutDefaultConstructor;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @RunWith(Parameterized.class)
 public class ConfigBuilderExceptionTest {
@@ -21,9 +21,6 @@ public class ConfigBuilderExceptionTest {
     private Class configClass;
     private Class<? extends Throwable> exceptionClass;
     private String message;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Parameterized.Parameters
     public static Collection configs() {
@@ -42,9 +39,9 @@ public class ConfigBuilderExceptionTest {
 
     @Test
     public void testConfigBuilderExceptions() {
-        expectedException.expect(exceptionClass);
-        expectedException.expectMessage(message);
         ConfigBuilder configBuilder = new ConfigBuilder(configClass);
-        configBuilder.build();
+        assertThatThrownBy(() -> configBuilder.build())
+                .isInstanceOf(exceptionClass)
+                .hasMessageContaining(message);
     }
 }

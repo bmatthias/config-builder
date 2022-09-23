@@ -1,10 +1,12 @@
 package com.tngtech.configbuilder;
 
+import com.tngtech.configbuilder.exception.ValidatorException;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.configbuilder.testutil.SystemOutRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.validation.constraints.NotNull;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,15 +15,15 @@ import java.util.List;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
-import static com.google.common.collect.Sets.newLinkedHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ConfigBuilderIntegrationTest {
 
     @Rule
     public SystemOutRule systemOut = new SystemOutRule();
 
-    private ConfigBuilder configBuilder = ConfigBuilder.on(TestConfig.class);
+    private ConfigBuilder<TestConfig> configBuilder = ConfigBuilder.on(TestConfig.class);
 
     @Test
     public void testConfigBuilderWithParameters() {
@@ -38,7 +40,7 @@ public class ConfigBuilderIntegrationTest {
         String[] args = {"-u", "--collection", "first entry,second entry"};
         Object result = configBuilder.withCommandLineArgs(args).build();
 
-        assertThat(result).isEqualToComparingFieldByField(expectedTestConfig);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedTestConfig);
         assertThat(systemOut.getLog()).contains("config validated");
     }
 
@@ -55,7 +57,7 @@ public class ConfigBuilderIntegrationTest {
         TestConfig expectedTestConfig = new TestConfig();
         expectedTestConfig.setSomeNumber(5);
         List<Path> paths = Arrays.asList(Paths.get("/mnt"), Paths.get("/home"));
-        expectedTestConfig.setPathCollection(newLinkedHashSet(paths));
+        expectedTestConfig.setPathCollection(newHashSet(paths));
         expectedTestConfig.setCopiedStringCollection(importedTestConfig.getStringCollection());
         expectedTestConfig.setSomeString("Hello, World!");
         expectedTestConfig.setBoolean(true);
@@ -68,7 +70,20 @@ public class ConfigBuilderIntegrationTest {
         String[] args = {"-u", "--collection", "collection,two"};
         Object result = configBuilder.withCommandLineArgs(args).withImportedConfiguration(importedTestConfig).build();
 
-        assertThat(result).isEqualToComparingFieldByField(expectedTestConfig);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedTestConfig);
         assertThat(systemOut.getLog()).contains("config validated");
+    }
+
+    static class ConfigWithNotNullValidation {
+        @NotNull
+        private String notNullString;
+    }
+
+    @Test
+    public void testValidation(){
+        ConfigBuilder<ConfigWithNotNullValidation> configBuilder = new ConfigBuilder<>(ConfigWithNotNullValidation.class);
+        assertThatThrownBy(configBuilder::build)
+                .isInstanceOf(ValidatorException.class)
+                .hasMessageContaining("must not be null");
     }
 }

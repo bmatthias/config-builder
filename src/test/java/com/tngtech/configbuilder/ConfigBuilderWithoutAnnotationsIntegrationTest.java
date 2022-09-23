@@ -48,7 +48,7 @@ public class ConfigBuilderWithoutAnnotationsIntegrationTest {
                 .withCommandLineArgs(args)
                 .addProperties(additionalProperties)
                 .build();
-        assertThat(result).isEqualToComparingFieldByField(expectedConfig);
+        assertThat(result).usingRecursiveComparison().isEqualTo(expectedConfig);
         assertThat(systemOut.getLog()).contains("config validated");
     }
 }

@@ -21,13 +21,12 @@ public class DefaultValueProcessorTest {
     private DefaultValue defaultValue;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         defaultValueProcessor = new DefaultValueProcessor();
     }
 
     @Test
     public void testDefaultValueProcessor() {
-
         when(defaultValue.value()).thenReturn("value");
         assertThat(defaultValueProcessor.getValue(defaultValue, configBuilderFactory)).isEqualTo("value");
     }

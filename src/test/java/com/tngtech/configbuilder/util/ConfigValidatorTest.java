@@ -4,19 +4,18 @@ import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ValidatorException;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -37,7 +36,7 @@ public class ConfigValidatorTest {
     @Mock
     private ValidatorFactory validatorFactory;
     @Mock
-    private javax.validation.Validator validator;
+    private Validator validator;
     @Mock
     private TestConfig testConfig;
     @Mock
@@ -46,9 +45,6 @@ public class ConfigValidatorTest {
     private ErrorMessageSetup errorMessageSetup;
     @Mock
     private AnnotationHelper annotationHelper;
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -65,19 +61,19 @@ public class ConfigValidatorTest {
         when(validator.validate(testConfig)).thenReturn(newHashSet(constraintViolation1, constraintViolation2));
         when(errorMessageSetup.getErrorMessage(any(Class.class))).thenReturn("Validation found the following constraint violations:");
 
-        expectedException.expect(ValidatorException.class);
-        expectedException.expectMessage("Validation found the following constraint violations:");
-        configValidator.validate(testConfig);
+        assertThatThrownBy(() -> configValidator.validate(testConfig))
+                .isInstanceOf(ValidatorException.class)
+                .hasMessageContaining("Validation found the following constraint violations:");
     }
 
     @Test
-    public void testCallValidadionMethods() throws Exception {
+    public void testCallValidationMethods() throws Exception {
         when(errorMessageSetup.getErrorMessage(any(Throwable.class))).thenReturn("InvocationTargetException");
         when(annotationHelper.getMethodsAnnotatedWith(TestConfig.class, Validation.class)).thenReturn(newHashSet(TestConfig.class.getDeclaredMethod("validate")));
 
-        expectedException.expect(ValidatorException.class);
-        expectedException.expectMessage("InvocationTargetException");
-        configValidator.validate(new TestConfig());
+        assertThatThrownBy(() -> configValidator.validate(new TestConfig()))
+                .isInstanceOf(ValidatorException.class)
+                .hasMessage("InvocationTargetException");
     }
 
     @Test

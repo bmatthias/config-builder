@@ -5,15 +5,14 @@ import com.tngtech.configbuilder.exception.FactoryInstantiationException;
 import com.tngtech.propertyloader.PropertyLoader;
 import org.apache.commons.cli.DefaultParser;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ConfigBuilderFactoryTest {
 
@@ -24,9 +23,6 @@ public class ConfigBuilderFactoryTest {
     public static class ClassWithoutDefaultConstructor {
         private ClassWithoutDefaultConstructor(){}
     }
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     private ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
 
@@ -51,15 +47,15 @@ public class ConfigBuilderFactoryTest {
     @Test
     public void testGetInstanceThrowsExceptionForInnerClass() {
         configBuilderFactory.getInstance(ErrorMessageSetup.class).initialize("errors", new PropertyLoader());
-        expectedException.expect(FactoryInstantiationException.class);
-        configBuilderFactory.getInstance(InnerClass.InnerInnerClass.class);
+        assertThatThrownBy(() -> configBuilderFactory.getInstance(InnerClass.InnerInnerClass.class))
+                .isInstanceOf(FactoryInstantiationException.class);
     }
 
     @Test
     public void testGetInstanceThrowsExceptionForClassWithoutDefaultConstructor() {
         configBuilderFactory.getInstance(ErrorMessageSetup.class).initialize("errors", new PropertyLoader());
-        expectedException.expect(FactoryInstantiationException.class);
-        configBuilderFactory.getInstance(ClassWithoutDefaultConstructor.class);
+        assertThatThrownBy(() -> configBuilderFactory.getInstance(ClassWithoutDefaultConstructor.class))
+                .isInstanceOf(FactoryInstantiationException.class);
     }
 
     @Test
@@ -69,7 +65,7 @@ public class ConfigBuilderFactoryTest {
 
     @Test
     public void testCreateInstanceThrowsException() {
-        expectedException.expect(RuntimeException.class);
-        configBuilderFactory.createInstance(List.class);
+        assertThatThrownBy(() -> configBuilderFactory.createInstance(List.class))
+                .isInstanceOf(RuntimeException.class);
     }
 }
