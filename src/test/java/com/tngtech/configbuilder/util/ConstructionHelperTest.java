@@ -2,17 +2,17 @@ package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.NoConstructorFoundException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConstructionHelperTest {
 
     private static class TestConfig {
@@ -43,10 +43,9 @@ public class ConstructionHelperTest {
     @Mock
     private ErrorMessageSetup errorMessageSetup;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(errorMessageSetup.getErrorMessage(NoConstructorFoundException.class)).thenReturn("NoConstructorFoundException");
     }
 
     @Test
@@ -59,6 +58,7 @@ public class ConstructionHelperTest {
 
     @Test
     public void testGetInstanceThrowsException() {
+        when(errorMessageSetup.getErrorMessage(NoConstructorFoundException.class)).thenReturn("NoConstructorFoundException");
         ConstructionHelper<TestConfigForException> constructionHelper = new ConstructionHelper<>(configBuilderFactory);
         assertThatThrownBy(() -> constructionHelper.getInstance(TestConfigForException.class, "string", 3))
                 .isInstanceOf(NoConstructorFoundException.class)

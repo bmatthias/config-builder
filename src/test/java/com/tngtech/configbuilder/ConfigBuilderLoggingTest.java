@@ -2,17 +2,17 @@ package com.tngtech.configbuilder;
 
 import com.tngtech.configbuilder.annotation.configuration.DoNotLogValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
-import com.tngtech.configbuilder.testutil.LoggerRule;
-import org.junit.Rule;
-import org.junit.Test;
-
+import com.tngtech.configbuilder.testutil.LoggerExtension;
 import java.util.Properties;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigBuilderLoggingTest {
-    @Rule
-    public LoggerRule logger = new LoggerRule();
+
+    @RegisterExtension
+    static LoggerExtension logger = new LoggerExtension();
 
     @Test
     public void testValueLogging() {

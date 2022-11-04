@@ -1,8 +1,7 @@
 package com.tngtech.configbuilder.configuration;
 
-import org.junit.Test;
-
 import java.util.Properties;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

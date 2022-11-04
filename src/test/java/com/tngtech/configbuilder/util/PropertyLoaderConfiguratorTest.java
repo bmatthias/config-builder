@@ -1,23 +1,26 @@
 package com.tngtech.configbuilder.util;
 
-import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.*;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLoaderConfigurationAnnotation;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocations;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertyLocationsProcessor;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixProcessor;
+import com.tngtech.configbuilder.annotation.propertyloaderconfiguration.PropertySuffixes;
 import com.tngtech.configbuilder.testclasses.TestConfig;
 import com.tngtech.propertyloader.PropertyLoader;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.annotation.Annotation;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyLoaderConfiguratorTest {
 
     @Mock
@@ -36,7 +39,7 @@ public class PropertyLoaderConfiguratorTest {
 
     private PropertyLoaderConfigurator propertyLoaderConfigurator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
 

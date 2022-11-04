@@ -3,23 +3,22 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.annotation.validation.Validation;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ValidatorException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
+import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ConfigValidatorTest {
 
     private static class TestConfig {
@@ -46,18 +45,18 @@ public class ConfigValidatorTest {
     @Mock
     private AnnotationHelper annotationHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(configBuilderFactory.getInstance(ValidatorFactory.class)).thenReturn(validatorFactory);
-        when(validatorFactory.getValidator()).thenReturn(validator);
 
         configValidator = new ConfigValidator<>(configBuilderFactory);
     }
 
     @Test
     public void testValidateWithConstraintViolations() {
+        when(configBuilderFactory.getInstance(ValidatorFactory.class)).thenReturn(validatorFactory);
+        when(validatorFactory.getValidator()).thenReturn(validator);
         when(validator.validate(testConfig)).thenReturn(newHashSet(constraintViolation1, constraintViolation2));
         when(errorMessageSetup.getErrorMessage(any(Class.class))).thenReturn("Validation found the following constraint violations:");
 
@@ -78,6 +77,8 @@ public class ConfigValidatorTest {
 
     @Test
     public void testValidateWithoutConstraintViolations() {
+        when(configBuilderFactory.getInstance(ValidatorFactory.class)).thenReturn(validatorFactory);
+        when(validatorFactory.getValidator()).thenReturn(validator);
         Set<ConstraintViolation<TestConfig>> constraintViolations = newHashSet();
         when(validator.validate(testConfig)).thenReturn(constraintViolations);
 

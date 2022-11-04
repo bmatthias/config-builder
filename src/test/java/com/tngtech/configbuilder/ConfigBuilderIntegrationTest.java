@@ -2,16 +2,15 @@ package com.tngtech.configbuilder;
 
 import com.tngtech.configbuilder.exception.ValidatorException;
 import com.tngtech.configbuilder.testclasses.TestConfig;
-import com.tngtech.configbuilder.testutil.SystemOutRule;
-import org.junit.Rule;
-import org.junit.Test;
-
-import javax.validation.constraints.NotNull;
+import com.tngtech.configbuilder.testutil.SystemOutExtension;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -20,10 +19,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ConfigBuilderIntegrationTest {
 
-    @Rule
-    public SystemOutRule systemOut = new SystemOutRule();
+    @RegisterExtension
+    static SystemOutExtension systemOut = new SystemOutExtension();
 
-    private ConfigBuilder<TestConfig> configBuilder = ConfigBuilder.on(TestConfig.class);
+    private final ConfigBuilder<TestConfig> configBuilder = ConfigBuilder.on(TestConfig.class);
 
     @Test
     public void testConfigBuilderWithParameters() {

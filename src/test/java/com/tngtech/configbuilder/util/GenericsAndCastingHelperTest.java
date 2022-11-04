@@ -1,18 +1,17 @@
 package com.tngtech.configbuilder.util;
 
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class GenericsAndCastingHelperTest {
     
     private class TestClass extends TypeTransformer<Collection<String>, Iterable<String>> {

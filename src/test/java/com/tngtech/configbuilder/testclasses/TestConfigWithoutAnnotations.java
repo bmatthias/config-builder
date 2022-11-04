@@ -6,8 +6,12 @@ import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedSt
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
 import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.annotation.validation.Validation;
-import com.tngtech.configbuilder.annotation.valueextractor.*;
-
+import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
+import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
+import com.tngtech.configbuilder.annotation.valueextractor.EnvironmentVariableValue;
+import com.tngtech.configbuilder.annotation.valueextractor.ImportedValue;
+import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
+import com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -3,13 +3,12 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.FactoryInstantiationException;
 import com.tngtech.propertyloader.PropertyLoader;
-import org.apache.commons.cli.DefaultParser;
-import org.junit.Before;
-import org.junit.Test;
-
+import java.util.List;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
-import java.util.List;
+import org.apache.commons.cli.DefaultParser;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,7 +25,7 @@ public class ConfigBuilderFactoryTest {
 
     private ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
 
-    @Before
+    @BeforeEach
     public void initializeConfigBuilderFactory() {
         configBuilderFactory.initialize();
     }
