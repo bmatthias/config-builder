@@ -2,18 +2,18 @@ package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyLocationContainer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyLocationsProcessorTest {
 
-    private PropertyLocationsProcessor propertyLocationsProcessor = new PropertyLocationsProcessor();
+    private final PropertyLocationsProcessor propertyLocationsProcessor = new PropertyLocationsProcessor();
 
     @Mock
     private PropertyLocations propertyLocations;
@@ -22,6 +22,7 @@ public class PropertyLocationsProcessorTest {
     @Mock
     private PropertyLoader propertyLoader;
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testPropertyLocationsProcessor() {
         String[] dirs = {"dir1", "dir2"};

@@ -4,16 +4,17 @@ import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ImportedConfigurationException;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ImportedValueProcessorTest {
     
     private class ImportedTestConfig {
@@ -34,7 +35,7 @@ public class ImportedValueProcessorTest {
     
     private ImportedValueProcessor importedValueProcessor;
     
-    @Before
+    @BeforeEach
     public void setUp() {
         importedValueProcessor = new ImportedValueProcessor();
         importedTestConfig = new ImportedTestConfig();
@@ -69,7 +70,7 @@ public class ImportedValueProcessorTest {
         assertThat(actualResult).isNull();
     }
     
-    @Test(expected = ImportedConfigurationException.class)
+    @Test
     public void testExceptionIfFieldNotPresent() {
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
         when(builderConfiguration.getImportedConfiguration()).thenReturn(importedTestConfig);
@@ -77,7 +78,7 @@ public class ImportedValueProcessorTest {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(errorMessageSetup.getErrorMessage(ImportedConfigurationException.class, "notAField")).thenReturn("Just a message");
 
-        importedValueProcessor.getValue(importedValue, configBuilderFactory);
+        assertThrows(ImportedConfigurationException.class, () -> importedValueProcessor.getValue(importedValue, configBuilderFactory));
     }
     
 }

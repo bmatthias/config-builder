@@ -1,24 +1,22 @@
 package com.tngtech.configbuilder.annotation.valueextractor;
 
-import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EnvironmentVariableProcessorTest {
 
-    private EnvironmentVariableProcessor environmentVariableProcessor = new EnvironmentVariableProcessor();
+    private final EnvironmentVariableProcessor environmentVariableProcessor = new EnvironmentVariableProcessor();
 
     @Mock
     private EnvironmentVariableValue environmentVariableValue;
-    @Mock
-    private BuilderConfiguration builderConfiguration;
+
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
 

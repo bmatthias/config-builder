@@ -3,19 +3,19 @@ package com.tngtech.configbuilder.annotation.valueextractor;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import org.apache.commons.cli.CommandLine;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommandLineValueProcessorTest {
 
-    private CommandLineValueProcessor commandLineValueProcessor = new CommandLineValueProcessor();
+    private final CommandLineValueProcessor commandLineValueProcessor = new CommandLineValueProcessor();
 
     @Mock
     private BuilderConfiguration builderConfiguration;
@@ -24,7 +24,7 @@ public class CommandLineValueProcessorTest {
     @Mock
     private CommandLine commandLine;
 
-    @Before
+    @BeforeEach
     public void setUpMocks() {
         when(configBuilderFactory.getInstance(BuilderConfiguration.class)).thenReturn(builderConfiguration);
         when(builderConfiguration.getCommandLine()).thenReturn(commandLine);
@@ -46,6 +46,7 @@ public class CommandLineValueProcessorTest {
     @Test
     public void testCommandLineValueProcessorLongOptionPresent() {
         CommandLineValue commandLineValue = TestConfig.getAnnotation("value");
+        when(commandLine.hasOption("value")).thenReturn(false);
         when(commandLine.hasOption("longOption")).thenReturn(true);
         assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("true");
     }
@@ -63,6 +64,7 @@ public class CommandLineValueProcessorTest {
         assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("passed");
     }
 
+    @SuppressWarnings("unused")
     static class TestConfig {
         @CommandLineValue(shortOpt = "value", longOpt = "longOption")
         String value;

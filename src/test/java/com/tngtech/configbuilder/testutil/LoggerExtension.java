@@ -1,17 +1,18 @@
 package com.tngtech.configbuilder.testutil;
 
+import java.io.ByteArrayOutputStream;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
 import org.apache.log4j.WriterAppender;
-import org.junit.rules.ExternalResource;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.io.ByteArrayOutputStream;
+public class LoggerExtension implements BeforeEachCallback {
 
-public class LoggerRule extends ExternalResource {
     private final ByteArrayOutputStream content = new ByteArrayOutputStream();
 
     @Override
-    protected void before() {
+    public void beforeEach(ExtensionContext context) {
         Logger.getRootLogger().removeAllAppenders();
         Logger.getRootLogger().addAppender(new WriterAppender(new SimpleLayout(), content));
     }
@@ -19,4 +20,5 @@ public class LoggerRule extends ExternalResource {
     public String getLog() {
         return content.toString();
     }
+
 }

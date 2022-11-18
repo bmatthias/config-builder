@@ -2,21 +2,27 @@ package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertyFilterContainer;
-import com.tngtech.propertyloader.impl.filters.*;
+import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
+import com.tngtech.propertyloader.impl.filters.EnvironmentResolvingFilter;
+import com.tngtech.propertyloader.impl.filters.ThrowIfPropertyHasToBeDefined;
+import com.tngtech.propertyloader.impl.filters.ValueModifyingFilter;
+import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
+import com.tngtech.propertyloader.impl.filters.WarnOnSurroundingWhitespace;
 import com.tngtech.propertyloader.impl.interfaces.PropertyLoaderFilter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.util.Properties;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.Properties;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertyFiltersProcessorTest {
 
     private static class TestPropertyFilter extends ValueModifyingFilter {
@@ -33,9 +39,9 @@ public class PropertyFiltersProcessorTest {
     @Mock
     private PropertyLoader propertyLoader;
 
-    private PropertyFiltersProcessor propertyFiltersProcessor = new PropertyFiltersProcessor();
+    private final PropertyFiltersProcessor propertyFiltersProcessor = new PropertyFiltersProcessor();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(propertyLoader.getFilters()).thenReturn(filterContainer);
     }

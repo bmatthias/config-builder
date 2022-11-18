@@ -2,18 +2,18 @@ package com.tngtech.configbuilder.annotation.propertyloaderconfiguration;
 
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.DefaultPropertySuffixContainer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PropertySuffixProcessorTest {
 
-    private PropertySuffixProcessor propertySuffixProcessor = new PropertySuffixProcessor();
+    private final PropertySuffixProcessor propertySuffixProcessor = new PropertySuffixProcessor();
 
     @Mock
     private PropertySuffixes propertySuffixes;

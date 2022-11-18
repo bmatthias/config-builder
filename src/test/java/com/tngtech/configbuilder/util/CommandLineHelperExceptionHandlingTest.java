@@ -4,7 +4,7 @@ import com.tngtech.configbuilder.ConfigBuilder;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValueDescriptor;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

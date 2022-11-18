@@ -1,15 +1,13 @@
 package com.tngtech.configbuilder;
 
-
 import com.tngtech.configbuilder.testclasses.TestConfigWithoutAnnotations;
-import com.tngtech.configbuilder.testutil.SystemOutRule;
+import com.tngtech.configbuilder.testutil.SystemOutExtension;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
-import org.junit.Rule;
-import org.junit.Test;
-
 import java.nio.file.Paths;
 import java.util.Properties;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Sets.newHashSet;
@@ -17,10 +15,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConfigBuilderWithoutAnnotationsIntegrationTest {
 
-    @Rule
-    public SystemOutRule systemOut = new SystemOutRule();
+    @RegisterExtension
+    static SystemOutExtension systemOut = new SystemOutExtension();
 
-    private ConfigBuilder<TestConfigWithoutAnnotations> configBuilder = new ConfigBuilder<>(TestConfigWithoutAnnotations.class);
+    private final ConfigBuilder<TestConfigWithoutAnnotations> configBuilder = new ConfigBuilder<>(TestConfigWithoutAnnotations.class);
 
     @Test
     public void testConfigBuilderWithParameters() {

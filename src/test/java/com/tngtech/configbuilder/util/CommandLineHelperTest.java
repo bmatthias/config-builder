@@ -3,46 +3,45 @@ package com.tngtech.configbuilder.util;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValueDescriptor;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CommandLineHelperTest {
 
     private static class TestConfig {
         @CommandLineValue(shortOpt = "u", longOpt = "user", required = true, description = "some static description string")
         public String aString;
-        @CommandLineValue(shortOpt = "v", longOpt = "vir", required = false)
+        @CommandLineValue(shortOpt = "v", longOpt = "vir")
         public String anotherString;
 
         @CommandLineValueDescriptor
         private static String description(String longOpt) {
-            switch (longOpt) {
-                case "vir":
-                    return "some dynamically generated description";
-                default:
-                    return "";
+            if ("vir".equals(longOpt)) {
+                return "some dynamically generated description";
             }
+            return "";
         }
     }
 
     private CommandLineHelper commandLineHelper;
-    private String[] args = null;
+    private final String[] args = null;
 
     @Mock
     private Options options;
@@ -55,18 +54,17 @@ public class CommandLineHelperTest {
     @Mock
     private ErrorMessageSetup errorMessageSetup;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(new AnnotationHelper());
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
 
         commandLineHelper = new CommandLineHelper(configBuilderFactory);
-
-        when(parser.parse(options, args)).thenReturn(commandLine);
     }
 
     @Test
     public void testGetCommandLine() throws Exception {
+        when(parser.parse(options, args)).thenReturn(commandLine);
         when(configBuilderFactory.createInstance(DefaultParser.class)).thenReturn(parser);
         when(configBuilderFactory.createInstance(Options.class)).thenReturn(options);
         ArgumentCaptor<Option> captor = ArgumentCaptor.forClass(Option.class);

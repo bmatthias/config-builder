@@ -1,10 +1,9 @@
 package com.tngtech.configbuilder.util;
 
-import org.junit.Test;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

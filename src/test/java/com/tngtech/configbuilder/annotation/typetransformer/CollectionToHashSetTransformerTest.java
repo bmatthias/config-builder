@@ -4,25 +4,24 @@ import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.util.ConfigBuilderFactory;
 import com.tngtech.configbuilder.util.FieldValueTransformer;
 import com.tngtech.configbuilder.util.GenericsAndCastingHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CollectionToHashSetTransformerTest {
 
-    private CollectionToHashSetTransformer collectionToHashSetTransformer = new CollectionToHashSetTransformer();
+    private final CollectionToHashSetTransformer collectionToHashSetTransformer = new CollectionToHashSetTransformer();
 
     @Mock
     private ParameterizedType type;
@@ -33,7 +32,7 @@ public class CollectionToHashSetTransformerTest {
     @Mock
     private ErrorMessageSetup errorMessageSetup;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());

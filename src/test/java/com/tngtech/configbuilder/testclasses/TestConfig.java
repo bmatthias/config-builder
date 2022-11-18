@@ -20,9 +20,11 @@ import com.tngtech.configbuilder.annotation.valueextractor.SystemPropertyValue;
 import com.tngtech.propertyloader.PropertyLoader;
 import com.tngtech.propertyloader.impl.filters.DecryptingFilter;
 import com.tngtech.propertyloader.impl.filters.VariableResolvingFilter;
-
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @PropertyExtension("testproperties")
 @PropertySuffixes(extraSuffixes = {"test"})

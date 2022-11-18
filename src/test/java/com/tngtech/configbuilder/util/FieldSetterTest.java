@@ -4,20 +4,19 @@ import com.tngtech.configbuilder.annotation.valueextractor.DefaultValue;
 import com.tngtech.configbuilder.configuration.BuilderConfiguration;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.ConfigBuilderException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.reflect.Field;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FieldSetterTest {
 
     private static class TestConfig {
@@ -55,17 +54,17 @@ public class FieldSetterTest {
     @Mock
     private ConfigBuilderFactory configBuilderFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(configBuilderFactory.getInstance(FieldValueTransformer.class)).thenReturn(fieldValueTransformer);
         when(configBuilderFactory.getInstance(FieldValueExtractor.class)).thenReturn(fieldValueExtractor);
         when(configBuilderFactory.getInstance(AnnotationHelper.class)).thenReturn(annotationHelper);
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
-        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(true);
     }
 
     @Test
     public void testSetFieldsThrowsIllegalArgumentException() {
+        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(true);
         when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
         when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
         when(errorMessageSetup.getErrorMessage(any(IllegalArgumentException.class), any(String.class), any(String.class), any(String.class))).thenReturn("IllegalArgumentException");
@@ -80,6 +79,7 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFields() {
+        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(true);
         when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
         when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
 
@@ -106,6 +106,7 @@ public class FieldSetterTest {
 
     @Test
     public void testSetFieldsInObjectHierarchy() {
+        when(annotationHelper.fieldHasAnnotationAnnotatedWith(any(Field.class), any(Class.class))).thenReturn(true);
         when(fieldValueExtractor.extractValue(any(Field.class), any(BuilderConfiguration.class))).thenReturn("stringValue");
         when(fieldValueTransformer.transformFieldValue(any(Field.class), any(String.class))).thenReturn("stringValue");
 

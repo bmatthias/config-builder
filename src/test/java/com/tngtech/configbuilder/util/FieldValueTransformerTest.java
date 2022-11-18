@@ -1,27 +1,37 @@
 package com.tngtech.configbuilder.util;
 
-
-import com.tngtech.configbuilder.annotation.typetransformer.*;
+import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringListTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringSetTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CollectionToArrayListTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CollectionToHashSetTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringOrPrimitiveToPrimitiveTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToPathTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.TypeTransformerException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FieldValueTransformerTest {
 
     private FieldValueTransformer fieldValueTransformer;
@@ -57,7 +67,7 @@ public class FieldValueTransformerTest {
 
     private Field field;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(genericsAndCastingHelper);
@@ -79,7 +89,9 @@ public class FieldValueTransformerTest {
         String input = "/etc,/usr";
         ArrayList<Path> expectedOutput = newArrayList(Paths.get("/etc"), Paths.get("/usr"));
 
-        initializeFactoryAndHelperMocks(input, expectedOutput);
+        initializeFactoryAndHelperMocks(input);
+        when(genericsAndCastingHelper.typesMatch(newArrayList(input.split(",")), field.getGenericType())).thenReturn(false);
+        when(genericsAndCastingHelper.typesMatch(expectedOutput, field.getGenericType())).thenReturn(true);
         when(characterSeparatedStringToStringListTransformer.isMatching(String.class, ArrayList.class)).thenReturn(true);
         when(collectionToArrayListTransformer.isMatching(ArrayList.class, ArrayList.class)).thenReturn(true);
         when(characterSeparatedStringToStringListTransformer.transform(input)).thenReturn(newArrayList(input.split(",")));
@@ -90,14 +102,14 @@ public class FieldValueTransformerTest {
         verifyMethodCalls();
     }
 
-    @Test(expected = TypeTransformerException.class)
+    @Test
     public void testPerformNecessaryTransformationsThrowsTypeTransformerException() {
         String input = "input";
 
-        initializeFactoryAndHelperMocks(input, null);
+        initializeFactoryAndHelperMocks(input);
 
         //All mock TypeTransformers return false
-        fieldValueTransformer.transformFieldValue(field, input);
+        assertThrows(TypeTransformerException.class, () -> fieldValueTransformer.transformFieldValue(field, input));
     }
 
     private void verifyMethodCalls() {
@@ -110,7 +122,7 @@ public class FieldValueTransformerTest {
         verify(collectionToArrayListTransformer).setTargetType(any(Type.class));
     }
 
-    private void initializeFactoryAndHelperMocks(String input, ArrayList<Path> expectedOutput) {
+    private void initializeFactoryAndHelperMocks(String input) {
         when(configBuilderFactory.getInstance(FieldValueTransformerComponentTest.TestTransformer.class)).thenReturn(testTransformer);
         when(configBuilderFactory.getInstance(CollectionToArrayListTransformer.class)).thenReturn(collectionToArrayListTransformer);
         when(configBuilderFactory.getInstance(CollectionToHashSetTransformer.class)).thenReturn(collectionToHashSetTransformer);
@@ -121,8 +133,6 @@ public class FieldValueTransformerTest {
         when(configBuilderFactory.getInstance(StringToPathTransformer.class)).thenReturn(stringToPathTransformer);
 
         when(genericsAndCastingHelper.typesMatch(input,field.getGenericType())).thenReturn(false);
-        when(genericsAndCastingHelper.typesMatch(newArrayList(input.split(",")), field.getGenericType())).thenReturn(false);
-        when(genericsAndCastingHelper.typesMatch(expectedOutput, field.getGenericType())).thenReturn(true);
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(String.class)).thenReturn((Class)String.class);
         when(genericsAndCastingHelper.getWrapperClassIfPrimitive(ArrayList.class)).thenReturn((Class)ArrayList.class);
         when(genericsAndCastingHelper.castTypeToClass(field.getGenericType())).thenReturn((Class)ArrayList.class);

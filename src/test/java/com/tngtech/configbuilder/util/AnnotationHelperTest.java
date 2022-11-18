@@ -6,19 +6,18 @@ import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.annotation.valueextractor.CommandLineValue;
 import com.tngtech.configbuilder.annotation.valueextractor.PropertyValue;
 import com.tngtech.configbuilder.annotation.valueextractor.ValueExtractorAnnotation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AnnotationHelperTest {
 
     public class TestConfig {
@@ -29,11 +28,11 @@ public class AnnotationHelperTest {
         private Collection<String> testField;
     }
 
-    private AnnotationHelper annotationHelper = new AnnotationHelper();
+    private final AnnotationHelper annotationHelper = new AnnotationHelper();
     private Field field;
-    private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class};
+    private final Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class};
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         field = TestConfig.class.getDeclaredField("testField");
     }

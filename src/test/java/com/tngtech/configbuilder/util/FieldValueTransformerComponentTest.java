@@ -1,14 +1,16 @@
 package com.tngtech.configbuilder.util;
 
-import com.tngtech.configbuilder.annotation.typetransformer.*;
+import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringListTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CharacterSeparatedStringToStringSetTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CollectionToArrayListTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.CollectionToHashSetTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringCollectionToCommaSeparatedStringTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringOrPrimitiveToPrimitiveTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.StringToPathTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformer;
+import com.tngtech.configbuilder.annotation.typetransformer.TypeTransformers;
 import com.tngtech.configbuilder.configuration.ErrorMessageSetup;
 import com.tngtech.configbuilder.exception.PrimitiveParsingException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,14 +18,20 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.tngtech.configbuilder.util.FieldValueTransformerComponentTest.TestEnum.BAR;
 import static com.tngtech.configbuilder.util.FieldValueTransformerComponentTest.TestEnum.FOO;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class FieldValueTransformerComponentTest {
 
     public static class TestTransformer extends TypeTransformer<String, Integer> {
@@ -73,7 +81,7 @@ public class FieldValueTransformerComponentTest {
     private Field enumListField;
     private Field enumSetField;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(configBuilderFactory.getInstance(ErrorMessageSetup.class)).thenReturn(errorMessageSetup);
         when(configBuilderFactory.getInstance(GenericsAndCastingHelper.class)).thenReturn(new GenericsAndCastingHelper());
@@ -86,7 +94,6 @@ public class FieldValueTransformerComponentTest {
         when(configBuilderFactory.getInstance(CollectionToArrayListTransformer.class)).thenReturn(new CollectionToArrayListTransformer());
         when(configBuilderFactory.getInstance(CollectionToHashSetTransformer.class)).thenReturn(new CollectionToHashSetTransformer());
         when(configBuilderFactory.getInstance(StringOrPrimitiveToPrimitiveTransformer.class)).thenReturn(new StringOrPrimitiveToPrimitiveTransformer());
-        when(configBuilderFactory.getInstance(TestTransformer.class)).thenReturn(new TestTransformer());
 
         this.fieldValueTransformer = new FieldValueTransformer(configBuilderFactory);
 
@@ -121,9 +128,9 @@ public class FieldValueTransformerComponentTest {
         assertThat(actualResult).isEqualTo(17.0);
     }
 
-    @Test(expected = PrimitiveParsingException.class)
+    @Test
     public void testExceptionIfValueCannotBeParsedToBoolean() {
-        fieldValueTransformer.transformFieldValue(boolField, 38.7);
+        assertThrows(PrimitiveParsingException.class, () -> fieldValueTransformer.transformFieldValue(boolField, 38.7));
     }
 
     @Test
@@ -134,7 +141,10 @@ public class FieldValueTransformerComponentTest {
 
     @Test
     public void testThatTransformersInAnnotationArePrioritized() {
+        when(configBuilderFactory.getInstance(TestTransformer.class)).thenReturn(new TestTransformer());
+
         Object actualResult = fieldValueTransformer.transformFieldValue(otherIntField, "2");
+
         assertThat(actualResult).isEqualTo(1472);
     }
 

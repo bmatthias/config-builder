@@ -1,34 +1,28 @@
 package com.tngtech.configbuilder.configuration;
 
 import com.tngtech.propertyloader.PropertyLoader;
-import org.apache.commons.cli.ParseException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.Locale;
 import java.util.Properties;
+import org.apache.commons.cli.ParseException;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ErrorMessageSetupTest {
 
     @Mock
     private PropertyLoader propertyLoader;
 
-    private ErrorMessageSetup errorMessageSetup = new ErrorMessageSetup();
-
-    @Before
-    public void setUp() {
-        when(propertyLoader.load("errors")).thenReturn(new Properties());
-    }
+    private final ErrorMessageSetup errorMessageSetup = new ErrorMessageSetup();
 
     @Test
     public void testInitializeDE() {
+        when(propertyLoader.load("errors")).thenReturn(new Properties());
         Locale.setDefault(Locale.GERMAN);
         errorMessageSetup.initialize("errors", propertyLoader);
         assertThat(errorMessageSetup.getErrorMessage(ParseException.class)).isEqualTo("Command Line Argumente konnten nicht verarbeitet werden.");
@@ -36,6 +30,7 @@ public class ErrorMessageSetupTest {
 
     @Test
     public void testInitializeEN() {
+        when(propertyLoader.load("errors")).thenReturn(new Properties());
         Locale.setDefault(Locale.ENGLISH);
         errorMessageSetup.initialize("errors", propertyLoader);
         assertThat(errorMessageSetup.getErrorMessage(ParseException.class)).isEqualTo("unable to parse command line arguments");
@@ -43,6 +38,7 @@ public class ErrorMessageSetupTest {
 
     @Test
     public void testInitializeOther() {
+        when(propertyLoader.load("errors")).thenReturn(new Properties());
         Locale.setDefault(Locale.ITALIAN);
         errorMessageSetup.initialize("errors", propertyLoader);
         assertThat(errorMessageSetup.getErrorMessage(ParseException.class)).isEqualTo("unable to parse command line arguments");
