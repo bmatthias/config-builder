@@ -39,7 +39,7 @@ public class PropertyFiltersProcessorTest {
     @Mock
     private PropertyLoader propertyLoader;
 
-    private PropertyFiltersProcessor propertyFiltersProcessor = new PropertyFiltersProcessor();
+    private final PropertyFiltersProcessor propertyFiltersProcessor = new PropertyFiltersProcessor();
 
     @BeforeEach
     public void setUp() {

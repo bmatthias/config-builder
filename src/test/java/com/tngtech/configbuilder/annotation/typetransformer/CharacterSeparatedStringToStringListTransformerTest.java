@@ -17,7 +17,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CharacterSeparatedStringToStringListTransformerTest {
-    private CharacterSeparatedStringToStringListTransformer transformer = new CharacterSeparatedStringToStringListTransformer();
+
+    private final CharacterSeparatedStringToStringListTransformer transformer = new CharacterSeparatedStringToStringListTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;

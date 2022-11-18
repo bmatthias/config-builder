@@ -34,8 +34,8 @@ public class PropertyLoaderConfiguratorTest {
     @Mock
     private PropertyLoader propertyLoader;
 
-    private PropertySuffixes propertySuffixes = TestConfig.class.getAnnotation(PropertySuffixes.class);
-    private PropertyLocations propertyLocations = TestConfig.class.getAnnotation(PropertyLocations.class);
+    private final PropertySuffixes propertySuffixes = TestConfig.class.getAnnotation(PropertySuffixes.class);
+    private final PropertyLocations propertyLocations = TestConfig.class.getAnnotation(PropertyLocations.class);
 
     private PropertyLoaderConfigurator propertyLoaderConfigurator;
 

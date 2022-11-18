@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PropertyExtensionProcessorTest {
 
-    private PropertyExtensionProcessor propertyExtensionProcessor = new PropertyExtensionProcessor();
+    private final PropertyExtensionProcessor propertyExtensionProcessor = new PropertyExtensionProcessor();
 
     @Mock
     private PropertyExtension propertyExtension;

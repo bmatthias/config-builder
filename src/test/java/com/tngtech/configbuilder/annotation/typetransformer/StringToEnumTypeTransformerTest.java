@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class StringToEnumTypeTransformerTest {
 
-    private StringToTestEnumTransformer transformer = new StringToTestEnumTransformer();
+    private final StringToTestEnumTransformer transformer = new StringToTestEnumTransformer();
 
     enum TestEnum {
         ONE

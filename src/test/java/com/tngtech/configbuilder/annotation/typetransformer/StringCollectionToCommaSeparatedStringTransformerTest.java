@@ -16,7 +16,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class StringCollectionToCommaSeparatedStringTransformerTest {
-    private StringCollectionToCommaSeparatedStringTransformer transformer = new StringCollectionToCommaSeparatedStringTransformer();
+
+    private final StringCollectionToCommaSeparatedStringTransformer transformer = new StringCollectionToCommaSeparatedStringTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;

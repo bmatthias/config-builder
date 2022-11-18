@@ -16,8 +16,8 @@ import static org.mockito.Mockito.when;
 public class ConstructionHelperTest {
 
     private static class TestConfig {
-        private String string;
-        private Integer integer;
+        private final String string;
+        private final Integer integer;
 
         public TestConfig(String string, Integer integer) {
             this.string = string;
@@ -34,7 +34,7 @@ public class ConstructionHelperTest {
     }
 
     private static class TestConfigForException {
-        public TestConfigForException(String string, int i) {
+        public TestConfigForException() {
         }
     }
 

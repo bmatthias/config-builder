@@ -28,9 +28,9 @@ public class AnnotationHelperTest {
         private Collection<String> testField;
     }
 
-    private AnnotationHelper annotationHelper = new AnnotationHelper();
+    private final AnnotationHelper annotationHelper = new AnnotationHelper();
     private Field field;
-    private Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class};
+    private final Class<? extends Annotation>[] annotationOrder = new Class[]{CommandLineValue.class, PropertyValue.class};
 
     @BeforeEach
     public void setUp() throws Exception {

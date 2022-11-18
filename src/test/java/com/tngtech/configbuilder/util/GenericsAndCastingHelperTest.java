@@ -21,7 +21,7 @@ public class GenericsAndCastingHelperTest {
         }
     }
     
-    private GenericsAndCastingHelper genericsAndCastingHelper = new GenericsAndCastingHelper();
+    private final GenericsAndCastingHelper genericsAndCastingHelper = new GenericsAndCastingHelper();
 
     @Test
     public void testForCorrectWrappers() {

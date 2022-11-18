@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CollectionToArrayListTransformerTest {
 
-    private CollectionToArrayListTransformer collectionToArrayListTransformer = new CollectionToArrayListTransformer();
+    private final CollectionToArrayListTransformer collectionToArrayListTransformer = new CollectionToArrayListTransformer();
 
     @Mock
     private ParameterizedType type;

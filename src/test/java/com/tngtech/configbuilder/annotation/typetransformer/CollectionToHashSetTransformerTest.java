@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CollectionToHashSetTransformerTest {
 
-    private CollectionToHashSetTransformer collectionToHashSetTransformer = new CollectionToHashSetTransformer();
+    private final CollectionToHashSetTransformer collectionToHashSetTransformer = new CollectionToHashSetTransformer();
 
     @Mock
     private ParameterizedType type;

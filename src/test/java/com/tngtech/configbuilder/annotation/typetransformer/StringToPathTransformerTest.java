@@ -15,7 +15,8 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class StringToPathTransformerTest {
-    private StringToPathTransformer transformer = new StringToPathTransformer();
+
+    private final StringToPathTransformer transformer = new StringToPathTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;

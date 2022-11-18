@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class StringToFileTransformerTest {
 
-    private StringToFileTransformer transformer = new StringToFileTransformer();
+    private final StringToFileTransformer transformer = new StringToFileTransformer();
 
     @Mock
     private FieldValueTransformer fieldValueTransformer;

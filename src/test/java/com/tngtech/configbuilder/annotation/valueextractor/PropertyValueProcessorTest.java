@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PropertyValueProcessorTest {
 
-    private PropertyValueProcessor propertyValueProcessor = new PropertyValueProcessor();
+    private final PropertyValueProcessor propertyValueProcessor = new PropertyValueProcessor();
 
     @Mock
     private BuilderConfiguration builderConfiguration;

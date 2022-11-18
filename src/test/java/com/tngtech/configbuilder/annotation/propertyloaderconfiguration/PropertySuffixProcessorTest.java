@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PropertySuffixProcessorTest {
 
-    private PropertySuffixProcessor propertySuffixProcessor = new PropertySuffixProcessor();
+    private final PropertySuffixProcessor propertySuffixProcessor = new PropertySuffixProcessor();
 
     @Mock
     private PropertySuffixes propertySuffixes;

@@ -23,7 +23,7 @@ public class ConfigBuilderFactoryTest {
         private ClassWithoutDefaultConstructor(){}
     }
 
-    private ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
+    private final ConfigBuilderFactory configBuilderFactory = new ConfigBuilderFactory();
 
     @BeforeEach
     public void initializeConfigBuilderFactory() {

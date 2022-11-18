@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PropertyLocationsProcessorTest {
 
-    private PropertyLocationsProcessor propertyLocationsProcessor = new PropertyLocationsProcessor();
+    private final PropertyLocationsProcessor propertyLocationsProcessor = new PropertyLocationsProcessor();
 
     @Mock
     private PropertyLocations propertyLocations;
@@ -22,6 +22,7 @@ public class PropertyLocationsProcessorTest {
     @Mock
     private PropertyLoader propertyLoader;
 
+    @SuppressWarnings("rawtypes")
     @Test
     public void testPropertyLocationsProcessor() {
         String[] dirs = {"dir1", "dir2"};

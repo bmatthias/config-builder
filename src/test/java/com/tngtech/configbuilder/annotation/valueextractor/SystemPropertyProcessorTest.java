@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class SystemPropertyProcessorTest {
 
-    private SystemPropertyProcessor systemPropertyProcessor = new SystemPropertyProcessor();
+    private final SystemPropertyProcessor systemPropertyProcessor = new SystemPropertyProcessor();
 
     @Mock
     private SystemPropertyValue systemPropertyValue;

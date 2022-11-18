@@ -64,6 +64,7 @@ public class CommandLineValueProcessorTest {
         assertThat(commandLineValueProcessor.getValue(commandLineValue, configBuilderFactory)).isEqualTo("passed");
     }
 
+    @SuppressWarnings("unused")
     static class TestConfig {
         @CommandLineValue(shortOpt = "value", longOpt = "longOption")
         String value;
