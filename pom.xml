@@ -79,7 +79,7 @@
         <validation-api.version>2.0.1.Final</validation-api.version>
 
         <assertj-core.version>3.24.2</assertj-core.version>
-        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <junit-jupiter.version>5.9.3</junit-jupiter.version>
         <mockito-junit-jupiter.version>4.11.0</mockito-junit-jupiter.version>
 
         <!-- plugins-->
