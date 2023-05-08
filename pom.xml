@@ -186,6 +186,7 @@
                 <version>${dependency-check-maven.version}</version>
                 <configuration>
                     <failBuildOnCVSS>5</failBuildOnCVSS>
+                    <suppressionFile>.mvn/owasp-suppressions.xml</suppressionFile>
                 </configuration>
             </plugin>
         </plugins>
