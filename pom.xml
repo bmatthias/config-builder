@@ -76,7 +76,6 @@
         <property-loader.version>1.5.1</property-loader.version>
         <reflections.version>0.10.2</reflections.version>
         <slf4j.version>2.0.7</slf4j.version>
-        <validation-api.version>2.0.1.Final</validation-api.version>
 
         <assertj-core.version>3.24.2</assertj-core.version>
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
@@ -253,11 +252,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>${validation-api.version}</version>
         </dependency>
 
         <!-- test-->
